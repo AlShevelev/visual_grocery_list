@@ -2,35 +2,52 @@ package com.example.visualgrocerylist.ui.theme
 
 import android.os.Build
 import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.material3.ColorScheme
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.dynamicDarkColorScheme
 import androidx.compose.material3.dynamicLightColorScheme
-import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
 
-private val DarkColorScheme = darkColorScheme(
-    primary = Purple80,
-    secondary = PurpleGrey80,
-    tertiary = Pink80
-)
-
-private val LightColorScheme = lightColorScheme(
-    primary = Purple40,
-    secondary = PurpleGrey40,
-    tertiary = Pink40
-
-    /* Other default colors to override
-    background = Color(0xFFFFFBFE),
-    surface = Color(0xFFFFFBFE),
-    onPrimary = Color.White,
-    onSecondary = Color.White,
-    onTertiary = Color.White,
-    onBackground = Color(0xFF1C1B1F),
-    onSurface = Color(0xFF1C1B1F),
-    */
-)
+fun createColorScheme(colorSet: ThemeColorSet): ColorScheme =
+    ColorScheme(
+        primary = colorSet.primary,
+        onPrimary = colorSet.onPrimary,
+        primaryContainer = colorSet.containerPrimary,
+        onPrimaryContainer = colorSet.onContainerPrimary,
+        inversePrimary = colorSet.inversePrimary,
+        secondary = colorSet.secondary,
+        onSecondary = colorSet.onSecondary,
+        secondaryContainer = colorSet.containerSecondary,
+        onSecondaryContainer = colorSet.onContainerSecondary,
+        tertiary = colorSet.tertiary,
+        onTertiary = colorSet.onTertiary,
+        tertiaryContainer = colorSet.containerTertiary,
+        onTertiaryContainer = colorSet.onContainerTertiary,
+        background = colorSet.background,
+        onBackground = colorSet.onBackground,
+        surface = colorSet.surface,
+        onSurface = colorSet.onSurface,
+        surfaceVariant = colorSet.surfaceVariant,
+        onSurfaceVariant = colorSet.onSurfaceVariant,
+        surfaceTint = colorSet.primary,
+        inverseSurface = colorSet.surfaceInverse,
+        inverseOnSurface = colorSet.inverseOnSurface,
+        error = colorSet.error,
+        onError = colorSet.onError,
+        errorContainer = colorSet.containerError,
+        onErrorContainer = colorSet.onContainerError,
+        outline = colorSet.outline,
+        outlineVariant = colorSet.outlineVariant,
+        scrim = colorSet.scrim,
+        surfaceBright = colorSet.surfaceBright,
+        surfaceContainer = colorSet.surfaceContainer,
+        surfaceContainerHigh = colorSet.surfaceContainerHigh,
+        surfaceContainerHighest = colorSet.surfaceContainerHighest,
+        surfaceContainerLow = colorSet.surfaceContainerLow,
+        surfaceContainerLowest = colorSet.surfaceContainerLowest,
+        surfaceDim = colorSet.surfaceDim,
+    )
 
 @Composable
 fun VisualGroceryListTheme(
@@ -45,8 +62,8 @@ fun VisualGroceryListTheme(
             if (darkTheme) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
         }
 
-        darkTheme -> DarkColorScheme
-        else -> LightColorScheme
+        darkTheme -> createColorScheme(ColorBlue.Dark)
+        else -> createColorScheme(ColorBlue.Light)
     }
 
     MaterialTheme(
