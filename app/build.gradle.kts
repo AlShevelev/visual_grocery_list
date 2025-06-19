@@ -5,13 +5,13 @@ plugins {
 }
 
 android {
-    namespace = "com.example.visualgrocerylist"
-    compileSdk = 35
+    namespace = "com.shevelev.visualgrocerylist"
+    compileSdk = 36
 
     defaultConfig {
-        applicationId = "com.example.visualgrocerylist"
+        applicationId = "com.shevelev.visualgrocerylist"
         minSdk = 26
-        targetSdk = 35
+        targetSdk = 36
         versionCode = 1
         versionName = "1.0"
 
@@ -49,6 +49,11 @@ dependencies {
     implementation(libs.androidx.ui.graphics)
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
+    implementation(libs.protolite.well.known.types)
+
+    implementation(libs.androidx.navigation3.ui)
+    implementation(libs.androidx.navigation3.runtime)
+
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
 }

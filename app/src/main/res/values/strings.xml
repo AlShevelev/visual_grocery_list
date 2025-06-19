@@ -1,3 +1,6 @@
 <resources>
     <string name="app_name">Visual grocery list</string>
+    <string name="edit_grocery_items">Edit grocery items</string>
+    <string name="settings">Settings</string>
+    <string name="clear_list">Clear the list</string>
 </resources>

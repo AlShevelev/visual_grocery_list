@@ -1,4 +1,4 @@
-package com.example.visualgrocerylist.ui.theme
+package com.shevelev.visualgrocerylist.shared.ui.theme
 
 import androidx.compose.material3.Typography
 import androidx.compose.ui.text.TextStyle
