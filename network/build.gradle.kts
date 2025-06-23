@@ -12,6 +12,12 @@ android {
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles("consumer-rules.pro")
+
+        buildConfigField(
+            "String",
+            "YANDEX_SEARCH_API_KEY",
+            "\"${System.getenv("yandex_search_api_key")}\""
+        )
     }
 
     buildTypes {
@@ -29,6 +35,9 @@ android {
     }
     kotlinOptions {
         jvmTarget = "11"
+    }
+    buildFeatures {
+        buildConfig = true
     }
 }
 
