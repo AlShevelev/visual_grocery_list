@@ -1,4 +1,8 @@
 [versions]
+minSdk = "26"
+compileSdk = "36"
+targetSdk = "36"
+
 agp = "8.9.3"
 kotlin = "2.0.21"
 coreKtx = "1.16.0"
@@ -10,7 +14,9 @@ activityCompose = "1.10.1"
 composeBom = "2025.06.01"
 protoliteWellKnownTypes = "18.0.1"
 nav3Core = "1.0.0-alpha04"
-material3AdaptiveNav3 = "1.0.0-SNAPSHOT"
+appcompat = "1.7.1"
+material = "1.12.0"
+
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -37,9 +43,12 @@ androidx-navigation3-runtime = { module = "androidx.navigation3:navigation3-runt
 androidx-navigation3-ui = { module = "androidx.navigation3:navigation3-ui", version.ref = "nav3Core" }
 
 protolite-well-known-types = { group = "com.google.firebase", name = "protolite-well-known-types", version.ref = "protoliteWellKnownTypes" }
+androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
+material = { group = "com.google.android.material", name = "material", version.ref = "material" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
+android-library = { id = "com.android.library", version.ref = "agp" }
 
