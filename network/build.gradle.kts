@@ -1,3 +1,5 @@
+import com.android.build.gradle.internal.cxx.configure.gradleLocalProperties
+
 plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.android)
@@ -16,7 +18,7 @@ android {
         buildConfigField(
             "String",
             "YANDEX_SEARCH_API_KEY",
-            "\"${System.getenv("yandex_search_api_key")}\""
+            "\"${gradleLocalProperties(rootDir, providers).getProperty("yandex_search_api_key")}\""
         )
     }
 
@@ -29,16 +31,27 @@ android {
             )
         }
     }
+
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
     }
+
     kotlinOptions {
         jvmTarget = "11"
     }
+
     buildFeatures {
         buildConfig = true
     }
+
+    externalNativeBuild {
+        cmake {
+            path = File("cpp","CMakeLists.txt")
+            version = "4.0.2"
+        }
+    }
+    android.ndkVersion = "29.0.13599879"
 }
 
 dependencies {
