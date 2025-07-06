@@ -62,5 +62,4 @@ dependencies {
     implementation(libs.utils.timber)
 
     debugImplementation(libs.androidx.ui.tooling)
-    debugImplementation(libs.androidx.ui.test.manifest)
 }
