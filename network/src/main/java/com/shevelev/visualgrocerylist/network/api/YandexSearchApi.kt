@@ -16,7 +16,7 @@ import yandex.cloud.api.search.v2.SearchQueryOuterClass.SearchQuery
 import yandex.cloud.api.search.v2.SearchQueryOuterClass.SearchQuery.FixTypoMode
 import yandex.cloud.api.search.v2.SearchQueryOuterClass.SearchQuery.SearchType
 
-class YandexSearchApi : SearchApi {
+internal class YandexSearchApi : SearchApi {
     override suspend fun search(request: String): ByteString {
         val channel = ManagedChannelBuilder.forAddress(HOST, PORT).let {
             it.useTransportSecurity()

@@ -61,5 +61,7 @@ dependencies {
 
     implementation(libs.utils.timber)
 
+    implementation(libs.koin.android)
+
     debugImplementation(libs.androidx.ui.tooling)
 }

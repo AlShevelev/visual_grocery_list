@@ -16,7 +16,7 @@ import org.w3c.dom.NodeList
 import org.xml.sax.InputSource
 import timber.log.Timber
 
-class SearchRepositoryImpl(
+internal class SearchRepositoryImpl(
     private val api: SearchApi,
 ) : SearchRepository {
     override suspend fun search(request: String): Result<SearchResultDto> {

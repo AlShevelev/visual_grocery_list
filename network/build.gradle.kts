@@ -107,4 +107,6 @@ dependencies {
     api(libs.protobuf.kotlin.lite)
 
     implementation(libs.utils.timber)
+
+    implementation(libs.koin.android)
 }
