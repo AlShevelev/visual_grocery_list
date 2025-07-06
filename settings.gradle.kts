@@ -22,3 +22,4 @@ dependencyResolutionManagement {
 rootProject.name = "Visual grocery list"
 include(":app")
 include(":network")
+include(":network_protos")

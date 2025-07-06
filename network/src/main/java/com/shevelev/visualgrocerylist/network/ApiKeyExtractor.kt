@@ -1,6 +1,6 @@
 package com.shevelev.visualgrocerylist.network
 
-class ApiKeyExtractor {
+internal class ApiKeyExtractor {
     private external fun getApiKey(id: Int, source: String): String
 
     fun getKey(): String {

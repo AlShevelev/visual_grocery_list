@@ -40,6 +40,9 @@ android {
 }
 
 dependencies {
+    implementation(project(":network"))
+
+    runtimeOnly(libs.grpc.okhttp)
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
@@ -49,14 +52,11 @@ dependencies {
     implementation(libs.androidx.ui.graphics)
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
-    implementation(libs.protolite.well.known.types)
 
     implementation(libs.androidx.navigation3.ui)
     implementation(libs.androidx.navigation3.runtime)
 
     implementation(libs.androidx.navigation3.runtime)
-
-    implementation(project(":network"))
 
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)

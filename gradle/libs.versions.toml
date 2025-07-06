@@ -16,7 +16,7 @@ protoliteWellKnownTypes = "18.0.1"
 nav3Core = "1.0.0-alpha04"
 appcompat = "1.7.1"
 material = "1.12.0"
-
+grpc = "1.62.2"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -42,13 +42,26 @@ androidx-material3 = { group = "androidx.compose.material3", name = "material3" 
 androidx-navigation3-runtime = { module = "androidx.navigation3:navigation3-runtime", version.ref = "nav3Core" }
 androidx-navigation3-ui = { module = "androidx.navigation3:navigation3-ui", version.ref = "nav3Core" }
 
-protolite-well-known-types = { group = "com.google.firebase", name = "protolite-well-known-types", version.ref = "protoliteWellKnownTypes" }
+protoc = { group = "com.google.protobuf", name = "protoc", version = "3.25.3" }
+protoc-gen-grpc-java = { group = "io.grpc", name = "protoc-gen-grpc-java", version = "1.62.2" }
+protoc-gen-grpc-kotlin = { group = "io.grpc", name = "protoc-gen-grpc-kotlin", version = "1.4.1" }
+protobuf-kotlin-lite = { group = "com.google.protobuf", name = "protobuf-kotlin-lite", version = "4.31.1" }
+
+grpc-okhttp = { group = "io.grpc", name = "grpc-okhttp", version.ref = "grpc" }
+grpc-protobuf-lite = { group = "io.grpc", name = "grpc-protobuf-lite", version.ref = "grpc" }
+grpc-stub = { group = "io.grpc", name = "grpc-stub", version.ref = "grpc" }
+grpc-kotlin-stub = { group = "io.grpc", name = "grpc-kotlin-stub", version = "1.4.3" }
+
 androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
 material = { group = "com.google.android.material", name = "material", version.ref = "material" }
+
+kotlinx-coroutines-core = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-core", version = "1.8.1" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 android-library = { id = "com.android.library", version.ref = "agp" }
+protobuf = { id = "com.google.protobuf", version = "0.9.4" }
+kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version = "1.9.23" }
 

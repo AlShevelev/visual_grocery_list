@@ -3,6 +3,48 @@ import com.android.build.gradle.internal.cxx.configure.gradleLocalProperties
 plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.android)
+    alias(libs.plugins.protobuf)
+}
+
+kotlin {
+    jvmToolchain(11)
+}
+
+protobuf {
+    protoc {
+        artifact = libs.protoc.asProvider().get().toString()
+    }
+    plugins {
+        create("java") {
+            artifact = libs.protoc.gen.grpc.java.get().toString()
+        }
+        create("grpc") {
+            artifact = libs.protoc.gen.grpc.java.get().toString()
+        }
+        create("grpckt") {
+            artifact = libs.protoc.gen.grpc.kotlin.get().toString() + ":jdk8@jar"
+        }
+    }
+    generateProtoTasks {
+        all().forEach {
+            it.plugins {
+                create("java") {
+                    option("lite")
+                }
+                create("grpc") {
+                    option("lite")
+                }
+                create("grpckt") {
+                    option("lite")
+                }
+            }
+            it.builtins {
+                create("kotlin") {
+                    option("lite")
+                }
+            }
+        }
+    }
 }
 
 android {
@@ -55,8 +97,12 @@ android {
 }
 
 dependencies {
+    protobuf(project(":network_protos"))
 
-    implementation(libs.androidx.core.ktx)
-    implementation(libs.androidx.appcompat)
-    implementation(libs.material)
+    api(libs.kotlinx.coroutines.core)
+
+    api(libs.grpc.stub)
+    api(libs.grpc.protobuf.lite)
+    api(libs.grpc.kotlin.stub)
+    api(libs.protobuf.kotlin.lite)
 }
