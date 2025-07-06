@@ -14,6 +14,7 @@ import javax.xml.xpath.XPathFactory
 import org.w3c.dom.Document
 import org.w3c.dom.NodeList
 import org.xml.sax.InputSource
+import timber.log.Timber
 
 class SearchRepositoryImpl(
     private val api: SearchApi,
@@ -32,6 +33,8 @@ class SearchRepositoryImpl(
             )
 
             result
+        }.onFailure {
+            Timber.e(it)
         }
     }
 

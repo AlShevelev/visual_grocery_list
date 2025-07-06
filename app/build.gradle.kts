@@ -36,6 +36,7 @@ android {
     }
     buildFeatures {
         compose = true
+        buildConfig = true
     }
 }
 
@@ -57,6 +58,8 @@ dependencies {
     implementation(libs.androidx.navigation3.runtime)
 
     implementation(libs.androidx.navigation3.runtime)
+
+    implementation(libs.utils.timber)
 
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)

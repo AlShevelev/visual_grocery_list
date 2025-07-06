@@ -105,4 +105,6 @@ dependencies {
     api(libs.grpc.protobuf.lite)
     api(libs.grpc.kotlin.stub)
     api(libs.protobuf.kotlin.lite)
+
+    implementation(libs.utils.timber)
 }
