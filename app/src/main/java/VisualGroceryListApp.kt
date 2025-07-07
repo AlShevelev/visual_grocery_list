@@ -1,6 +1,7 @@
 package com.shevelev.visualgrocerylist
 
 import android.app.Application
+import com.shevelev.visualgrocerylist.database.di.databaseModule
 import com.shevelev.visualgrocerylist.network.di.networkModule
 import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidLogger
@@ -18,7 +19,10 @@ class VisualGroceryListApp: Application() {
         startKoin{
             androidLogger()
             androidContext(this@VisualGroceryListApp)
-            modules(networkModule)
+            modules(
+                databaseModule,
+                networkModule,
+            )
         }
     }
 }

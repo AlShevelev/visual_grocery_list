@@ -42,6 +42,7 @@ android {
 
 dependencies {
     implementation(project(":network"))
+    implementation(project(":database"))
 
     runtimeOnly(libs.grpc.okhttp)
 
