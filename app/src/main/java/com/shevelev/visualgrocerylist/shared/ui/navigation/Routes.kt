@@ -1,3 +1,7 @@
 package com.shevelev.visualgrocerylist.shared.ui.navigation
 
-data object ListScreenRoute
+sealed interface Route {
+    data object ListScreenRoute: Route
+
+    data object AddItemScreenRoute: Route
+}

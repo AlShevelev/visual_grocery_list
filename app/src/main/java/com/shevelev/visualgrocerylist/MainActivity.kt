@@ -9,8 +9,9 @@ import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.remember
 import androidx.navigation3.runtime.NavEntry
 import androidx.navigation3.ui.NavDisplay
-import com.shevelev.visualgrocerylist.features.list.ui.ListScreenRoot
-import com.shevelev.visualgrocerylist.shared.ui.navigation.ListScreenRoute
+import com.shevelev.visualgrocerylist.features.additem.ui.ScreenRoot as AddItemScreenRoot
+import com.shevelev.visualgrocerylist.features.list.ui.ScreenRoot as ListScreenRoot
+import com.shevelev.visualgrocerylist.shared.ui.navigation.Route
 import com.shevelev.visualgrocerylist.shared.ui.theme.VisualGroceryListTheme
 
 class MainActivity : ComponentActivity() {
@@ -21,19 +22,19 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             VisualGroceryListTheme(dynamicColor = false) {
-                val backStack = remember { mutableStateListOf<Any>(ListScreenRoute) }
+                val backStack = remember { mutableStateListOf<Route>(Route.ListScreenRoute) }
 
                 NavDisplay(
                     backStack = backStack,
-                    //onBack = { backStack.removeLastOrNull() },
+                    onBack = { backStack.removeLastOrNull() },
                     entryProvider = { key ->
                         when (key) {
-                            is ListScreenRoute -> NavEntry(key) {
-                                ListScreenRoot()
+                            is Route.ListScreenRoute -> NavEntry(key) {
+                                ListScreenRoot(backStack)
                             }
 
-                            else -> {
-                                error("Unknown route: $key")
+                            is Route.AddItemScreenRoute -> NavEntry(key) {
+                                AddItemScreenRoot(backStack)
                             }
                         }
                     }

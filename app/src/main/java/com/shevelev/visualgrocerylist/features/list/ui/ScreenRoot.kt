@@ -42,6 +42,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import com.shevelev.visualgrocerylist.R
+import com.shevelev.visualgrocerylist.shared.ui.navigation.Route
 import com.shevelev.visualgrocerylist.shared.ui.theme.LocalDimensions
 import com.shevelev.visualgrocerylist.shared.ui.theme.LocalUiConstants
 import com.shevelev.visualgrocerylist.shared.ui.theme.VisualGroceryListTheme
@@ -50,7 +51,9 @@ import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ListScreenRoot() {
+fun ScreenRoot(
+    backStack: MutableList<Route>,
+) {
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
 
     ModalNavigationDrawer(
@@ -59,7 +62,7 @@ fun ListScreenRoot() {
     ) {
         Scaffold(
             topBar = { AppBar(drawerState) },
-            floatingActionButton = { MainButton() }
+            floatingActionButton = { MainButton(backStack) }
         ) { innerPadding ->
             Content(modifier = Modifier.padding(innerPadding))
         }
@@ -67,11 +70,13 @@ fun ListScreenRoot() {
 }
 
 @Composable
-fun MainButton() {
+fun MainButton(
+    backStack: MutableList<Route>,
+) {
     FloatingActionButton(
         content = { Icon(Icons.Filled.Add, contentDescription = "") },
         shape = CircleShape,
-        onClick = { }
+        onClick = { backStack.add(Route.AddItemScreenRoute) }
     )
 }
 
