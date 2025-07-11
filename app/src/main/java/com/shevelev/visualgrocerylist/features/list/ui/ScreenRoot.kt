@@ -146,7 +146,8 @@ fun DrawerContent() {
 
     ModalDrawerSheet {
         Column(
-            modifier = Modifier.padding(horizontal = dimensions.paddingDouble)
+            modifier = Modifier
+                .padding(horizontal = dimensions.paddingDouble)
                 .verticalScroll(rememberScrollState())
         ) {
             Spacer(Modifier.height(dimensions.paddingSingleAndHalf))

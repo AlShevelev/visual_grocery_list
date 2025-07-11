@@ -6,7 +6,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.shevelev.visualgrocerylist.database.entities.GroceryItem
+import com.shevelev.visualgrocerylist.com.shevelev.visualgrocerylist.features.additem.dto.GridItem
 import com.shevelev.visualgrocerylist.database.repository.DatabaseRepository
 import kotlin.time.Duration.Companion.milliseconds
 import kotlinx.coroutines.FlowPreview
@@ -23,15 +23,17 @@ internal class AddItemScreenViewModel(
         private set
 
     @OptIn(FlowPreview::class)
-    val searchResults: StateFlow<List<GroceryItem>> =
+    val searchResults: StateFlow<List<GridItem>> =
         snapshotFlow { searchQuery }
             .debounce(SEARCH_DEBOUNCE_PAUSE.milliseconds)
             .map { searchQuery ->
                 if (searchQuery.isNotEmpty()) {
-                    databaseRepository.findGroceryItemByKeyWord(searchQuery)
+                    databaseRepository
+                        .findGroceryItemByKeyWord(searchQuery)
+                        .map { GridItem.Db(it) }
                 } else {
                     emptyList()
-                }
+                } + GridItem.SearchInternet
             }.stateIn(
                 scope = viewModelScope,
                 initialValue = emptyList(),

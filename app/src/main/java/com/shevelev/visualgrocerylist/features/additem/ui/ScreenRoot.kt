@@ -24,7 +24,7 @@ import org.koin.androidx.compose.koinViewModel
 
 
 @Composable
-fun ScreenRoot(
+internal fun ScreenRoot(
     backStack: MutableList<Route>,
 ) {
     Scaffold(
@@ -36,7 +36,7 @@ fun ScreenRoot(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AppBar(
+internal fun AppBar(
     backStack: MutableList<Route>,
 ) {
     val context = LocalContext.current
@@ -62,14 +62,15 @@ fun AppBar(
 
 @Composable
 internal fun Content(
-    viewModel: AddItemScreenViewModel = koinViewModel(),
     modifier: Modifier = Modifier,
+    viewModel: AddItemScreenViewModel = koinViewModel(),
 ) {
     val searchResults by viewModel.searchResults.collectAsStateWithLifecycle()
 
     SearchContent(
         searchQuery = viewModel.searchQuery,
         searchResults = searchResults,
-        onSearchQueryChange = { viewModel.onSearchQueryChange(it) }
+        onSearchQueryChange = { viewModel.onSearchQueryChange(it) },
+        modifier = modifier,
     )
 }
