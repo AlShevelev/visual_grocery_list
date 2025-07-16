@@ -18,6 +18,7 @@ import com.shevelev.visualgrocerylist.shared.ui.theme.LocalDimensions
 @Composable
 fun GridTile(
     modifier: Modifier = Modifier,
+    enabled: Boolean = true,
     onClick: () -> Unit = { },
     content: @Composable BoxScope.() -> Unit,
 ) {
@@ -33,6 +34,7 @@ fun GridTile(
             )
             .aspectRatio(1f)
             .clickable(
+                enabled = enabled,
                 onClick = onClick,
                 interactionSource = remember { MutableInteractionSource() },
                 indication = ripple()

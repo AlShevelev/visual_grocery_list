@@ -3,6 +3,8 @@ package com.shevelev.visualgrocerylist.network.dto
 import android.net.Uri
 
 data class ImageDto(
+    val id: String,
+
     val thumbnailLink: Uri,
     val imageLink: Uri,
     

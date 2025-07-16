@@ -63,6 +63,8 @@ internal class SearchRepositoryImpl(
         for (i in 0 until docs.length) {
             val doc = docs.item(i)
 
+            var id: String? = null
+
             var thumbnailLink: Uri? = null
             var thumbnailWidth: Int? = null
             var thumbnailHeight: Int? = null
@@ -78,7 +80,9 @@ internal class SearchRepositoryImpl(
                 val child = doc.childNodes.item(j)
 
                 when (child.nodeName) {
-                    "thumbnail-link" -> thumbnailLink = Uri.parse(child.firstChild.nodeValue)
+                    "id" -> id = child.firstChild.nodeValue
+                    "thumbnail-link" -> thumbnailLink = Uri
+                        .parse(child.firstChild.nodeValue.replace("http://", "https://"))
                     "thumbnail-width" -> thumbnailWidth = child.firstChild.nodeValue.toInt()
                     "thumbnail-height" -> thumbnailHeight = child.firstChild.nodeValue.toInt()
                     "original-width" -> originalWidth = child.firstChild.nodeValue.toInt()
@@ -91,6 +95,8 @@ internal class SearchRepositoryImpl(
 
             result.add(
                 ImageDto(
+                    id = requireNotNull(id),
+
                     thumbnailLink = requireNotNull(thumbnailLink),
                     imageLink = requireNotNull(imageLink),
                     fileSize = requireNotNull(fileSize),

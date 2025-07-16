@@ -1,18 +1,25 @@
 package com.shevelev.visualgrocerylist.com.shevelev.visualgrocerylist.features.additem.ui
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Search
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.DockedSearchBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -21,6 +28,10 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SearchBarDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
@@ -28,18 +39,23 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import coil3.compose.AsyncImage
 import com.shevelev.visualgrocerylist.R
 import com.shevelev.visualgrocerylist.com.shevelev.visualgrocerylist.features.additem.dto.GridItem
+import com.shevelev.visualgrocerylist.com.shevelev.visualgrocerylist.features.additem.dto.ScreenState
 import com.shevelev.visualgrocerylist.com.shevelev.visualgrocerylist.shared.ui.components.GridTile
 import com.shevelev.visualgrocerylist.database.entities.GroceryItem
+import com.shevelev.visualgrocerylist.network.dto.ImageDto
 import com.shevelev.visualgrocerylist.shared.ui.theme.LocalDimensions
+import timber.log.Timber
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 internal fun SearchContent(
     searchQuery: String,
-    searchResults: List<GridItem>,
+    screenState: ScreenState,
     onSearchQueryChange: (String) -> Unit,
+    onSearchTheInternetClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val context = LocalContext.current
@@ -54,19 +70,31 @@ internal fun SearchContent(
         onSearch = { keyboardController?.hide() },
         modifier = modifier.fillMaxSize(),
         colors = SearchBarDefaults.colors(containerColor = MaterialTheme.colorScheme.surface),
+        enabled = !screenState.loading,
         placeholder = {
             Text(text = context.getString(R.string.search_here))
         },
         leadingIcon = {
-            Icon(
-                imageVector = Icons.Default.Search,
-                tint = MaterialTheme.colorScheme.onSurface,
-                contentDescription = null
-            )
+            if (screenState.loading) {
+                CircularProgressIndicator(
+                    modifier = Modifier.width(24.dp).padding(top = 14.dp),
+                    color = MaterialTheme.colorScheme.secondary,
+                    trackColor = MaterialTheme.colorScheme.surfaceVariant,
+                )
+            } else {
+                Icon(
+                    imageVector = Icons.Default.Search,
+                    tint = MaterialTheme.colorScheme.onSurface,
+                    contentDescription = null
+                )
+            }
         },
         trailingIcon = {
             if (searchQuery.isNotEmpty()) {
-                IconButton(onClick = { onSearchQueryChange("") }) {
+                IconButton(
+                    onClick = { onSearchQueryChange("") },
+                    enabled = !screenState.loading,
+                ) {
                     Icon(
                         imageVector = Icons.Default.Close,
                         tint = MaterialTheme.colorScheme.onSurface,
@@ -76,7 +104,7 @@ internal fun SearchContent(
             }
         },
         content = {
-            if (searchResults.isEmpty()) {
+            if (screenState.items.isEmpty()) {
                 EmptySearchResult()
             } else {
                 LazyVerticalGrid(
@@ -86,14 +114,22 @@ internal fun SearchContent(
                     modifier = Modifier.fillMaxSize()
                 ) {
                     items(
-                        count = searchResults.size,
-                        key = { index -> searchResults[index].id },
+                        count = screenState.items.size,
+                        key = { index -> screenState.items[index].id },
                         itemContent = { index ->
-                            when (val item = searchResults[index]) {
+                            when (val item = screenState.items[index]) {
                                 is GridItem.Db -> DbItemTile(
                                     item = item.item,
+                                    enabled = !screenState.loading,
                                 )
-                                is GridItem.SearchInternet -> SearchTheInternetTile()
+                                is GridItem.SearchInternet -> SearchTheInternetTile(
+                                    onSearchTheInternetClick = onSearchTheInternetClick,
+                                    enabled = !screenState.loading,
+                                )
+                                is GridItem.Internet -> InternetItemTile(
+                                    item.item,
+                                    enabled = !screenState.loading,
+                                )
                             }
                         }
                     )
@@ -131,10 +167,12 @@ private fun EmptySearchResult(
 @Composable
 private fun DbItemTile(
     item: GroceryItem,
+    enabled: Boolean,
     modifier: Modifier = Modifier,
 ) {
     return GridTile(
         modifier = modifier,
+        enabled = enabled,
     ) {
         Image(
             painter = painterResource(id = R.drawable.ic_launcher_background),
@@ -146,14 +184,23 @@ private fun DbItemTile(
 
 @Composable
 private fun SearchTheInternetTile(
+    onSearchTheInternetClick: () -> Unit,
+    enabled: Boolean,
     modifier: Modifier = Modifier,
 ) {
     val context = LocalContext.current
 
     val dimensions = LocalDimensions.current
 
+    val keyboardController = LocalSoftwareKeyboardController.current
+
     return GridTile(
         modifier = modifier,
+        enabled = enabled,
+        onClick = {
+            keyboardController?.hide()
+            onSearchTheInternetClick ()
+        },
     ) {
         Column(
             verticalArrangement = Arrangement.Center,
@@ -170,6 +217,45 @@ private fun SearchTheInternetTile(
                 text = context.getString(R.string.search_the_internet),
                 style = MaterialTheme.typography.titleMedium,
             )
+        }
+    }
+}
+
+@Composable
+private fun InternetItemTile(
+    item: ImageDto,
+    enabled: Boolean,
+    modifier: Modifier = Modifier,
+) {
+    return GridTile(
+        modifier = modifier,
+        enabled = enabled,
+    ) {
+        var isLoading by rememberSaveable { mutableStateOf(true) }
+
+        Box(
+            modifier = Modifier.fillMaxSize(),
+            contentAlignment = Alignment.Center,
+        ) {
+            AsyncImage(
+                model = item.thumbnailLink.toString(),
+                contentDescription = null,
+                modifier = Modifier.fillMaxSize(),
+                onError = { Timber.e(it.result.throwable) },
+                onSuccess = { isLoading = false }
+            )
+
+            AnimatedVisibility(
+                visible = isLoading,
+                enter = fadeIn(),
+                exit = fadeOut(),
+            ) {
+                CircularProgressIndicator(
+                    modifier = Modifier.width(64.dp),
+                    color = MaterialTheme.colorScheme.secondary,
+                    trackColor = MaterialTheme.colorScheme.surfaceVariant,
+                )
+            }
         }
     }
 }
