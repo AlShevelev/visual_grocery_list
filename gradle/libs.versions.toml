@@ -7,6 +7,7 @@ agp = "8.9.3"
 coil = "3.2.0"
 grpc = "1.62.2"
 nav3Core = "1.0.0-alpha05"
+nav3LifecycleViewmodel = "1.0.0-alpha03"
 koin = "4.1.0"
 kotlin = "2.0.21"
 room = "2.7.2"
@@ -15,6 +16,7 @@ room = "2.7.2"
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version = "1.16.0" }
 
 androidx-lifecycle-runtime-ktx = { group = "androidx.lifecycle", name = "lifecycle-runtime-ktx", version = "2.9.1" }
+androidx-lifecycle-viewmodel-navigation3 = { group = "androidx.lifecycle", name = "lifecycle-viewmodel-navigation3", version.ref = "nav3LifecycleViewmodel" }
 androidx-activity-compose = { group = "androidx.activity", name = "activity-compose", version = "1.10.1" }
 androidx-compose-bom = { group = "androidx.compose", name = "compose-bom", version = "2025.06.01" }
 
