@@ -59,6 +59,8 @@ internal fun SearchContent(
     screenState: ScreenState,
     onSearchQueryChange: (String) -> Unit,
     onSearchTheInternetClick: () -> Unit,
+    onDbItemClick: (GroceryItem) -> Unit,
+    onInternetItemClick: (ImageDto) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val dimensions = LocalDimensions.current
@@ -91,6 +93,7 @@ internal fun SearchContent(
                             is GridItem.Db -> DbItemTile(
                                 item = item.item,
                                 enabled = !screenState.loading,
+                                onClick = onDbItemClick,
                             )
                             is GridItem.SearchInternet -> SearchTheInternetTile(
                                 onSearchTheInternetClick = onSearchTheInternetClick,
@@ -99,6 +102,7 @@ internal fun SearchContent(
                             is GridItem.Internet -> InternetItemTile(
                                 item.item,
                                 enabled = !screenState.loading,
+                                onClick = onInternetItemClick,
                             )
                         }
                     }
@@ -204,11 +208,13 @@ private fun EmptySearchResult(
 private fun DbItemTile(
     item: GroceryItem,
     enabled: Boolean,
+    onClick: (GroceryItem) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     return GridTile(
         modifier = modifier,
         enabled = enabled,
+        onClick = { onClick(item) }
     ) {
         Image(
             painter = painterResource(id = R.drawable.ic_launcher_background),
@@ -261,11 +267,13 @@ private fun SearchTheInternetTile(
 private fun InternetItemTile(
     item: ImageDto,
     enabled: Boolean,
+    onClick: (ImageDto) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     return GridTile(
         modifier = modifier,
         enabled = enabled,
+        onClick = { onClick(item) }
     ) {
         var isLoading by rememberSaveable { mutableStateOf(true) }
 

@@ -9,8 +9,11 @@ import com.shevelev.visualgrocerylist.com.shevelev.visualgrocerylist.features.ad
 import com.shevelev.visualgrocerylist.com.shevelev.visualgrocerylist.features.additem.dto.GridItem.Internet
 import com.shevelev.visualgrocerylist.com.shevelev.visualgrocerylist.features.additem.dto.ScreenEvent
 import com.shevelev.visualgrocerylist.com.shevelev.visualgrocerylist.features.additem.dto.ScreenState
+import com.shevelev.visualgrocerylist.file.FileRepository
+import com.shevelev.visualgrocerylist.network.dto.ImageDto
 import com.shevelev.visualgrocerylist.storage.database.repository.DatabaseRepository
 import com.shevelev.visualgrocerylist.network.repository.SearchRepository
+import com.shevelev.visualgrocerylist.storage.database.entities.GroceryItem
 import kotlin.String
 import kotlin.time.Duration.Companion.milliseconds
 import kotlinx.coroutines.Job
@@ -26,6 +29,7 @@ import kotlinx.coroutines.launch
 internal class AddItemScreenViewModel(
     private val databaseRepository: DatabaseRepository,
     private val searchRepository: SearchRepository,
+    private val fileRepository: FileRepository,
 ) : ViewModel() {
     var searchQuery by mutableStateOf("")
         private set
@@ -65,9 +69,7 @@ internal class AddItemScreenViewModel(
     fun onSearchTheInternetClick() {
         _searchJob?.cancel()
         _searchJob = viewModelScope.launch {
-            _screenState.emit(
-                _screenState.value.copy(loading = true)
-            )
+            setLoading(true)
 
             val searchResult = searchRepository.search(searchQuery)
 
@@ -80,12 +82,34 @@ internal class AddItemScreenViewModel(
                 )
             }.onFailure {
                 _screenEvent.emit(ScreenEvent.Error)
-
-                _screenState.emit(
-                    _screenState.value.copy(loading = false)
-                )
+                setLoading(false)
             }
         }
+    }
+
+    fun onInternetItemClick(item: ImageDto) {
+        viewModelScope.launch {
+            setLoading(true)
+
+            fileRepository.download(item.thumbnailLink).onSuccess { fileName ->
+                val itemDbId = databaseRepository.addGroceryItem(searchQuery, fileName)
+                databaseRepository.addGroceryListItemToTop(groceryItemDbId = itemDbId)
+
+                _screenEvent.emit(ScreenEvent.Close)
+            }.onFailure {
+                _screenEvent.emit(ScreenEvent.Error)
+                setLoading(false)
+            }
+        }
+    }
+
+    fun onDbItemClick(item: GroceryItem) {
+    }
+
+    private suspend fun setLoading(loading: Boolean) {
+        _screenState.emit(
+            _screenState.value.copy(loading = loading)
+        )
     }
 
     companion object {

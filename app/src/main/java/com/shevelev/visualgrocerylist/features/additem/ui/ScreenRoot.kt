@@ -33,7 +33,10 @@ internal fun ScreenRoot(
     Scaffold(
         topBar = { AppBar(backStack) },
     ) { innerPadding ->
-        Content(modifier = Modifier.padding(innerPadding))
+        Content(
+            backStack = backStack,
+            modifier = Modifier.padding(innerPadding),
+        )
     }
 }
 
@@ -67,6 +70,7 @@ internal fun AppBar(
 internal fun Content(
     modifier: Modifier = Modifier,
     viewModel: AddItemScreenViewModel = koinViewModel(),
+    backStack: MutableList<Route>,
 ) {
     val searchResults by viewModel.screenState.collectAsStateWithLifecycle()
 
@@ -77,6 +81,8 @@ internal fun Content(
         screenState = searchResults,
         onSearchQueryChange = { viewModel.onSearchQueryChange(it) },
         onSearchTheInternetClick = viewModel::onSearchTheInternetClick,
+        onDbItemClick = viewModel::onDbItemClick,
+        onInternetItemClick = viewModel::onInternetItemClick,
         modifier = modifier,
     )
 
@@ -84,8 +90,10 @@ internal fun Content(
         viewModel.screenEvent.collect {
             when (it) {
                 is ScreenEvent.Error -> Toast
-                    .makeText(context, R.string.error_image_search, Toast.LENGTH_SHORT)
+                    .makeText(context, R.string.error_network, Toast.LENGTH_SHORT)
                     .show()
+
+                is ScreenEvent.Close -> backStack.removeLastOrNull()
             }
         }
     }

@@ -9,5 +9,5 @@
     <string name="try_adjusting_your_search">Try adjusting your search</string>
     <string name="search_the_internet">Search the internet</string>
 
-    <string name="error_image_search">An error occurred while searching for images</string>
+    <string name="error_network">An error occurred while retrieving data from the Internet</string>
 </resources>

@@ -15,6 +15,9 @@ internal interface GroceryListItemDao {
     @Query("SELECT * FROM grocery_list_item")
     suspend fun readAll(): List<GroceryListItem>
 
+    @Query("SELECT min(sorting_order) FROM grocery_list_item")
+    suspend fun readMinOrder(): Long?
+
     @Update
     suspend fun update(item: GroceryListItem)
 

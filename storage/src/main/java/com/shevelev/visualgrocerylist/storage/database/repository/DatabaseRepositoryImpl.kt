@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.room.Room
 import com.shevelev.visualgrocerylist.storage.database.database.VisualGroceryListDatabase
 import com.shevelev.visualgrocerylist.storage.database.entities.GroceryItem
+import com.shevelev.visualgrocerylist.storage.database.entities.GroceryListItem
 
 internal class DatabaseRepositoryImpl(
     private val appContext: Context,
@@ -17,4 +18,27 @@ internal class DatabaseRepositoryImpl(
 
     override suspend fun findGroceryItemByKeyWord(keyWord: String): List<GroceryItem> =
         db.groceryItem.readByKeyWord(keyWord.lowercase())
+
+    override suspend fun addGroceryItem(keyWord: String, fileName: String): Long {
+        val itemToCreate = GroceryItem(
+            id = 0L,
+            imageFile = fileName,
+            keyWord = keyWord,
+        )
+
+        return db.groceryItem.create(itemToCreate)
+    }
+
+    override suspend fun addGroceryListItemToTop(groceryItemDbId: Long): Long {
+        val minSortingOrder = db.groceryListItem.readMinOrder()
+
+        val itemToAdd = GroceryListItem(
+            id = 0,
+            groceryItemId = groceryItemDbId,
+            checked = false,
+            note = null,
+            order = minSortingOrder?.let { it + 1} ?: 0,
+        )
+        return db.groceryListItem.create(itemToAdd)
+    }
 }

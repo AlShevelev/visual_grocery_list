@@ -28,5 +28,8 @@ data class GroceryListItem(
     val checked: Boolean,
 
     @ColumnInfo(name = "note")
-    val note: String?
+    val note: String?,
+
+    @ColumnInfo(name = "sorting_order")
+    val order: Long,
 )

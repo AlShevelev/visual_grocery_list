@@ -37,9 +37,14 @@ android {
 }
 
 dependencies {
-    implementation(libs.room.runtime)
     ksp(libs.room.ksp)
+
+    implementation(libs.room.runtime)
     implementation(libs.room.ktx)
 
     implementation(libs.koin.android)
+
+    implementation(libs.kotlin.stdlib)
+
+    implementation(libs.utils.timber)
 }

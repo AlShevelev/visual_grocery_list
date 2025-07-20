@@ -2,4 +2,6 @@ package com.shevelev.visualgrocerylist.com.shevelev.visualgrocerylist.features.a
 
 internal sealed interface ScreenEvent {
     data object Error: ScreenEvent
+
+    data object Close: ScreenEvent
 }

@@ -30,4 +30,12 @@ internal class DebugDatabaseRepositoryImpl: DatabaseRepository {
         val kw = keyWord.lowercase()
         return source.filter { it.keyWord.contains(kw) }
     }
+
+    override suspend fun addGroceryItem(keyWord: String, fileName: String): Long {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun addGroceryListItemToTop(groceryItemDbId: Long): Long {
+        TODO("Not yet implemented")
+    }
 }

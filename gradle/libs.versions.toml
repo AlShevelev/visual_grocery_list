@@ -42,6 +42,7 @@ koin-android = { group = "io.insert-koin", name = "koin-android", version.ref = 
 koin-jpc = { group = "io.insert-koin", name = "koin-androidx-compose", version.ref = "koin" }
 
 kotlinx-coroutines-core = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-core", version = "1.8.1" }
+kotlin-stdlib = { group = "org.jetbrains.kotlin", name = "kotlin-stdlib", version.ref = "kotlin" }
 
 protoc = { group = "com.google.protobuf", name = "protoc", version = "3.25.3" }
 protoc-gen-grpc-java = { group = "io.grpc", name = "protoc-gen-grpc-java", version = "1.62.2" }
