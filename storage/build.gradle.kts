@@ -9,7 +9,7 @@ kotlin {
 }
 
 android {
-    namespace = "com.shevelev.visualgrocerylist.database"
+    namespace = "com.shevelev.visualgrocerylist.storage"
     compileSdk = libs.versions.compileSdk.get().toInt()
 
     defaultConfig {

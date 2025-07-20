@@ -1,6 +1,6 @@
-package com.shevelev.visualgrocerylist.database.repository
+package com.shevelev.visualgrocerylist.storage.database.repository
 
-import com.shevelev.visualgrocerylist.database.entities.GroceryItem
+import com.shevelev.visualgrocerylist.storage.database.entities.GroceryItem
 
 internal class DebugDatabaseRepositoryImpl: DatabaseRepository {
     val source = listOf(

@@ -9,7 +9,7 @@ import com.shevelev.visualgrocerylist.com.shevelev.visualgrocerylist.features.ad
 import com.shevelev.visualgrocerylist.com.shevelev.visualgrocerylist.features.additem.dto.GridItem.Internet
 import com.shevelev.visualgrocerylist.com.shevelev.visualgrocerylist.features.additem.dto.ScreenEvent
 import com.shevelev.visualgrocerylist.com.shevelev.visualgrocerylist.features.additem.dto.ScreenState
-import com.shevelev.visualgrocerylist.database.repository.DatabaseRepository
+import com.shevelev.visualgrocerylist.storage.database.repository.DatabaseRepository
 import com.shevelev.visualgrocerylist.network.repository.SearchRepository
 import kotlin.String
 import kotlin.time.Duration.Companion.milliseconds

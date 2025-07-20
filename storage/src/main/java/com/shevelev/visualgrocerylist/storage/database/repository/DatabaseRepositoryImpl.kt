@@ -1,9 +1,9 @@
-package com.shevelev.visualgrocerylist.database.repository
+package com.shevelev.visualgrocerylist.storage.database.repository
 
 import android.content.Context
 import androidx.room.Room
-import com.shevelev.visualgrocerylist.database.database.VisualGroceryListDatabase
-import com.shevelev.visualgrocerylist.database.entities.GroceryItem
+import com.shevelev.visualgrocerylist.storage.database.database.VisualGroceryListDatabase
+import com.shevelev.visualgrocerylist.storage.database.entities.GroceryItem
 
 internal class DatabaseRepositoryImpl(
     private val appContext: Context,

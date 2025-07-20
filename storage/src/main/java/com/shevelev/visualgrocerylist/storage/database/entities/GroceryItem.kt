@@ -1,4 +1,4 @@
-package com.shevelev.visualgrocerylist.database.entities
+package com.shevelev.visualgrocerylist.storage.database.entities
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity
