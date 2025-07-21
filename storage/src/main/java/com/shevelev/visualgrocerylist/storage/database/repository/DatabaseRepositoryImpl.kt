@@ -37,8 +37,21 @@ internal class DatabaseRepositoryImpl(
             groceryItemId = groceryItemDbId,
             checked = false,
             note = null,
-            order = minSortingOrder?.let { it + 1} ?: 0,
+            order = minSortingOrder?.let { it - 1} ?: 0,
         )
         return db.groceryListItem.create(itemToAdd)
+    }
+
+    override suspend fun getGroceryListItemByGroceryItemId(
+        groceryItemDbId: Long,
+    ): GroceryListItem? =
+        db.groceryListItem.readByGroceryItemId(groceryItemDbId).firstOrNull()
+
+    override suspend fun moveGroceryListItemToTop(item: GroceryListItem) {
+        val newSoringOrder = db.groceryListItem.readMinOrder()?.let { it - 1} ?: 0
+
+        val itemToUpdate = item.copy(order = newSoringOrder)
+
+        db.groceryListItem.update(itemToUpdate)
     }
 }

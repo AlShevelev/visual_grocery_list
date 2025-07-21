@@ -104,6 +104,17 @@ internal class AddItemScreenViewModel(
     }
 
     fun onDbItemClick(item: GroceryItem) {
+        viewModelScope.launch {
+            val listItem = databaseRepository.getGroceryListItemByGroceryItemId(item.id)
+
+            if (listItem != null) {
+                databaseRepository.moveGroceryListItemToTop(listItem.copy(checked = false))
+            } else {
+                databaseRepository.addGroceryListItemToTop(item.id)
+            }
+
+            _screenEvent.emit(ScreenEvent.Close)
+        }
     }
 
     private suspend fun setLoading(loading: Boolean) {
