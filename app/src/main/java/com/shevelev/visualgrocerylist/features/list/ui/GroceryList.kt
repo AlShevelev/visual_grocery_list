@@ -1,18 +1,29 @@
 package com.shevelev.visualgrocerylist.com.shevelev.visualgrocerylist.features.list.ui
 
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.material3.Checkbox
+import androidx.compose.material3.CheckboxDefaults
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.shevelev.visualgrocerylist.R
 import com.shevelev.visualgrocerylist.com.shevelev.visualgrocerylist.features.list.dto.GridItem
@@ -118,14 +129,74 @@ private fun ItemTile(
     onClick: (GridItem) -> Unit,
     modifier: Modifier = Modifier,
 ) {
+    val foregroundColor = MaterialTheme.colorScheme.onPrimary
+    val backgroundColor = MaterialTheme.colorScheme.inverseSurface.copy(alpha = 0.25f)
+
     return GridTile(
         modifier = modifier,
         onClick = { onClick(item) }
     ) {
-        AsyncImageFile(
-            image = item.imageFile,
+        Box(
             modifier = Modifier.fillMaxSize(),
-            onError = { Timber.e(it) },
-        )
+        ) {
+            AsyncImageFile(
+                image = item.imageFile,
+                modifier = Modifier.fillMaxSize(),
+                onError = { Timber.e(it) },
+            )
+
+            Column(
+                modifier = Modifier.fillMaxSize(),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.SpaceBetween,
+            ) {
+                Text(
+                    text = item.title,
+                    color = foregroundColor,
+                    style = MaterialTheme.typography.titleMedium,
+                    maxLines = 2,
+                    overflow = TextOverflow.Ellipsis,
+                    modifier = Modifier
+                        .background(
+                            color = backgroundColor,
+                        )
+                )
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .background(
+                            color = MaterialTheme.colorScheme.inverseSurface.copy(alpha = 0.25f),
+                        )
+                ) {
+                    Checkbox(
+                        checked = item.checked,
+                        onCheckedChange = { },
+                        colors = CheckboxDefaults.colors().copy(
+                            uncheckedBorderColor = foregroundColor,
+                        )
+                    )
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                    ) {
+                        IconButton(onClick = { }) {
+                            Icon(
+                                painter = painterResource(R.drawable.ic_delete_24),
+                                contentDescription = "",
+                                tint = foregroundColor,
+                            )
+                        }
+                        IconButton(onClick = { }) {
+                            Icon(
+                                painter = painterResource(R.drawable.ic_add_note_24),
+                                contentDescription = "",
+                                tint = foregroundColor,
+                            )
+                        }
+                    }
+                }
+            }
+        }
     }
 }

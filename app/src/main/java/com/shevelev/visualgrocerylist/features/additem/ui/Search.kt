@@ -249,7 +249,7 @@ private fun SearchTheInternetTile(
             modifier = Modifier.fillMaxSize()
         ) {
             Image(
-                painter = painterResource(id = R.drawable.outline_public_24),
+                painter = painterResource(id = R.drawable.ic_internet_24),
                 contentDescription = null,
                 modifier = Modifier.scale(1f).size(40.dp)
             )
