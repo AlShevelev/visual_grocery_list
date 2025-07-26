@@ -5,6 +5,7 @@ import androidx.room.Room
 import com.shevelev.visualgrocerylist.storage.database.database.VisualGroceryListDatabase
 import com.shevelev.visualgrocerylist.storage.database.entities.GroceryItem
 import com.shevelev.visualgrocerylist.storage.database.entities.GroceryListItem
+import com.shevelev.visualgrocerylist.storage.database.entities.GroceryListItemCombined
 
 internal class DatabaseRepositoryImpl(
     private val appContext: Context,
@@ -46,6 +47,9 @@ internal class DatabaseRepositoryImpl(
         groceryItemDbId: Long,
     ): GroceryListItem? =
         db.groceryListItem.readByGroceryItemId(groceryItemDbId).firstOrNull()
+
+    override suspend fun getAllGroceryListItemCombined(): List<GroceryListItemCombined> =
+        db.groceryListItem.readAllCombined()
 
     override suspend fun moveGroceryListItemToTop(item: GroceryListItem) {
         val newSoringOrder = db.groceryListItem.readMinOrder()?.let { it - 1} ?: 0

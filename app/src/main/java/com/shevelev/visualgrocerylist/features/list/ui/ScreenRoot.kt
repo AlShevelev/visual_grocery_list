@@ -2,6 +2,7 @@ package com.shevelev.visualgrocerylist.features.list.ui
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
@@ -40,18 +41,20 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.shevelev.visualgrocerylist.R
+import com.shevelev.visualgrocerylist.com.shevelev.visualgrocerylist.features.list.ui.GroceryListPlaceholder
+import com.shevelev.visualgrocerylist.com.shevelev.visualgrocerylist.features.list.viewmodel.ListViewModel
 import com.shevelev.visualgrocerylist.shared.ui.navigation.Route
 import com.shevelev.visualgrocerylist.shared.ui.theme.LocalDimensions
 import com.shevelev.visualgrocerylist.shared.ui.theme.LocalUiConstants
-import com.shevelev.visualgrocerylist.shared.ui.theme.VisualGroceryListTheme
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import org.koin.androidx.compose.koinViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ScreenRoot(
+internal fun ScreenRoot(
     backStack: MutableList<Route>,
 ) {
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
@@ -179,26 +182,15 @@ fun DrawerContent() {
     }
 }
 
-@Preview(showBackground = true)
 @Composable
-private fun DrawerContentPreview() {
-    VisualGroceryListTheme {
-        DrawerContent()
-    }
-}
+internal fun Content(
+    modifier: Modifier = Modifier,
+    viewModel: ListViewModel = koinViewModel(),
+) {
+    val screenState by viewModel.screenState.collectAsStateWithLifecycle()
 
-@Composable
-fun Content(modifier: Modifier = Modifier) {
-    Text(
-        text = "Hello",
-        modifier = modifier
+    GroceryListPlaceholder(
+        modifier = modifier.fillMaxSize(),
+        state = screenState,
     )
-}
-
-@Preview(showBackground = true)
-@Composable
-private fun ContentPreview() {
-    VisualGroceryListTheme {
-        Content()
-    }
 }

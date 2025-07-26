@@ -1,7 +1,7 @@
-package com.shevelev.visualgrocerylist.di
+package com.shevelev.visualgrocerylist.storage.di
 
-import com.shevelev.visualgrocerylist.file.FileRepository
-import com.shevelev.visualgrocerylist.file.FileRepositoryImpl
+import com.shevelev.visualgrocerylist.storage.file.FileRepository
+import com.shevelev.visualgrocerylist.storage.file.FileRepositoryImpl
 import com.shevelev.visualgrocerylist.storage.database.repository.DatabaseRepository
 import com.shevelev.visualgrocerylist.storage.database.repository.DatabaseRepositoryImpl
 import org.koin.core.module.dsl.bind

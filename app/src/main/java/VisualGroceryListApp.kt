@@ -2,7 +2,7 @@ package com.shevelev.visualgrocerylist
 
 import android.app.Application
 import com.shevelev.visualgrocerylist.com.shevelev.visualgrocerylist.di.appModule
-import com.shevelev.visualgrocerylist.di.storageModule
+import com.shevelev.visualgrocerylist.storage.di.storageModule
 import com.shevelev.visualgrocerylist.network.di.networkModule
 import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidLogger

@@ -2,6 +2,7 @@ package com.shevelev.visualgrocerylist.storage.database.repository
 
 import com.shevelev.visualgrocerylist.storage.database.entities.GroceryItem
 import com.shevelev.visualgrocerylist.storage.database.entities.GroceryListItem
+import com.shevelev.visualgrocerylist.storage.database.entities.GroceryListItemCombined
 
 internal class DebugDatabaseRepositoryImpl: DatabaseRepository {
     val source = listOf(
@@ -41,6 +42,10 @@ internal class DebugDatabaseRepositoryImpl: DatabaseRepository {
     }
 
     override suspend fun getGroceryListItemByGroceryItemId(groceryItemDbId: Long): GroceryListItem? {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun getAllGroceryListItemCombined(): List<GroceryListItemCombined> {
         TODO("Not yet implemented")
     }
 

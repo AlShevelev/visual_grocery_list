@@ -1,7 +1,8 @@
-package com.shevelev.visualgrocerylist.file
+package com.shevelev.visualgrocerylist.storage.file
 
 import android.content.Context
 import android.net.Uri
+import java.io.File
 import java.net.URL
 import java.util.UUID
 import kotlin.io.readBytes
@@ -29,4 +30,6 @@ internal class FileRepositoryImpl(
         }.onFailure {
             Timber.e(it)
         }
+
+    override fun getFileByName(fileName: String): File = File(context.filesDir, fileName)
 }

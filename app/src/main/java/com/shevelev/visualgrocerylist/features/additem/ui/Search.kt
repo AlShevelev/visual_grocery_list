@@ -42,13 +42,12 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
-import coil3.compose.AsyncImage
 import com.shevelev.visualgrocerylist.R
 import com.shevelev.visualgrocerylist.com.shevelev.visualgrocerylist.features.additem.dto.GridItem
 import com.shevelev.visualgrocerylist.com.shevelev.visualgrocerylist.features.additem.dto.ScreenState
+import com.shevelev.visualgrocerylist.com.shevelev.visualgrocerylist.shared.ui.components.AsyncImageFile
+import com.shevelev.visualgrocerylist.com.shevelev.visualgrocerylist.shared.ui.components.AsyncImageUrl
 import com.shevelev.visualgrocerylist.com.shevelev.visualgrocerylist.shared.ui.components.GridTile
-import com.shevelev.visualgrocerylist.storage.database.entities.GroceryItem
-import com.shevelev.visualgrocerylist.network.dto.ImageDto
 import com.shevelev.visualgrocerylist.shared.ui.theme.LocalDimensions
 import timber.log.Timber
 
@@ -59,8 +58,8 @@ internal fun SearchContent(
     screenState: ScreenState,
     onSearchQueryChange: (String) -> Unit,
     onSearchTheInternetClick: () -> Unit,
-    onDbItemClick: (GroceryItem) -> Unit,
-    onInternetItemClick: (ImageDto) -> Unit,
+    onDbItemClick: (GridItem.Db) -> Unit,
+    onInternetItemClick: (GridItem.Internet) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val dimensions = LocalDimensions.current
@@ -91,7 +90,7 @@ internal fun SearchContent(
                     itemContent = { index ->
                         when (val item = screenState.items[index]) {
                             is GridItem.Db -> DbItemTile(
-                                item = item.item,
+                                item = item,
                                 enabled = !screenState.loading,
                                 onClick = onDbItemClick,
                             )
@@ -100,7 +99,7 @@ internal fun SearchContent(
                                 enabled = !screenState.loading,
                             )
                             is GridItem.Internet -> InternetItemTile(
-                                item.item,
+                                item = item,
                                 enabled = !screenState.loading,
                                 onClick = onInternetItemClick,
                             )
@@ -206,9 +205,9 @@ private fun EmptySearchResult(
 
 @Composable
 private fun DbItemTile(
-    item: GroceryItem,
+    item: GridItem.Db,
     enabled: Boolean,
-    onClick: (GroceryItem) -> Unit,
+    onClick: (GridItem.Db) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     return GridTile(
@@ -216,10 +215,10 @@ private fun DbItemTile(
         enabled = enabled,
         onClick = { onClick(item) }
     ) {
-        Image(
-            painter = painterResource(id = R.drawable.ic_launcher_background),
-            contentDescription = null,
-            modifier = Modifier.fillMaxSize()
+        AsyncImageFile(
+            image = item.imageFile,
+            modifier = Modifier.fillMaxSize(),
+            onError = { Timber.e(it) },
         )
     }
 }
@@ -265,9 +264,9 @@ private fun SearchTheInternetTile(
 
 @Composable
 private fun InternetItemTile(
-    item: ImageDto,
+    item: GridItem.Internet,
     enabled: Boolean,
-    onClick: (ImageDto) -> Unit,
+    onClick: (GridItem.Internet) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     return GridTile(
@@ -281,11 +280,10 @@ private fun InternetItemTile(
             modifier = Modifier.fillMaxSize(),
             contentAlignment = Alignment.Center,
         ) {
-            AsyncImage(
-                model = item.thumbnailLink.toString(),
-                contentDescription = null,
+            AsyncImageUrl(
+                image = item.imageLink,
                 modifier = Modifier.fillMaxSize(),
-                onError = { Timber.e(it.result.throwable) },
+                onError = { Timber.e(it) },
                 onSuccess = { isLoading = false }
             )
 

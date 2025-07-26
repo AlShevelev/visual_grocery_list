@@ -6,14 +6,11 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.shevelev.visualgrocerylist.com.shevelev.visualgrocerylist.features.additem.dto.GridItem
-import com.shevelev.visualgrocerylist.com.shevelev.visualgrocerylist.features.additem.dto.GridItem.Internet
 import com.shevelev.visualgrocerylist.com.shevelev.visualgrocerylist.features.additem.dto.ScreenEvent
 import com.shevelev.visualgrocerylist.com.shevelev.visualgrocerylist.features.additem.dto.ScreenState
-import com.shevelev.visualgrocerylist.file.FileRepository
-import com.shevelev.visualgrocerylist.network.dto.ImageDto
+import com.shevelev.visualgrocerylist.storage.file.FileRepository
 import com.shevelev.visualgrocerylist.storage.database.repository.DatabaseRepository
 import com.shevelev.visualgrocerylist.network.repository.SearchRepository
-import com.shevelev.visualgrocerylist.storage.database.entities.GroceryItem
 import kotlin.String
 import kotlin.time.Duration.Companion.milliseconds
 import kotlinx.coroutines.Job
@@ -56,7 +53,13 @@ internal class AddItemScreenViewModel(
 
                 dbItems = databaseRepository
                     .findGroceryItemByKeyWord(searchQuery)
-                    .map { GridItem.Db(it) }
+                    .map {
+                        GridItem.Db(
+                            id = it.id.toString(),
+                            imageFile = fileRepository.getFileByName(it.imageFile),
+                            dbId = it.id,
+                        )
+                    }
 
                 dbItems + GridItem.SearchInternet
             }
@@ -76,7 +79,12 @@ internal class AddItemScreenViewModel(
             searchResult.onSuccess { result ->
                 _screenState.emit(
                     ScreenState(
-                        items = dbItems + result.images.map { Internet(it) },
+                        items = dbItems + result.images.map {
+                            GridItem.Internet(
+                                id = it.id,
+                                imageLink = it.thumbnailLink,
+                            )
+                        },
                         loading = false,
                     )
                 )
@@ -87,11 +95,11 @@ internal class AddItemScreenViewModel(
         }
     }
 
-    fun onInternetItemClick(item: ImageDto) {
+    fun onInternetItemClick(item: GridItem.Internet) {
         viewModelScope.launch {
             setLoading(true)
 
-            fileRepository.download(item.thumbnailLink).onSuccess { fileName ->
+            fileRepository.download(item.imageLink).onSuccess { fileName ->
                 val itemDbId = databaseRepository.addGroceryItem(searchQuery, fileName)
                 databaseRepository.addGroceryListItemToTop(groceryItemDbId = itemDbId)
 
@@ -103,14 +111,14 @@ internal class AddItemScreenViewModel(
         }
     }
 
-    fun onDbItemClick(item: GroceryItem) {
+    fun onDbItemClick(item: GridItem.Db) {
         viewModelScope.launch {
-            val listItem = databaseRepository.getGroceryListItemByGroceryItemId(item.id)
+            val listItem = databaseRepository.getGroceryListItemByGroceryItemId(item.dbId)
 
             if (listItem != null) {
                 databaseRepository.moveGroceryListItemToTop(listItem.copy(checked = false))
             } else {
-                databaseRepository.addGroceryListItemToTop(item.id)
+                databaseRepository.addGroceryListItemToTop(item.dbId)
             }
 
             _screenEvent.emit(ScreenEvent.Close)

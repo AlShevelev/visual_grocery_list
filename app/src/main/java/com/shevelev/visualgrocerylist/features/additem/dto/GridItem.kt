@@ -1,16 +1,19 @@
 package com.shevelev.visualgrocerylist.com.shevelev.visualgrocerylist.features.additem.dto
 
-import com.shevelev.visualgrocerylist.storage.database.entities.GroceryItem
-import com.shevelev.visualgrocerylist.network.dto.ImageDto
+import android.net.Uri
+import java.io.File
 
 internal sealed class GridItem(val id: String) {
-    data class Db(
-        val item: GroceryItem,
-    ): GridItem(item.id.toString())
+    class Db(
+        id: String,
+        val dbId: Long,
+        val imageFile: File,
+    ): GridItem(id)
 
-    data class Internet(
-        val item: ImageDto,
-    ): GridItem(item.id)
+    class Internet(
+        id: String,
+        val imageLink: Uri,
+    ): GridItem(id)
 
     data object SearchInternet: GridItem(Long.MIN_VALUE.toString())
 }
