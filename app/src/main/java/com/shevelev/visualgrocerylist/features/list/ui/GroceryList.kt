@@ -121,6 +121,7 @@ private fun GroceryList(
                 ItemTile(
                     item = items[index],
                     onCheckedChange = userActionsHandler::onCheckedChange,
+                    onDeleteClick = userActionsHandler::onDeleteItemClick,
                 )
             }
         )
@@ -131,7 +132,8 @@ private fun GroceryList(
 private fun ItemTile(
     item: GridItem,
     modifier: Modifier = Modifier,
-    onCheckedChange: (Long) -> Unit
+    onCheckedChange: (Long) -> Unit,
+    onDeleteClick: (Long) -> Unit,
 ) {
     val foregroundColor = MaterialTheme.colorScheme.onPrimary
     val textBackgroundColor = MaterialTheme.colorScheme.inverseSurface.copy(alpha = 0.5f)
@@ -186,7 +188,7 @@ private fun ItemTile(
                     Row(
                         verticalAlignment = Alignment.CenterVertically,
                     ) {
-                        IconButton(onClick = { }) {
+                        IconButton(onClick = { onDeleteClick(item.dbId) }) {
                             Icon(
                                 painter = painterResource(R.drawable.ic_delete_24),
                                 contentDescription = "",

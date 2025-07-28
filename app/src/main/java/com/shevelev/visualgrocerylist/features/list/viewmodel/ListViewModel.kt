@@ -39,10 +39,7 @@ internal class ListViewModel(
     override fun onCheckedChange(dbId: Long) {
         viewModelScope.launch {
             withContext(Dispatchers.Default) {
-                val dbItemIndex = dbItems.indexOfFirst { it.listItem.id == dbId }
-                if (dbItemIndex == -1) {
-                    throw IllegalArgumentException("Item with dbId [$dbId] is not found")
-                }
+                val dbItemIndex = getItemIndexByDbId(dbId)
 
                 val dbItem = dbItems[dbItemIndex]
                 val listItem = dbItem.listItem.copy(checked = !dbItem.listItem.checked)
@@ -55,6 +52,18 @@ internal class ListViewModel(
         }
     }
 
+    override fun onDeleteItemClick(dbId: Long) {
+        viewModelScope.launch {
+            val dbItemIndex = getItemIndexByDbId(dbId)
+
+            val dbItem = dbItems[dbItemIndex]
+            databaseRepository.removeGroceryListItem(dbItem.listItem)
+            dbItems.removeAt(dbItemIndex)
+
+            _screenState.emit(ScreenState.Data(dbItems.map { it.mapToDto() }))
+        }
+    }
+
     private fun GroceryListItemCombined.mapToDto() = GridItem(
         id = listItem.id.toString(),
         dbId = listItem.id,
@@ -62,4 +71,13 @@ internal class ListViewModel(
         title = groceryItem.keyWord.capitalize(Locale.getDefault()),
         checked = listItem.checked,
     )
+
+    private fun getItemIndexByDbId(dbId: Long): Int {
+        val dbItemIndex = dbItems.indexOfFirst { it.listItem.id == dbId }
+        if (dbItemIndex == -1) {
+            throw IllegalArgumentException("Item with dbId [$dbId] is not found")
+        }
+
+        return dbItemIndex
+    }
 }

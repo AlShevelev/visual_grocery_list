@@ -2,4 +2,6 @@ package com.shevelev.visualgrocerylist.com.shevelev.visualgrocerylist.features.l
 
 internal interface UserActionsHandler {
     fun onCheckedChange(dbId: Long)
+
+    fun onDeleteItemClick(dbId: Long)
 }

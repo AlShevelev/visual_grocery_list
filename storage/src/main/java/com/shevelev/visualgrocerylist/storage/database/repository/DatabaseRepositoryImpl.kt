@@ -64,4 +64,8 @@ internal class DatabaseRepositoryImpl(
     override suspend fun updateGroceryListItem(item: GroceryListItem) {
         db.groceryListItem.update(item)
     }
+
+    override suspend fun removeGroceryListItem(item: GroceryListItem) {
+        db.groceryListItem.delete(item)
+    }
 }

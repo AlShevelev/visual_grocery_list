@@ -56,4 +56,8 @@ internal class DebugDatabaseRepositoryImpl: DatabaseRepository {
     override suspend fun updateGroceryListItem(item: GroceryListItem) {
         TODO("Not yet implemented")
     }
+
+    override suspend fun removeGroceryListItem(item: GroceryListItem) {
+        TODO("Not yet implemented")
+    }
 }
