@@ -16,4 +16,6 @@ interface DatabaseRepository {
     suspend fun getAllGroceryListItemCombined(): List<GroceryListItemCombined>
 
     suspend fun moveGroceryListItemToTop(item: GroceryListItem)
+
+    suspend fun updateGroceryListItem(item: GroceryListItem)
 }

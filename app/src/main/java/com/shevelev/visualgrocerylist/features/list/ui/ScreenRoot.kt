@@ -192,5 +192,6 @@ internal fun Content(
     GroceryListPlaceholder(
         modifier = modifier.fillMaxSize(),
         state = screenState,
+        userActionsHandler = viewModel,
     )
 }

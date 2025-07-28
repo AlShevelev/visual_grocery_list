@@ -41,12 +41,14 @@ internal class DatabaseRepositoryImpl(
             order = minSortingOrder?.let { it - 1} ?: 0,
         )
         return db.groceryListItem.create(itemToAdd)
+
     }
 
     override suspend fun getGroceryListItemByGroceryItemId(
         groceryItemDbId: Long,
     ): GroceryListItem? =
         db.groceryListItem.readByGroceryItemId(groceryItemDbId).firstOrNull()
+
 
     override suspend fun getAllGroceryListItemCombined(): List<GroceryListItemCombined> =
         db.groceryListItem.readAllCombined()
@@ -57,5 +59,9 @@ internal class DatabaseRepositoryImpl(
         val itemToUpdate = item.copy(order = newSoringOrder)
 
         db.groceryListItem.update(itemToUpdate)
+    }
+
+    override suspend fun updateGroceryListItem(item: GroceryListItem) {
+        db.groceryListItem.update(item)
     }
 }

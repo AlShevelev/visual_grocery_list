@@ -1,5 +1,7 @@
 package com.shevelev.visualgrocerylist.com.shevelev.visualgrocerylist.shared.ui.components
 
+import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.graphics.ColorMatrix
 import android.net.Uri
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -28,8 +30,16 @@ fun AsyncImageUrl(
 fun AsyncImageFile(
     modifier: Modifier = Modifier,
     image: File,
+    grayscale: Boolean = false,
     onError: (Throwable) -> Unit = {},
 ) {
+    val colorFilter = if (grayscale) {
+        val saturationMatrix = ColorMatrix().apply { setToSaturation(0f) }
+        ColorFilter.colorMatrix(saturationMatrix)
+    } else {
+        null
+    }
+
     AsyncImage(
         model = ImageRequest.Builder(LocalContext.current)
             .data(image)
@@ -37,5 +47,6 @@ fun AsyncImageFile(
         contentDescription = null,
         modifier = modifier,
         onError = { onError(it.result.throwable) },
+        colorFilter = colorFilter,
     )
 }

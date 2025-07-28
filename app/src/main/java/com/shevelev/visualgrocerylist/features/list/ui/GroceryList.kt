@@ -28,6 +28,7 @@ import androidx.compose.ui.unit.dp
 import com.shevelev.visualgrocerylist.R
 import com.shevelev.visualgrocerylist.com.shevelev.visualgrocerylist.features.list.dto.GridItem
 import com.shevelev.visualgrocerylist.com.shevelev.visualgrocerylist.features.list.dto.ScreenState
+import com.shevelev.visualgrocerylist.com.shevelev.visualgrocerylist.features.list.viewmodel.UserActionsHandler
 import com.shevelev.visualgrocerylist.com.shevelev.visualgrocerylist.shared.ui.components.AsyncImageFile
 import com.shevelev.visualgrocerylist.com.shevelev.visualgrocerylist.shared.ui.components.GridTile
 import com.shevelev.visualgrocerylist.shared.ui.theme.LocalDimensions
@@ -37,6 +38,7 @@ import timber.log.Timber
 internal fun GroceryListPlaceholder(
     modifier: Modifier = Modifier,
     state: ScreenState,
+    userActionsHandler: UserActionsHandler
 ) {
     when (state) {
         is ScreenState.Loading -> LoadingStub(modifier = modifier)
@@ -47,6 +49,7 @@ internal fun GroceryListPlaceholder(
                 GroceryList(
                     items = state.items,
                     modifier = modifier,
+                    userActionsHandler = userActionsHandler,
                 )
             }
         }
@@ -101,6 +104,7 @@ private fun LoadingStub(
 private fun GroceryList(
     modifier: Modifier = Modifier,
     items: List<GridItem>,
+    userActionsHandler: UserActionsHandler,
 ) {
     val dimensions = LocalDimensions.current
 
@@ -116,7 +120,7 @@ private fun GroceryList(
             itemContent = { index ->
                 ItemTile(
                     item = items[index],
-                    onClick = {},
+                    onCheckedChange = userActionsHandler::onCheckedChange,
                 )
             }
         )
@@ -126,15 +130,15 @@ private fun GroceryList(
 @Composable
 private fun ItemTile(
     item: GridItem,
-    onClick: (GridItem) -> Unit,
     modifier: Modifier = Modifier,
+    onCheckedChange: (Long) -> Unit
 ) {
     val foregroundColor = MaterialTheme.colorScheme.onPrimary
-    val backgroundColor = MaterialTheme.colorScheme.inverseSurface.copy(alpha = 0.25f)
+    val textBackgroundColor = MaterialTheme.colorScheme.inverseSurface.copy(alpha = 0.5f)
+    val buttonsBackgroundColor = MaterialTheme.colorScheme.inverseSurface.copy(alpha = 0.25f)
 
     return GridTile(
         modifier = modifier,
-        onClick = { onClick(item) }
     ) {
         Box(
             modifier = Modifier.fillMaxSize(),
@@ -142,11 +146,13 @@ private fun ItemTile(
             AsyncImageFile(
                 image = item.imageFile,
                 modifier = Modifier.fillMaxSize(),
+                grayscale = item.checked,
                 onError = { Timber.e(it) },
             )
 
             Column(
                 modifier = Modifier.fillMaxSize(),
+
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.SpaceBetween,
             ) {
@@ -158,7 +164,7 @@ private fun ItemTile(
                     overflow = TextOverflow.Ellipsis,
                     modifier = Modifier
                         .background(
-                            color = backgroundColor,
+                            color = textBackgroundColor,
                         )
                 )
                 Row(
@@ -167,12 +173,12 @@ private fun ItemTile(
                     modifier = Modifier
                         .fillMaxWidth()
                         .background(
-                            color = MaterialTheme.colorScheme.inverseSurface.copy(alpha = 0.25f),
+                            color = buttonsBackgroundColor,
                         )
                 ) {
                     Checkbox(
                         checked = item.checked,
-                        onCheckedChange = { },
+                        onCheckedChange = { onCheckedChange(item.dbId) },
                         colors = CheckboxDefaults.colors().copy(
                             uncheckedBorderColor = foregroundColor,
                         )
