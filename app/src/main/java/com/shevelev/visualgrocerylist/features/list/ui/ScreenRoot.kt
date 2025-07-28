@@ -1,5 +1,6 @@
 package com.shevelev.visualgrocerylist.features.list.ui
 
+import android.widget.Toast
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -29,11 +30,16 @@ import androidx.compose.material3.ModalDrawerSheet
 import androidx.compose.material3.ModalNavigationDrawer
 import androidx.compose.material3.NavigationDrawerItem
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarDuration
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.SnackbarResult
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -43,11 +49,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.shevelev.visualgrocerylist.R
+import com.shevelev.visualgrocerylist.com.shevelev.visualgrocerylist.features.list.dto.ScreenEvent
 import com.shevelev.visualgrocerylist.com.shevelev.visualgrocerylist.features.list.ui.GroceryListPlaceholder
 import com.shevelev.visualgrocerylist.com.shevelev.visualgrocerylist.features.list.viewmodel.ListViewModel
 import com.shevelev.visualgrocerylist.shared.ui.navigation.Route
 import com.shevelev.visualgrocerylist.shared.ui.theme.LocalDimensions
 import com.shevelev.visualgrocerylist.shared.ui.theme.LocalUiConstants
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
@@ -59,15 +67,23 @@ internal fun ScreenRoot(
 ) {
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
 
+    val snackbarHostState = remember { SnackbarHostState() }
+
     ModalNavigationDrawer(
         drawerContent = { DrawerContent() },
         drawerState = drawerState
     ) {
         Scaffold(
             topBar = { AppBar(drawerState) },
-            floatingActionButton = { MainButton(backStack) }
+            floatingActionButton = { MainButton(backStack) },
+            snackbarHost = {
+                SnackbarHost(hostState = snackbarHostState)
+            }
         ) { innerPadding ->
-            Content(modifier = Modifier.padding(innerPadding))
+            Content(
+                modifier = Modifier.padding(innerPadding),
+                snackbarHostState = snackbarHostState,
+            )
         }
     }
 }
@@ -186,12 +202,46 @@ fun DrawerContent() {
 internal fun Content(
     modifier: Modifier = Modifier,
     viewModel: ListViewModel = koinViewModel(),
+    snackbarHostState: SnackbarHostState,
 ) {
+    val context = LocalContext.current
+
     val screenState by viewModel.screenState.collectAsStateWithLifecycle()
+
+    var snackbarJob = remember<Job?> { null }
 
     GroceryListPlaceholder(
         modifier = modifier.fillMaxSize(),
         state = screenState,
+
         userActionsHandler = viewModel,
+
     )
+
+
+
+    LaunchedEffect(Unit) {
+        viewModel.screenEvent.collect {
+            when (it) {
+                is ScreenEvent.ShowDeleteNotification -> {
+                    snackbarJob?.cancel()   // to close an active snackbar and show a new one
+
+                    snackbarJob = launch {
+                        val result = snackbarHostState.showSnackbar(
+                            message = context.getString(
+                                R.string.item_has_been_removed,
+                                it.itemName,
+                            ),
+                            actionLabel = context.getString(R.string.restore),
+                            duration = SnackbarDuration.Short,
+                        )
+
+                        if (result == SnackbarResult.ActionPerformed) {
+                            // call the view model here
+                        }
+                    }
+                }
+            }
+        }
+    }
 }

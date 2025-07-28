@@ -3,14 +3,18 @@ package com.shevelev.visualgrocerylist.com.shevelev.visualgrocerylist.features.l
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.shevelev.visualgrocerylist.com.shevelev.visualgrocerylist.features.list.dto.GridItem
+import com.shevelev.visualgrocerylist.com.shevelev.visualgrocerylist.features.list.dto.ScreenEvent
 import com.shevelev.visualgrocerylist.com.shevelev.visualgrocerylist.features.list.dto.ScreenState
 import com.shevelev.visualgrocerylist.storage.database.entities.GroceryListItemCombined
 import com.shevelev.visualgrocerylist.storage.file.FileRepository
 import com.shevelev.visualgrocerylist.storage.database.repository.DatabaseRepository
 import java.util.Locale
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -23,6 +27,9 @@ internal class ListViewModel(
 
     private val _screenState = MutableStateFlow<ScreenState>(ScreenState.Loading)
     val screenState: StateFlow<ScreenState> = _screenState.asStateFlow()
+
+    private val _screenEvent = MutableSharedFlow< ScreenEvent>()
+    val screenEvent: SharedFlow<ScreenEvent> = _screenEvent.asSharedFlow()
 
     init {
         viewModelScope.launch {
@@ -61,6 +68,10 @@ internal class ListViewModel(
             dbItems.removeAt(dbItemIndex)
 
             _screenState.emit(ScreenState.Data(dbItems.map { it.mapToDto() }))
+
+            _screenEvent.emit(
+                ScreenEvent.ShowDeleteNotification(dbItem.mapToDto().title)
+            )
         }
     }
 
