@@ -218,13 +218,11 @@ internal fun Content(
 
     )
 
-
-
     LaunchedEffect(Unit) {
         viewModel.screenEvent.collect {
             when (it) {
                 is ScreenEvent.ShowDeleteNotification -> {
-                    snackbarJob?.cancel()   // to close an active snackbar and show a new one
+                    snackbarJob?.cancel()   // to close the active snackbar and show a new one
 
                     snackbarJob = launch {
                         val result = snackbarHostState.showSnackbar(
@@ -237,7 +235,7 @@ internal fun Content(
                         )
 
                         if (result == SnackbarResult.ActionPerformed) {
-                            // call the view model here
+                            viewModel.onRestoreDeletedItemClick(it.itemDbId)
                         }
                     }
                 }

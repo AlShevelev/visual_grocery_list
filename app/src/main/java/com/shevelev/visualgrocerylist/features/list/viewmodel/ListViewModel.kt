@@ -3,6 +3,7 @@ package com.shevelev.visualgrocerylist.com.shevelev.visualgrocerylist.features.l
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.shevelev.visualgrocerylist.com.shevelev.visualgrocerylist.features.list.dto.GridItem
+import com.shevelev.visualgrocerylist.com.shevelev.visualgrocerylist.features.list.dto.LastDeletedItem
 import com.shevelev.visualgrocerylist.com.shevelev.visualgrocerylist.features.list.dto.ScreenEvent
 import com.shevelev.visualgrocerylist.com.shevelev.visualgrocerylist.features.list.dto.ScreenState
 import com.shevelev.visualgrocerylist.storage.database.entities.GroceryListItemCombined
@@ -31,11 +32,13 @@ internal class ListViewModel(
     private val _screenEvent = MutableSharedFlow< ScreenEvent>()
     val screenEvent: SharedFlow<ScreenEvent> = _screenEvent.asSharedFlow()
 
+    private var lastDeletedItem: LastDeletedItem? = null
+
     init {
         viewModelScope.launch {
             val sourceDbItems = databaseRepository.getAllGroceryListItemCombined()
 
-            val allItems = sourceDbItems.map { it.mapToDto() }
+            val allItems = sourceDbItems.map { it.mapToView() }
 
             dbItems.addAll(sourceDbItems)
 
@@ -54,7 +57,7 @@ internal class ListViewModel(
 
                 databaseRepository.updateGroceryListItem(listItem)
 
-                _screenState.emit(ScreenState.Data(dbItems.map { it.mapToDto() }))
+                _screenState.emit(ScreenState.Data(dbItems.map { it.mapToView() }))
             }
         }
     }
@@ -67,15 +70,31 @@ internal class ListViewModel(
             databaseRepository.removeGroceryListItem(dbItem.listItem)
             dbItems.removeAt(dbItemIndex)
 
-            _screenState.emit(ScreenState.Data(dbItems.map { it.mapToDto() }))
+            lastDeletedItem = LastDeletedItem(dbItem, dbItemIndex)
 
+            _screenState.emit(ScreenState.Data(dbItems.map { it.mapToView() }))
+
+            val dbItemView = dbItem.mapToView()
             _screenEvent.emit(
-                ScreenEvent.ShowDeleteNotification(dbItem.mapToDto().title)
+                ScreenEvent.ShowDeleteNotification(dbItemView.title, dbItemView.dbId)
             )
         }
     }
 
-    private fun GroceryListItemCombined.mapToDto() = GridItem(
+    override fun onRestoreDeletedItemClick(dbId: Long) {
+        viewModelScope.launch {
+            lastDeletedItem?.let {
+                databaseRepository.addGroceryListItem(it.item.listItem)
+
+                dbItems.add(it.index, it.item)
+
+
+                _screenState.emit(ScreenState.Data(dbItems.map { it.mapToView() }))
+            }
+        }
+    }
+
+    private fun GroceryListItemCombined.mapToView() = GridItem(
         id = listItem.id.toString(),
         dbId = listItem.id,
         imageFile = fileRepository.getFileByName(groceryItem.imageFile),

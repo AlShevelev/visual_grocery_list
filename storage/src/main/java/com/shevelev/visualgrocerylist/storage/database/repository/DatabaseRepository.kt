@@ -20,4 +20,6 @@ interface DatabaseRepository {
     suspend fun updateGroceryListItem(item: GroceryListItem)
 
     suspend fun removeGroceryListItem(item: GroceryListItem)
+
+    suspend fun addGroceryListItem(item: GroceryListItem)
 }

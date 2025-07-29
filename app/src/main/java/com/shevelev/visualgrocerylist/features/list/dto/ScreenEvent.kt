@@ -3,5 +3,6 @@ package com.shevelev.visualgrocerylist.com.shevelev.visualgrocerylist.features.l
 internal sealed interface ScreenEvent {
     data class ShowDeleteNotification(
         val itemName: String,
+        val itemDbId: Long,
     ): ScreenEvent
 }

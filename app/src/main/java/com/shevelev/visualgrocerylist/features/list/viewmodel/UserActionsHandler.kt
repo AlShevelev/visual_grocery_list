@@ -4,4 +4,6 @@ internal interface UserActionsHandler {
     fun onCheckedChange(dbId: Long)
 
     fun onDeleteItemClick(dbId: Long)
+
+    fun onRestoreDeletedItemClick(dbId: Long)
 }
