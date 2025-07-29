@@ -12,7 +12,7 @@ internal interface GroceryItemDao {
     @Insert
     suspend fun create(item: GroceryItem): Long
 
-    @Query("SELECT * FROM grocery_item WHERE key_word LIKE :keyWord")
+    @Query("SELECT * FROM grocery_item WHERE key_word LIKE '%' || :keyWord || '%'")
     suspend fun readByKeyWord(keyWord: String): List<GroceryItem>
 
     @Update
