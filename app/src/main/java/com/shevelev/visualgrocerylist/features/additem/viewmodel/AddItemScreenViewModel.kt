@@ -8,6 +8,8 @@ import androidx.lifecycle.viewModelScope
 import com.shevelev.visualgrocerylist.com.shevelev.visualgrocerylist.features.additem.dto.GridItem
 import com.shevelev.visualgrocerylist.com.shevelev.visualgrocerylist.features.additem.dto.ScreenEvent
 import com.shevelev.visualgrocerylist.com.shevelev.visualgrocerylist.features.additem.dto.ScreenState
+import com.shevelev.visualgrocerylist.com.shevelev.visualgrocerylist.shared.architecture.Flags
+import com.shevelev.visualgrocerylist.com.shevelev.visualgrocerylist.shared.architecture.FlagsStorage
 import com.shevelev.visualgrocerylist.storage.file.FileRepository
 import com.shevelev.visualgrocerylist.storage.database.repository.DatabaseRepository
 import com.shevelev.visualgrocerylist.network.repository.SearchRepository
@@ -27,6 +29,7 @@ internal class AddItemScreenViewModel(
     private val databaseRepository: DatabaseRepository,
     private val searchRepository: SearchRepository,
     private val fileRepository: FileRepository,
+    private val flags: FlagsStorage,
 ) : ViewModel() {
     var searchQuery by mutableStateOf("")
         private set
@@ -103,7 +106,7 @@ internal class AddItemScreenViewModel(
                 val itemDbId = databaseRepository.addGroceryItem(searchQuery, fileName)
                 databaseRepository.addGroceryListItemToTop(groceryItemDbId = itemDbId)
 
-                _screenEvent.emit(ScreenEvent.Close)
+                closeScreen()
             }.onFailure {
                 _screenEvent.emit(ScreenEvent.Error)
                 setLoading(false)
@@ -121,7 +124,7 @@ internal class AddItemScreenViewModel(
                 databaseRepository.addGroceryListItemToTop(item.dbId)
             }
 
-            _screenEvent.emit(ScreenEvent.Close)
+            closeScreen()
         }
     }
 
@@ -129,6 +132,11 @@ internal class AddItemScreenViewModel(
         _screenState.emit(
             _screenState.value.copy(loading = loading)
         )
+    }
+
+    private suspend fun closeScreen() {
+        flags.setFlag(Flags.MUST_REFRESH_LIST)
+        _screenEvent.emit(ScreenEvent.Close)
     }
 
     companion object {

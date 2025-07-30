@@ -6,6 +6,8 @@ import com.shevelev.visualgrocerylist.com.shevelev.visualgrocerylist.features.li
 import com.shevelev.visualgrocerylist.com.shevelev.visualgrocerylist.features.list.dto.LastDeletedItem
 import com.shevelev.visualgrocerylist.com.shevelev.visualgrocerylist.features.list.dto.ScreenEvent
 import com.shevelev.visualgrocerylist.com.shevelev.visualgrocerylist.features.list.dto.ScreenState
+import com.shevelev.visualgrocerylist.com.shevelev.visualgrocerylist.shared.architecture.Flags
+import com.shevelev.visualgrocerylist.com.shevelev.visualgrocerylist.shared.architecture.FlagsStorage
 import com.shevelev.visualgrocerylist.storage.database.entities.GroceryListItemCombined
 import com.shevelev.visualgrocerylist.storage.file.FileRepository
 import com.shevelev.visualgrocerylist.storage.database.repository.DatabaseRepository
@@ -23,6 +25,7 @@ import kotlinx.coroutines.withContext
 internal class ListViewModel(
     private val databaseRepository: DatabaseRepository,
     private val fileRepository: FileRepository,
+    private val flags: FlagsStorage,
 ) : ViewModel(), UserActionsHandler {
     private val dbItems = mutableListOf<GroceryListItemCombined>()
 
@@ -35,16 +38,10 @@ internal class ListViewModel(
     private var lastDeletedItem: LastDeletedItem? = null
 
     init {
-        viewModelScope.launch {
-            val sourceDbItems = databaseRepository.getAllGroceryListItemCombined()
-
-            val allItems = sourceDbItems.map { it.mapToView() }
-
-            dbItems.addAll(sourceDbItems)
-
-            _screenState.emit(ScreenState.Data(allItems))
-        }
+        refresh(needRefresh = true)
     }
+
+    fun tryToRefresh() = refresh(flags.hasFlag(Flags.MUST_REFRESH_LIST))
 
     override fun onCheckedChange(dbId: Long) {
         viewModelScope.launch {
@@ -91,6 +88,22 @@ internal class ListViewModel(
 
                 _screenState.emit(ScreenState.Data(dbItems.map { it.mapToView() }))
             }
+        }
+    }
+
+    private fun refresh(needRefresh: Boolean) {
+        if (!needRefresh) {
+            return
+        }
+
+        viewModelScope.launch {
+            val sourceDbItems = databaseRepository.getAllGroceryListItemCombined()
+
+            val allItems = sourceDbItems.map { it.mapToView() }
+
+            dbItems.addAll(sourceDbItems)
+
+            _screenState.emit(ScreenState.Data(allItems))
         }
     }
 

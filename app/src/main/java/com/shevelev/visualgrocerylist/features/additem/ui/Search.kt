@@ -210,10 +210,15 @@ private fun DbItemTile(
     onClick: (GridItem.Db) -> Unit,
     modifier: Modifier = Modifier,
 ) {
+    val keyboardController = LocalSoftwareKeyboardController.current
+
     return GridTile(
         modifier = modifier,
         enabled = enabled,
-        onClick = { onClick(item) }
+        onClick = {
+            keyboardController?.hide()
+            onClick(item)
+        }
     ) {
         AsyncImageFile(
             image = item.imageFile,
@@ -269,10 +274,15 @@ private fun InternetItemTile(
     onClick: (GridItem.Internet) -> Unit,
     modifier: Modifier = Modifier,
 ) {
+    val keyboardController = LocalSoftwareKeyboardController.current
+
     return GridTile(
         modifier = modifier,
         enabled = enabled,
-        onClick = { onClick(item) }
+        onClick = {
+            keyboardController?.hide()
+            onClick(item)
+        }
     ) {
         var isLoading by rememberSaveable { mutableStateOf(true) }
 

@@ -219,6 +219,10 @@ internal fun Content(
     )
 
     LaunchedEffect(Unit) {
+        viewModel.tryToRefresh()
+    }
+
+    LaunchedEffect(Unit) {
         viewModel.screenEvent.collect {
             when (it) {
                 is ScreenEvent.ShowDeleteNotification -> {
