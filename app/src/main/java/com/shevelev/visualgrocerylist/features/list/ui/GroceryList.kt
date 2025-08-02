@@ -122,6 +122,7 @@ private fun GroceryList(
                     item = items[index],
                     onCheckedChange = userActionsHandler::onCheckedChange,
                     onDeleteClick = userActionsHandler::onDeleteItemClick,
+                    onNoteClick = userActionsHandler::onNoteClick,
                 )
             }
         )
@@ -134,6 +135,7 @@ private fun ItemTile(
     modifier: Modifier = Modifier,
     onCheckedChange: (Long) -> Unit,
     onDeleteClick: (Long) -> Unit,
+    onNoteClick: (Long) -> Unit,
 ) {
     val foregroundColor = MaterialTheme.colorScheme.onPrimary
     val textBackgroundColor = MaterialTheme.colorScheme.inverseSurface.copy(alpha = 0.5f)
@@ -195,7 +197,7 @@ private fun ItemTile(
                                 tint = foregroundColor,
                             )
                         }
-                        IconButton(onClick = { }) {
+                        IconButton(onClick = { onNoteClick(item.dbId) }) {
                             Icon(
                                 painter = painterResource(R.drawable.ic_add_note_24),
                                 contentDescription = "",

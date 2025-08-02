@@ -1,6 +1,5 @@
 package com.shevelev.visualgrocerylist.features.list.ui
 
-import android.widget.Toast
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -50,7 +49,9 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.shevelev.visualgrocerylist.R
 import com.shevelev.visualgrocerylist.com.shevelev.visualgrocerylist.features.list.dto.ScreenEvent
+import com.shevelev.visualgrocerylist.com.shevelev.visualgrocerylist.features.list.dto.ScreenState
 import com.shevelev.visualgrocerylist.com.shevelev.visualgrocerylist.features.list.ui.GroceryListPlaceholder
+import com.shevelev.visualgrocerylist.com.shevelev.visualgrocerylist.features.list.ui.NoteBottomSheet
 import com.shevelev.visualgrocerylist.com.shevelev.visualgrocerylist.features.list.viewmodel.ListViewModel
 import com.shevelev.visualgrocerylist.shared.ui.navigation.Route
 import com.shevelev.visualgrocerylist.shared.ui.theme.LocalDimensions
@@ -198,6 +199,7 @@ fun DrawerContent() {
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 internal fun Content(
     modifier: Modifier = Modifier,
@@ -209,6 +211,14 @@ internal fun Content(
     val screenState by viewModel.screenState.collectAsStateWithLifecycle()
 
     var snackbarJob = remember<Job?> { null }
+
+    val notePopup = (screenState as? ScreenState.Data)?.notePopup
+    if (notePopup != null) {
+        NoteBottomSheet(
+            notePopup = notePopup,
+            userActionsHandler = viewModel,
+        )
+    }
 
     GroceryListPlaceholder(
         modifier = modifier.fillMaxSize(),

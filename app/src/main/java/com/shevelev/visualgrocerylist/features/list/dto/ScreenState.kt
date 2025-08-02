@@ -3,5 +3,8 @@ package com.shevelev.visualgrocerylist.com.shevelev.visualgrocerylist.features.l
 internal sealed interface ScreenState {
     data object Loading: ScreenState
 
-    data class Data(val items: List<GridItem>): ScreenState
+    data class Data(
+        val items: List<GridItem>,
+        val notePopup: NotePopup? = null,
+    ): ScreenState
 }

@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.shevelev.visualgrocerylist.com.shevelev.visualgrocerylist.features.list.dto.GridItem
 import com.shevelev.visualgrocerylist.com.shevelev.visualgrocerylist.features.list.dto.LastDeletedItem
+import com.shevelev.visualgrocerylist.com.shevelev.visualgrocerylist.features.list.dto.NotePopup
 import com.shevelev.visualgrocerylist.com.shevelev.visualgrocerylist.features.list.dto.ScreenEvent
 import com.shevelev.visualgrocerylist.com.shevelev.visualgrocerylist.features.list.dto.ScreenState
 import com.shevelev.visualgrocerylist.com.shevelev.visualgrocerylist.shared.architecture.Flags
@@ -27,7 +28,7 @@ internal class ListViewModel(
     private val fileRepository: FileRepository,
     private val flags: FlagsStorage,
 ) : ViewModel(), UserActionsHandler {
-    private val dbItems = mutableListOf<GroceryListItemCombined>()
+    private val gridItems = mutableListOf<GroceryListItemCombined>()
 
     private val _screenState = MutableStateFlow<ScreenState>(ScreenState.Loading)
     val screenState: StateFlow<ScreenState> = _screenState.asStateFlow()
@@ -46,34 +47,34 @@ internal class ListViewModel(
     override fun onCheckedChange(dbId: Long) {
         viewModelScope.launch {
             withContext(Dispatchers.Default) {
-                val dbItemIndex = getItemIndexByDbId(dbId)
+                val gridItemIndex = getItemIndexByDbId(dbId)
 
-                val dbItem = dbItems[dbItemIndex]
-                val listItem = dbItem.listItem.copy(checked = !dbItem.listItem.checked)
-                dbItems[dbItemIndex] = dbItem.copy(listItem = listItem)
+                val gridItem = gridItems[gridItemIndex]
+                val listItem = gridItem.listItem.copy(checked = !gridItem.listItem.checked)
+                gridItems[gridItemIndex] = gridItem.copy(listItem = listItem)
 
                 databaseRepository.updateGroceryListItem(listItem)
 
-                _screenState.emit(ScreenState.Data(dbItems.map { it.mapToView() }))
+                _screenState.emit(ScreenState.Data(gridItems.map { it.mapToView() }))
             }
         }
     }
 
     override fun onDeleteItemClick(dbId: Long) {
         viewModelScope.launch {
-            val dbItemIndex = getItemIndexByDbId(dbId)
+            val gridItemIndex = getItemIndexByDbId(dbId)
 
-            val dbItem = dbItems[dbItemIndex]
-            databaseRepository.removeGroceryListItem(dbItem.listItem)
-            dbItems.removeAt(dbItemIndex)
+            val gridItem = gridItems[gridItemIndex]
+            databaseRepository.removeGroceryListItem(gridItem.listItem)
+            gridItems.removeAt(gridItemIndex)
 
-            lastDeletedItem = LastDeletedItem(dbItem, dbItemIndex)
+            lastDeletedItem = LastDeletedItem(gridItem, gridItemIndex)
 
-            _screenState.emit(ScreenState.Data(dbItems.map { it.mapToView() }))
+            _screenState.emit(ScreenState.Data(gridItems.map { it.mapToView() }))
 
-            val dbItemView = dbItem.mapToView()
+            val gridItemView = gridItem.mapToView()
             _screenEvent.emit(
-                ScreenEvent.ShowDeleteNotification(dbItemView.title, dbItemView.dbId)
+                ScreenEvent.ShowDeleteNotification(gridItemView.title, gridItemView.dbId)
             )
         }
     }
@@ -83,11 +84,55 @@ internal class ListViewModel(
             lastDeletedItem?.let {
                 databaseRepository.addGroceryListItem(it.item.listItem)
 
-                dbItems.add(it.index, it.item)
+                gridItems.add(it.index, it.item)
 
-
-                _screenState.emit(ScreenState.Data(dbItems.map { it.mapToView() }))
+                _screenState.emit(ScreenState.Data(gridItems.map { it.mapToView() }))
             }
+        }
+    }
+
+    override fun onNoteClick(dbId: Long) {
+        val state = _screenState.value as? ScreenState.Data ?: return
+        val gridListItem = gridItems[getItemIndexByDbId(dbId)].listItem
+        val gridGroceryItem = gridItems[getItemIndexByDbId(dbId)].groceryItem
+
+        viewModelScope.launch {
+            _screenState.emit(
+                state.copy(notePopup = NotePopup(
+                    dbId = gridListItem.id,
+                    note = gridListItem.note,
+                    title = gridGroceryItem.keyWord,
+                ))
+            )
+        }
+    }
+
+    override fun onUpdateNote(dbId: Long, note: String) {
+        val state = _screenState.value as? ScreenState.Data ?: return
+
+        val gridItemIndex = getItemIndexByDbId(dbId)
+        val gridItem = gridItems[gridItemIndex]
+        val listItem = gridItem.listItem
+
+        viewModelScope.launch {
+            if (listItem.note != note) {
+                val newListItem = listItem.copy(note = note)
+                databaseRepository.updateGroceryListItem(newListItem)
+
+                gridItems[gridItemIndex] = gridItem.copy(listItem = newListItem)
+            }
+
+            _screenState.emit(
+                state.copy(notePopup = null, items = gridItems.map { it.mapToView() })
+            )
+        }
+    }
+
+    override fun onNotePopupDismissed() {
+        val state = _screenState.value as? ScreenState.Data ?: return
+
+        viewModelScope.launch {
+            _screenState.emit(state.copy(notePopup = null))
         }
     }
 
@@ -101,12 +146,13 @@ internal class ListViewModel(
 
             val allItems = sourceDbItems.map { it.mapToView() }
 
-            dbItems.addAll(sourceDbItems)
+            gridItems.addAll(sourceDbItems)
 
             _screenState.emit(ScreenState.Data(allItems))
         }
     }
 
+    @Suppress("DEPRECATION")
     private fun GroceryListItemCombined.mapToView() = GridItem(
         id = listItem.id.toString(),
         dbId = listItem.id,
@@ -116,11 +162,11 @@ internal class ListViewModel(
     )
 
     private fun getItemIndexByDbId(dbId: Long): Int {
-        val dbItemIndex = dbItems.indexOfFirst { it.listItem.id == dbId }
-        if (dbItemIndex == -1) {
+        val gridItemIndex = gridItems.indexOfFirst { it.listItem.id == dbId }
+        if (gridItemIndex == -1) {
             throw IllegalArgumentException("Item with dbId [$dbId] is not found")
         }
 
-        return dbItemIndex
+        return gridItemIndex
     }
 }

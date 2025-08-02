@@ -6,4 +6,10 @@ internal interface UserActionsHandler {
     fun onDeleteItemClick(dbId: Long)
 
     fun onRestoreDeletedItemClick(dbId: Long)
+
+    fun onNoteClick(dbId: Long)
+
+    fun onUpdateNote(dbId: Long, note: String)
+
+    fun onNotePopupDismissed()
 }
