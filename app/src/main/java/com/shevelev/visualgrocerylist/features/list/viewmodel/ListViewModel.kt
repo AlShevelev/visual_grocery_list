@@ -146,6 +146,7 @@ internal class ListViewModel(
 
             val allItems = sourceDbItems.map { it.mapToView() }
 
+            gridItems.clear()
             gridItems.addAll(sourceDbItems)
 
             _screenState.emit(ScreenState.Data(allItems))
