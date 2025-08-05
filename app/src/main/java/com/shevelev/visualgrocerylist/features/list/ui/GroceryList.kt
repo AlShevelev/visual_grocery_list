@@ -1,6 +1,5 @@
 package com.shevelev.visualgrocerylist.com.shevelev.visualgrocerylist.features.list.ui
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -8,9 +7,11 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.CheckboxDefaults
 import androidx.compose.material3.CircularProgressIndicator
@@ -21,7 +22,14 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.dropShadow
+import androidx.compose.ui.draw.scale
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.Shadow
+import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.graphics.shadow.Shadow as IconShadow
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
@@ -32,6 +40,7 @@ import com.shevelev.visualgrocerylist.com.shevelev.visualgrocerylist.features.li
 import com.shevelev.visualgrocerylist.com.shevelev.visualgrocerylist.features.list.viewmodel.UserActionsHandler
 import com.shevelev.visualgrocerylist.com.shevelev.visualgrocerylist.shared.ui.components.AsyncImageFile
 import com.shevelev.visualgrocerylist.com.shevelev.visualgrocerylist.shared.ui.components.GridTile
+import com.shevelev.visualgrocerylist.com.shevelev.visualgrocerylist.shared.ui.components.OutlinedText
 import com.shevelev.visualgrocerylist.shared.ui.theme.LocalDimensions
 import timber.log.Timber
 
@@ -139,8 +148,9 @@ private fun ItemTile(
     onNoteClick: (Long) -> Unit,
 ) {
     val foregroundColor = MaterialTheme.colorScheme.onPrimary
-    val textBackgroundColor = MaterialTheme.colorScheme.inverseSurface.copy(alpha = 0.5f)
-    val buttonsBackgroundColor = MaterialTheme.colorScheme.inverseSurface.copy(alpha = 0.25f)
+    val textStrokeColor = MaterialTheme.colorScheme.onSurface
+
+    val dimensions = LocalDimensions.current
 
     return GridTile(
         modifier = modifier,
@@ -161,52 +171,70 @@ private fun ItemTile(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.SpaceBetween,
             ) {
-                Text(
-                    text = item.title,
-                    color = foregroundColor,
-                    style = MaterialTheme.typography.titleMedium,
-                    maxLines = 2,
-                    overflow = TextOverflow.Ellipsis,
-                    textAlign = TextAlign.Center,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .background(
-                            color = textBackgroundColor,
-                        )
-                )
+                with(LocalDensity.current) {
+                    OutlinedText(
+                        text = item.title,
+                        fillColor = foregroundColor,
+                        outlineColor = textStrokeColor,
+                        outlineDrawStyle = Stroke(width = dimensions.paddingThird.toPx()),
+                        style = MaterialTheme.typography.titleMedium.copy(
+                            shadow = Shadow(
+                                color = textStrokeColor.copy(alpha = 0.5f),
+                                offset = Offset(
+                                    x = dimensions.paddingQuarter.toPx(),
+                                    y = dimensions.paddingQuarter.toPx(),
+                                ),
+                                blurRadius = dimensions.paddingThird.toPx(),
+                            )
+                        ),
+                        maxLines = 2,
+                        overflow = TextOverflow.Ellipsis,
+                        textAlign = TextAlign.Center,
+                        modifier = Modifier.fillMaxWidth()
+                    )
+                }
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .background(
-                            color = buttonsBackgroundColor,
-                        )
+                    horizontalArrangement = Arrangement.Start,
+                    modifier = Modifier.fillMaxWidth()
                 ) {
                     Checkbox(
                         checked = item.checked,
                         onCheckedChange = { onCheckedChange(item.dbId) },
                         colors = CheckboxDefaults.colors().copy(
                             uncheckedBorderColor = foregroundColor,
-                        )
+                        ),
+                        modifier = Modifier
+                            .dropShadow(
+                                shape = CircleShape,
+                                shadow = IconShadow(radius = 0.dp, alpha = 0.15f)
+                            )
                     )
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
+                    IconButton(
+                        onClick = { onDeleteClick(item.dbId) },
+                        modifier = Modifier.padding(start = dimensions.paddingHalf)
                     ) {
-                        IconButton(onClick = { onDeleteClick(item.dbId) }) {
-                            Icon(
-                                painter = painterResource(R.drawable.ic_delete_24),
-                                contentDescription = "",
-                                tint = foregroundColor,
+                        Icon(
+                            painter = painterResource(R.drawable.ic_rounded_delete_24),
+                            contentDescription = "",
+                            tint = foregroundColor,
+                            modifier = Modifier
+                                .dropShadow(
+                                    shape = CircleShape,
+                                    shadow = IconShadow(radius = 25.dp, alpha = 0.8f)
+                                )
+                        )
+                    }
+                    IconButton(onClick = { onNoteClick(item.dbId) }) {
+                        Icon(
+                            painter = painterResource(R.drawable.ic_add_note_24),
+                            contentDescription = "",
+                            tint = foregroundColor,
+                            modifier = Modifier.dropShadow(
+                                shape = CircleShape,
+                                shadow = IconShadow(radius = 25.dp, alpha = 0.8f)
                             )
-                        }
-                        IconButton(onClick = { onNoteClick(item.dbId) }) {
-                            Icon(
-                                painter = painterResource(R.drawable.ic_add_note_24),
-                                contentDescription = "",
-                                tint = foregroundColor,
-                            )
-                        }
+                        )
                     }
                 }
             }
