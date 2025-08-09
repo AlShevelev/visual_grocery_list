@@ -12,4 +12,6 @@ internal interface UserActionsHandler {
     fun onUpdateNote(dbId: Long, note: String)
 
     fun onNotePopupDismissed()
+
+    fun onReorderItem(fromIndex: Int, toIndex: Int)
 }

@@ -69,5 +69,7 @@ dependencies {
     implementation(libs.coil.compose)
     implementation(libs.coil.network)
 
+    implementation(libs.composereorderable)
+
     debugImplementation(libs.androidx.ui.tooling)
 }

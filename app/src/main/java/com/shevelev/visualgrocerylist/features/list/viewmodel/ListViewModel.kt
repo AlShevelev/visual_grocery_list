@@ -136,6 +136,32 @@ internal class ListViewModel(
         }
     }
 
+    override fun onReorderItem(fromIndex: Int, toIndex: Int) {
+        if (fromIndex == toIndex) {
+            return
+        }
+
+        val state = _screenState.value as? ScreenState.Data ?: return
+
+        viewModelScope.launch {
+            val toOrder = gridItems[toIndex].listItem.order
+            val toListItem = gridItems[toIndex].listItem.copy(order = gridItems[fromIndex].listItem.order)
+            val fromListItem = gridItems[fromIndex].listItem.copy(order = toOrder)
+
+            databaseRepository.updateGroceryListItem(toListItem)
+            databaseRepository.updateGroceryListItem(fromListItem)
+
+            gridItems[fromIndex] = gridItems[fromIndex].copy(listItem = fromListItem)
+            gridItems[toIndex] = gridItems[toIndex].copy(listItem = toListItem)
+
+            val gridItem = gridItems[fromIndex]
+            gridItems[fromIndex] = gridItems[toIndex]
+            gridItems[toIndex] = gridItem
+
+            _screenState.emit(state.copy(items = gridItems.map { it.mapToView() }))
+        }
+    }
+
     private fun refresh(needRefresh: Boolean) {
         if (!needRefresh) {
             return

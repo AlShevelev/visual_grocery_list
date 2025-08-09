@@ -55,6 +55,8 @@ room-ktx = {group = "androidx.room", name = "room-ktx", version.ref = "room" }
 
 utils-timber = { group = "com.jakewharton.timber", name = "timber", version = "5.0.1" }
 
+composereorderable = { group = "org.burnoutcrew.composereorderable", name = "reorderable" , version = "0.9.6"}
+
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
 android-library = { id = "com.android.library", version.ref = "agp" }

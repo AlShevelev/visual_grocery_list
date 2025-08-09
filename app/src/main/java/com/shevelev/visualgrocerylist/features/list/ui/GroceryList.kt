@@ -23,7 +23,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.dropShadow
-import androidx.compose.ui.draw.scale
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Shadow
 import androidx.compose.ui.graphics.drawscope.Stroke
@@ -42,6 +41,10 @@ import com.shevelev.visualgrocerylist.com.shevelev.visualgrocerylist.shared.ui.c
 import com.shevelev.visualgrocerylist.com.shevelev.visualgrocerylist.shared.ui.components.GridTile
 import com.shevelev.visualgrocerylist.com.shevelev.visualgrocerylist.shared.ui.components.OutlinedText
 import com.shevelev.visualgrocerylist.shared.ui.theme.LocalDimensions
+import org.burnoutcrew.reorderable.ReorderableItem
+import org.burnoutcrew.reorderable.detectReorderAfterLongPress
+import org.burnoutcrew.reorderable.rememberReorderableLazyGridState
+import org.burnoutcrew.reorderable.reorderable
 import timber.log.Timber
 
 @Composable
@@ -118,22 +121,35 @@ private fun GroceryList(
 ) {
     val dimensions = LocalDimensions.current
 
+    val state = rememberReorderableLazyGridState(
+        onMove = { from, to ->
+            userActionsHandler.onReorderItem(from.index, to.index)
+        })
+
     LazyVerticalGrid(
         contentPadding = PaddingValues(dimensions.paddingHalf),
-
+        state = state.gridState,
         columns = GridCells.Fixed(2),
-        modifier = modifier,
+        modifier = modifier.reorderable(state)
     ) {
         items(
             count = items.size,
             key = { index -> items[index].id },
             itemContent = { index ->
-                ItemTile(
-                    item = items[index],
-                    onCheckedChange = userActionsHandler::onCheckedChange,
-                    onDeleteClick = userActionsHandler::onDeleteItemClick,
-                    onNoteClick = userActionsHandler::onNoteClick,
-                )
+                ReorderableItem(
+                    state,
+                    key = items[index].id,
+                    defaultDraggingModifier = Modifier,
+                    orientationLocked = false,
+                ) { isDragging ->
+                    ItemTile(
+                        modifier = Modifier.detectReorderAfterLongPress(state),
+                        item = items[index],
+                        onCheckedChange = userActionsHandler::onCheckedChange,
+                        onDeleteClick = userActionsHandler::onDeleteItemClick,
+                        onNoteClick = userActionsHandler::onNoteClick,
+                    )
+                }
             }
         )
     }
