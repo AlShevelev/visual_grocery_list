@@ -186,6 +186,7 @@ internal class ListViewModel(
         imageFile = fileRepository.getFileByName(groceryItem.imageFile),
         title = groceryItem.keyWord.capitalize(Locale.getDefault()),
         checked = listItem.checked,
+        hasNote = listItem.note?.isNotEmpty() == true
     )
 
     private fun getItemIndexByDbId(dbId: Long): Int {

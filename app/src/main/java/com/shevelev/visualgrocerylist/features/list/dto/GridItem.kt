@@ -9,5 +9,6 @@ data class GridItem(
     val dbId: Long,
     val imageFile: File,
     val title: String,
-    val checked: Boolean
+    val checked: Boolean,
+    val hasNote: Boolean,
 )
