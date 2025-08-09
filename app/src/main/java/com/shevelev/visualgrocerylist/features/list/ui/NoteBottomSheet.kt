@@ -1,15 +1,18 @@
 package com.shevelev.visualgrocerylist.com.shevelev.visualgrocerylist.features.list.ui
 
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -19,11 +22,9 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.dp
 import com.shevelev.visualgrocerylist.R
 import com.shevelev.visualgrocerylist.com.shevelev.visualgrocerylist.features.list.dto.NotePopup
 import com.shevelev.visualgrocerylist.com.shevelev.visualgrocerylist.features.list.viewmodel.UserActionsHandler
@@ -65,31 +66,41 @@ internal fun NoteBottomSheet(
                 style = MaterialTheme.typography.titleLarge
             )
 
-            TextField(
+            BasicTextField(
                 value = text,
                 onValueChange = { text = it },
-                label = {
-                    Text(
-                        text = context.getString(R.string.enter_note),
-                        style = MaterialTheme.typography.bodyMedium,
-                        modifier = Modifier
-                            .padding(
-                                bottom = if (isFocused || text.isNotEmpty())
-                                    dimensions.paddingSingle
-                                else
-                                    0.dp
-                            )
-                    )
-                },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .onFocusChanged { focusState ->
-                        isFocused = focusState.isFocused
-                    },
                 singleLine = false,
                 maxLines = 5,
-                textStyle = MaterialTheme.typography.bodyLarge,
+                modifier = Modifier
+                    .fillMaxWidth(),
+                decorationBox = { innerTextField ->
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.Start,
+                        modifier = Modifier
+                            .border(
+                                width = dimensions.paddingQuarter,
+                                color = MaterialTheme.colorScheme.outline,
+                                RoundedCornerShape(percent = 30)
+                            )
+                            //.height(50.dp)
+                            .padding(dimensions.paddingSingleAndHalf)
+                    ) {
+                        innerTextField()
+                    }
+                }
             )
+
+
+
+
+
+
+
+
+
+
+
 
             Button(onClick = {
                 keyboardController?.hide()
