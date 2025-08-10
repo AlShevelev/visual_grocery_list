@@ -6,5 +6,6 @@ internal sealed interface ScreenState {
     data class Data(
         val items: List<GridItem>,
         val notePopup: NotePopup? = null,
+        val clearListConfirmationDialogIsShown: Boolean = false,
     ): ScreenState
 }

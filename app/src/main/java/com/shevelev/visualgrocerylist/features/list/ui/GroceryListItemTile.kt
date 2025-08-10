@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Badge
 import androidx.compose.material3.BadgedBox
@@ -129,7 +130,7 @@ internal fun GroceryListItemTile(
 
                         if (item.hasNote) {
                             BadgedBox(
-                                badge = { Badge() }
+                                badge = { Badge(modifier = Modifier.size(10.dp)) }
                             ) {
                                 NoteButtonIcon(tint = foregroundColor)
                             }

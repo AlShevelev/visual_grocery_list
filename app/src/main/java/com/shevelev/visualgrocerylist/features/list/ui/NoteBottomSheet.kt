@@ -46,8 +46,6 @@ internal fun NoteBottomSheet(
 
     val keyboardController = LocalSoftwareKeyboardController.current
 
-    var isFocused by remember { mutableStateOf(false) }
-
     ModalBottomSheet(
         onDismissRequest = userActionsHandler::onNotePopupDismissed,
         sheetState = sheetState

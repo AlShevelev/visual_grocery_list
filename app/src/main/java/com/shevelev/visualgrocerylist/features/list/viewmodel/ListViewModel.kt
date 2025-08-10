@@ -162,6 +162,39 @@ internal class ListViewModel(
         }
     }
 
+    override fun onListClearConfirmationStarted() {
+        val state = _screenState.value as? ScreenState.Data ?: return
+
+        viewModelScope.launch {
+            _screenState.emit(state.copy(clearListConfirmationDialogIsShown = true))
+        }
+    }
+
+    override fun onListClearConfirmed() {
+        val state = _screenState.value as? ScreenState.Data ?: return
+
+        val itemsToClear = gridItems.map { it.listItem }
+        gridItems.clear()
+
+        viewModelScope.launch {
+            for (item in itemsToClear) {
+                databaseRepository.removeGroceryListItem(item)
+            }
+
+            _screenState.emit(
+                state.copy(items = emptyList(), clearListConfirmationDialogIsShown = false)
+            )
+        }
+    }
+
+    override fun onListClearRejected() {
+        val state = _screenState.value as? ScreenState.Data ?: return
+
+        viewModelScope.launch {
+            _screenState.emit(state.copy(clearListConfirmationDialogIsShown = false))
+        }
+    }
+
     private fun refresh(needRefresh: Boolean) {
         if (!needRefresh) {
             return

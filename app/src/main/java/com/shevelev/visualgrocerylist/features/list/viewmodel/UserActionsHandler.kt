@@ -14,4 +14,10 @@ internal interface UserActionsHandler {
     fun onNotePopupDismissed()
 
     fun onReorderItem(fromIndex: Int, toIndex: Int)
+
+    fun onListClearConfirmationStarted()
+
+    fun onListClearConfirmed()
+
+    fun onListClearRejected()
 }

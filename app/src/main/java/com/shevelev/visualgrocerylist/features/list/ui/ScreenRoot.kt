@@ -50,9 +50,11 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.shevelev.visualgrocerylist.R
 import com.shevelev.visualgrocerylist.com.shevelev.visualgrocerylist.features.list.dto.ScreenEvent
 import com.shevelev.visualgrocerylist.com.shevelev.visualgrocerylist.features.list.dto.ScreenState
+import com.shevelev.visualgrocerylist.com.shevelev.visualgrocerylist.features.list.ui.ClearListConfirmationDialog
 import com.shevelev.visualgrocerylist.com.shevelev.visualgrocerylist.features.list.ui.GroceryListPlaceholder
 import com.shevelev.visualgrocerylist.com.shevelev.visualgrocerylist.features.list.ui.NoteBottomSheet
 import com.shevelev.visualgrocerylist.com.shevelev.visualgrocerylist.features.list.viewmodel.ListViewModel
+import com.shevelev.visualgrocerylist.com.shevelev.visualgrocerylist.features.list.viewmodel.UserActionsHandler
 import com.shevelev.visualgrocerylist.shared.ui.navigation.Route
 import com.shevelev.visualgrocerylist.shared.ui.theme.LocalDimensions
 import com.shevelev.visualgrocerylist.shared.ui.theme.LocalUiConstants
@@ -65,6 +67,7 @@ import org.koin.androidx.compose.koinViewModel
 @Composable
 internal fun ScreenRoot(
     backStack: MutableList<Route>,
+    viewModel: ListViewModel = koinViewModel(),
 ) {
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
 
@@ -75,7 +78,10 @@ internal fun ScreenRoot(
         drawerState = drawerState
     ) {
         Scaffold(
-            topBar = { AppBar(drawerState) },
+            topBar = { AppBar(
+                drawerState,
+                userActionsHandler = viewModel,
+            ) },
             floatingActionButton = { MainButton(backStack) },
             snackbarHost = {
                 SnackbarHost(hostState = snackbarHostState)
@@ -84,6 +90,7 @@ internal fun ScreenRoot(
             Content(
                 modifier = Modifier.padding(innerPadding),
                 snackbarHostState = snackbarHostState,
+                viewModel = viewModel,
             )
         }
     }
@@ -102,8 +109,9 @@ fun MainButton(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AppBar(
+internal fun AppBar(
     drawerState: DrawerState,
+    userActionsHandler: UserActionsHandler,
 ) {
     val context = LocalContext.current
 
@@ -151,6 +159,7 @@ fun AppBar(
                         scope.launch {
                             delay(uiConstants.animationStandardDuration)
                             showDropDownMenu = false
+                            userActionsHandler.onListClearConfirmationStarted()
                         }
                     }
                 )
@@ -203,7 +212,7 @@ fun DrawerContent() {
 @Composable
 internal fun Content(
     modifier: Modifier = Modifier,
-    viewModel: ListViewModel = koinViewModel(),
+    viewModel: ListViewModel,
     snackbarHostState: SnackbarHostState,
 ) {
     val context = LocalContext.current
@@ -217,6 +226,15 @@ internal fun Content(
         NoteBottomSheet(
             notePopup = notePopup,
             userActionsHandler = viewModel,
+        )
+    }
+
+    val clearListConfirmationDialogIsShown = (screenState as? ScreenState.Data)
+        ?.clearListConfirmationDialogIsShown
+    if (clearListConfirmationDialogIsShown == true) {
+        ClearListConfirmationDialog(
+            onConfirmation = viewModel::onListClearConfirmed,
+            onDismiss = viewModel::onListClearRejected
         )
     }
 
