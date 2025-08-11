@@ -7,6 +7,7 @@ internal sealed class GridItem(val id: String) {
     class Db(
         id: String,
         val dbId: Long,
+        val title: String,
         val imageFile: File,
     ): GridItem(id)
 

@@ -48,6 +48,7 @@ import com.shevelev.visualgrocerylist.com.shevelev.visualgrocerylist.features.ad
 import com.shevelev.visualgrocerylist.com.shevelev.visualgrocerylist.shared.ui.components.AsyncImageFile
 import com.shevelev.visualgrocerylist.com.shevelev.visualgrocerylist.shared.ui.components.AsyncImageUrl
 import com.shevelev.visualgrocerylist.com.shevelev.visualgrocerylist.shared.ui.components.GridTile
+import com.shevelev.visualgrocerylist.com.shevelev.visualgrocerylist.shared.ui.components.TileTitle
 import com.shevelev.visualgrocerylist.shared.ui.theme.LocalDimensions
 import timber.log.Timber
 
@@ -220,11 +221,20 @@ private fun DbItemTile(
             onClick(item)
         }
     ) {
-        AsyncImageFile(
-            image = item.imageFile,
+        Box(
             modifier = Modifier.fillMaxSize(),
-            onError = { Timber.e(it) },
-        )
+        ) {
+            AsyncImageFile(
+                image = item.imageFile,
+                modifier = Modifier.fillMaxSize(),
+                onError = { Timber.e(it) },
+            )
+
+            TileTitle(
+                text = item.title,
+                modifier = Modifier.fillMaxWidth(),
+            )
+        }
     }
 }
 

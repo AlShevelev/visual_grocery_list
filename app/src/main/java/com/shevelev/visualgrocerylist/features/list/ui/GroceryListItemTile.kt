@@ -20,21 +20,15 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.dropShadow
-import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.Shadow
 import androidx.compose.ui.graphics.shadow.Shadow as IconShadow
-import androidx.compose.ui.graphics.drawscope.Stroke
-import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.shevelev.visualgrocerylist.R
 import com.shevelev.visualgrocerylist.com.shevelev.visualgrocerylist.features.list.dto.GridItem
 import com.shevelev.visualgrocerylist.com.shevelev.visualgrocerylist.shared.ui.components.AsyncImageFile
 import com.shevelev.visualgrocerylist.com.shevelev.visualgrocerylist.shared.ui.components.GridTile
-import com.shevelev.visualgrocerylist.com.shevelev.visualgrocerylist.shared.ui.components.OutlinedText
+import com.shevelev.visualgrocerylist.com.shevelev.visualgrocerylist.shared.ui.components.TileTitle
 import com.shevelev.visualgrocerylist.shared.ui.theme.LocalDimensions
 import timber.log.Timber
 
@@ -48,7 +42,6 @@ internal fun GroceryListItemTile(
     onNoteClick: (Long) -> Unit,
 ) {
     val foregroundColor = MaterialTheme.colorScheme.onPrimary
-    val textStrokeColor = MaterialTheme.colorScheme.onSurface
 
     val dimensions = LocalDimensions.current
 
@@ -71,28 +64,10 @@ internal fun GroceryListItemTile(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.SpaceBetween,
             ) {
-                with(LocalDensity.current) {
-                    OutlinedText(
-                        text = item.title,
-                        fillColor = foregroundColor,
-                        outlineColor = textStrokeColor,
-                        outlineDrawStyle = Stroke(width = dimensions.paddingThird.toPx()),
-                        style = MaterialTheme.typography.titleMedium.copy(
-                            shadow = Shadow(
-                                color = textStrokeColor.copy(alpha = 0.5f),
-                                offset = Offset(
-                                    x = dimensions.paddingQuarter.toPx(),
-                                    y = dimensions.paddingQuarter.toPx(),
-                                ),
-                                blurRadius = dimensions.paddingThird.toPx(),
-                            )
-                        ),
-                        maxLines = 2,
-                        overflow = TextOverflow.Ellipsis,
-                        textAlign = TextAlign.Center,
-                        modifier = Modifier.fillMaxWidth()
-                    )
-                }
+                TileTitle(
+                    text = item.title,
+                    modifier = Modifier.fillMaxWidth(),
+                )
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.Start,

@@ -61,6 +61,7 @@ internal class AddItemScreenViewModel(
                             id = it.id.toString(),
                             imageFile = fileRepository.getFileByName(it.imageFile),
                             dbId = it.id,
+                            title = it.keyWord,
                         )
                     }
 
