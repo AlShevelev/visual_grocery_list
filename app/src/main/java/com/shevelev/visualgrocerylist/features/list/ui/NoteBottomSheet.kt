@@ -81,24 +81,12 @@ internal fun NoteBottomSheet(
                                 color = MaterialTheme.colorScheme.outline,
                                 RoundedCornerShape(percent = 30)
                             )
-                            //.height(50.dp)
                             .padding(dimensions.paddingSingleAndHalf)
                     ) {
                         innerTextField()
                     }
                 }
             )
-
-
-
-
-
-
-
-
-
-
-
 
             Button(onClick = {
                 keyboardController?.hide()

@@ -20,6 +20,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.shevelev.visualgrocerylist.R
 import com.shevelev.visualgrocerylist.com.shevelev.visualgrocerylist.features.additem.dto.ScreenEvent
+import com.shevelev.visualgrocerylist.com.shevelev.visualgrocerylist.features.additem.ui.NameConfirmationDialog
 import com.shevelev.visualgrocerylist.com.shevelev.visualgrocerylist.features.additem.ui.SearchContent
 import com.shevelev.visualgrocerylist.features.additem.viewmodel.AddItemScreenViewModel
 import com.shevelev.visualgrocerylist.shared.ui.navigation.Route
@@ -73,6 +74,15 @@ internal fun Content(
     backStack: MutableList<Route>,
 ) {
     val searchResults by viewModel.screenState.collectAsStateWithLifecycle()
+
+    val namePopup = searchResults.namePopup
+    if (namePopup != null) {
+        NameConfirmationDialog(
+            popupInfo = namePopup,
+            onDismiss = viewModel::onInternetItemNameRejected,
+            onConfirmation = {name, item -> viewModel.onInternetItemNameConfirmed(item, name) }
+        )
+    }
 
     val context = LocalContext.current
 

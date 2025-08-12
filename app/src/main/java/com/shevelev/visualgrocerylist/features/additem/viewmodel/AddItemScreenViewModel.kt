@@ -6,6 +6,7 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.shevelev.visualgrocerylist.com.shevelev.visualgrocerylist.features.additem.dto.GridItem
+import com.shevelev.visualgrocerylist.com.shevelev.visualgrocerylist.features.additem.dto.NamePopup
 import com.shevelev.visualgrocerylist.com.shevelev.visualgrocerylist.features.additem.dto.ScreenEvent
 import com.shevelev.visualgrocerylist.com.shevelev.visualgrocerylist.features.additem.dto.ScreenState
 import com.shevelev.visualgrocerylist.com.shevelev.visualgrocerylist.shared.architecture.Flags
@@ -101,10 +102,19 @@ internal class AddItemScreenViewModel(
 
     fun onInternetItemClick(item: GridItem.Internet) {
         viewModelScope.launch {
+            _screenState.emit(
+                _screenState.value.copy(namePopup = NamePopup(name = searchQuery, item = item))
+            )
+        }
+    }
+
+    fun onInternetItemNameConfirmed(item: GridItem.Internet, name: String) {
+        viewModelScope.launch {
+            _screenState.emit(_screenState.value.copy(namePopup = null))
             setLoading(true)
 
             fileRepository.download(item.imageLink).onSuccess { fileName ->
-                val itemDbId = databaseRepository.addGroceryItem(searchQuery, fileName)
+                val itemDbId = databaseRepository.addGroceryItem(name, fileName)
                 databaseRepository.addGroceryListItemToTop(groceryItemDbId = itemDbId)
 
                 closeScreen()
@@ -112,6 +122,12 @@ internal class AddItemScreenViewModel(
                 _screenEvent.emit(ScreenEvent.Error)
                 setLoading(false)
             }
+        }
+    }
+
+    fun onInternetItemNameRejected() {
+        viewModelScope.launch {
+            _screenState.emit(_screenState.value.copy(namePopup = null))
         }
     }
 

@@ -19,5 +19,7 @@
     <string name="yes">Yes</string>
     <string name="no">No</string>
 
+    <string name="the_name_is">The name is…</string>
+
     <string name="error_network">An error occurred while retrieving data from the Internet</string>
 </resources>
