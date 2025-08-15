@@ -1,5 +1,7 @@
 package com.shevelev.visualgrocerylist.com.shevelev.visualgrocerylist.features.additem.ui
 
+import androidx.annotation.DrawableRes
+import androidx.annotation.StringRes
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -96,7 +98,15 @@ internal fun SearchContent(
                                 onClick = onDbItemClick,
                             )
                             is GridItem.SearchInternet -> SearchTheInternetTile(
-                                onSearchTheInternetClick = onSearchTheInternetClick,
+                                onClick = onSearchTheInternetClick,
+                                enabled = !screenState.loading,
+                            )
+                            GridItem.Gallery -> GalleryTile(
+                                onClick = {},
+                                enabled = !screenState.loading,
+                            )
+                            GridItem.MakePhoto -> CameraTile(
+                                onClick = {},
                                 enabled = !screenState.loading,
                             )
                             is GridItem.Internet -> InternetItemTile(
@@ -239,9 +249,11 @@ private fun DbItemTile(
 }
 
 @Composable
-private fun SearchTheInternetTile(
-    onSearchTheInternetClick: () -> Unit,
+private fun PredefinedButtonTile(
+    onClick: () -> Unit,
     enabled: Boolean,
+    @StringRes textResId: Int,
+    @DrawableRes iconResId: Int,
     modifier: Modifier = Modifier,
 ) {
     val context = LocalContext.current
@@ -255,7 +267,7 @@ private fun SearchTheInternetTile(
         enabled = enabled,
         onClick = {
             keyboardController?.hide()
-            onSearchTheInternetClick ()
+            onClick()
         },
     ) {
         Column(
@@ -264,17 +276,62 @@ private fun SearchTheInternetTile(
             modifier = Modifier.fillMaxSize()
         ) {
             Image(
-                painter = painterResource(id = R.drawable.ic_internet_24),
+                painter = painterResource(id = iconResId),
                 contentDescription = null,
                 modifier = Modifier.scale(1f).size(40.dp)
             )
             Spacer(modifier = Modifier.height(dimensions.paddingSingleAndHalf))
             Text(
-                text = context.getString(R.string.search_the_internet),
+                text = context.getString(textResId),
                 style = MaterialTheme.typography.titleMedium,
             )
         }
     }
+}
+
+@Composable
+private fun SearchTheInternetTile(
+    onClick: () -> Unit,
+    enabled: Boolean,
+    modifier: Modifier = Modifier,
+) {
+    PredefinedButtonTile(
+        onClick = onClick,
+        enabled = enabled,
+        textResId = R.string.search_the_internet,
+        iconResId = R.drawable.ic_internet_24,
+        modifier = modifier,
+    )
+}
+
+@Composable
+private fun CameraTile(
+    onClick: () -> Unit,
+    enabled: Boolean,
+    modifier: Modifier = Modifier,
+) {
+    PredefinedButtonTile(
+        onClick = onClick,
+        enabled = enabled,
+        textResId = R.string.make_photo,
+        iconResId = R.drawable.ic_photo_camera_24,
+        modifier = modifier,
+    )
+}
+
+@Composable
+private fun GalleryTile(
+    onClick: () -> Unit,
+    enabled: Boolean,
+    modifier: Modifier = Modifier,
+) {
+    PredefinedButtonTile(
+        onClick = onClick,
+        enabled = enabled,
+        textResId = R.string.get_from_gallery,
+        iconResId = R.drawable.ic_image_24,
+        modifier = modifier,
+    )
 }
 
 @Composable

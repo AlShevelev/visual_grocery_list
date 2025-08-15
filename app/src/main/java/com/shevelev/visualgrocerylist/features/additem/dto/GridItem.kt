@@ -17,4 +17,8 @@ internal sealed class GridItem(val id: String) {
     ): GridItem(id)
 
     data object SearchInternet: GridItem(Long.MIN_VALUE.toString())
+
+    data object Gallery: GridItem((Long.MIN_VALUE + 1).toString())
+
+    data object MakePhoto: GridItem((Long.MIN_VALUE + 2).toString())
 }

@@ -35,7 +35,9 @@ internal class AddItemScreenViewModel(
     var searchQuery by mutableStateOf("")
         private set
 
-    private val _screenState = MutableStateFlow<ScreenState>(ScreenState())
+    private val _screenState = MutableStateFlow<ScreenState>(
+        ScreenState(items = listOf(GridItem.Gallery, GridItem.MakePhoto))
+    )
     val screenState: StateFlow<ScreenState> = _screenState.asStateFlow()
 
     private val _screenEvent = MutableSharedFlow< ScreenEvent>()
@@ -51,7 +53,7 @@ internal class AddItemScreenViewModel(
         _searchJob?.cancel()
         _searchJob = viewModelScope.launch {
             val result = if (newQuery.isEmpty()) {
-                emptyList()
+                listOf(GridItem.Gallery, GridItem.MakePhoto)
             } else {
                 delay(SEARCH_DEBOUNCE_PAUSE.milliseconds)
 
@@ -66,7 +68,7 @@ internal class AddItemScreenViewModel(
                         )
                     }
 
-                dbItems + GridItem.SearchInternet
+                listOf(GridItem.SearchInternet, GridItem.Gallery, GridItem.MakePhoto) + dbItems
             }
 
 
@@ -81,10 +83,12 @@ internal class AddItemScreenViewModel(
 
             val searchResult = searchRepository.search(searchQuery)
 
+            val oldValues = listOf(GridItem.Gallery, GridItem.MakePhoto) + dbItems
+
             searchResult.onSuccess { result ->
                 _screenState.emit(
                     ScreenState(
-                        items = dbItems + result.images.map {
+                        items = oldValues + result.images.map {
                             GridItem.Internet(
                                 id = it.id,
                                 imageLink = it.thumbnailLink,

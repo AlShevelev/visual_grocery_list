@@ -8,6 +8,8 @@
     <string name="nothing_found">Nothing found</string>
     <string name="try_adjusting_your_search">Try adjusting your search</string>
     <string name="search_the_internet">Search the internet</string>
+    <string name="get_from_gallery">Get from the gallery</string>
+    <string name="make_photo">Make photo</string>
     <string name="empty_list">The list is empty - add something to it</string>
     <string name="item_has_been_removed">\'%s\' has been removed.</string>
     <string name="restore">Restore</string>
