@@ -21,7 +21,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.shevelev.visualgrocerylist.R
 import com.shevelev.visualgrocerylist.com.shevelev.visualgrocerylist.features.additem.dto.ScreenEvent
 import com.shevelev.visualgrocerylist.com.shevelev.visualgrocerylist.features.additem.ui.NameConfirmationDialog
-import com.shevelev.visualgrocerylist.com.shevelev.visualgrocerylist.features.additem.ui.SearchContent
+import com.shevelev.visualgrocerylist.com.shevelev.visualgrocerylist.features.additem.ui.search.SearchContent
 import com.shevelev.visualgrocerylist.features.additem.viewmodel.AddItemScreenViewModel
 import com.shevelev.visualgrocerylist.shared.ui.navigation.Route
 import org.koin.androidx.compose.koinViewModel

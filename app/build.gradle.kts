@@ -62,14 +62,14 @@ dependencies {
     implementation(libs.androidx.lifecycle.viewmodel.navigation3)
 
     implementation(libs.utils.timber)
+    implementation(libs.composereorderable)
+    implementation(libs.image.cropper)
 
     implementation(libs.koin.android)
     implementation(libs.koin.jpc)
 
     implementation(libs.coil.compose)
     implementation(libs.coil.network)
-
-    implementation(libs.composereorderable)
 
     debugImplementation(libs.androidx.ui.tooling)
 }
