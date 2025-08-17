@@ -35,9 +35,7 @@ internal class AddItemScreenViewModel(
     var searchQuery by mutableStateOf("")
         private set
 
-    private val _screenState = MutableStateFlow<ScreenState>(
-        ScreenState(items = listOf(GridItem.Gallery, GridItem.MakePhoto))
-    )
+    private val _screenState = MutableStateFlow<ScreenState>(ScreenState(items =  emptyList()))
     val screenState: StateFlow<ScreenState> = _screenState.asStateFlow()
 
     private val _screenEvent = MutableSharedFlow< ScreenEvent>()
