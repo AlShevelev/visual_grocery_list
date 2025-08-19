@@ -1,6 +1,7 @@
 package com.shevelev.visualgrocerylist.com.shevelev.visualgrocerylist.features.list.ui
 
 import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -16,7 +17,10 @@ internal fun ClearListConfirmationDialog(
 
     AlertDialog(
         text = {
-            Text(text = context.getString(R.string.clearListConfirmation))
+            Text(
+                text = context.getString(R.string.clearListConfirmation),
+                style = MaterialTheme.typography.titleMedium,
+            )
         },
         onDismissRequest = {
             onDismiss()
@@ -27,7 +31,10 @@ internal fun ClearListConfirmationDialog(
                     onConfirmation()
                 }
             ) {
-                Text(text = context.getString(R.string.yes))
+                Text(
+                    text = context.getString(R.string.yes),
+                    style = MaterialTheme.typography.titleMedium,
+                )
             }
         },
         dismissButton = {
@@ -36,7 +43,10 @@ internal fun ClearListConfirmationDialog(
                     onDismiss()
                 }
             ) {
-                Text(text = context.getString(R.string.no))
+                Text(
+                    text = context.getString(R.string.no),
+                    style = MaterialTheme.typography.titleMedium,
+                )
             }
         }
     )

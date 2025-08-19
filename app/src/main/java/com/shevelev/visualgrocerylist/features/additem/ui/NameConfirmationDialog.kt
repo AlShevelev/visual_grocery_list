@@ -36,7 +36,12 @@ internal fun NameConfirmationDialog(
     var name by remember { mutableStateOf(popupInfo.name) }
 
     AlertDialog(
-        title = { Text(text = context.getString(R.string.the_name_is)) },
+        title = {
+            Text(
+                text = context.getString(R.string.the_name_is),
+                style = MaterialTheme.typography.titleMedium,
+            )
+        },
         text = {
             BasicTextField(
                 value = name,
@@ -72,7 +77,10 @@ internal fun NameConfirmationDialog(
                     onConfirmation(name, popupInfo.item)
                 }
             ) {
-                Text(text = context.getString(R.string.save))
+                Text(
+                    text = context.getString(R.string.save),
+                    style = MaterialTheme.typography.titleMedium,
+                )
             }
         },
     )
