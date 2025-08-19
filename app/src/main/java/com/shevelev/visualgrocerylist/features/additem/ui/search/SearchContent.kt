@@ -25,10 +25,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -47,15 +43,15 @@ internal fun SearchContent(
     onSearchQueryChange: (String) -> Unit,
     onSearchTheInternetClick: () -> Unit,
     onDbItemClick: (GridItem.Db) -> Unit,
+    onCapturedItemClick: (GridItem.Captured) -> Unit,
     onInternetItemClick: (GridItem.Internet) -> Unit,
+    onBitmapCaptured: (Bitmap) ->  Unit,
     modifier: Modifier = Modifier,
 ) {
     val dimensions = LocalDimensions.current
 
-    var bitmap: Bitmap? by remember { mutableStateOf(null) }
-
     val imageCropLauncher = createImageCropLauncher {
-        bitmap = it
+        onBitmapCaptured(it)
     }
 
     val cropImageOptions = getCropImageOptions()
@@ -90,11 +86,21 @@ internal fun SearchContent(
                                 enabled = !screenState.loading,
                                 onClick = onDbItemClick,
                             )
-                            is GridItem.SearchInternet -> SearchTheInternetTile(
+                            is GridItem.Captured -> CapturedItemTile(
+                                item = item,
+                                enabled = !screenState.loading,
+                                onClick = onCapturedItemClick,
+                            )
+                            is GridItem.Internet -> InternetItemTile(
+                                item = item,
+                                enabled = !screenState.loading,
+                                onClick = onInternetItemClick,
+                            )
+                            is GridItem.SearchInternetAction -> SearchTheInternetTile(
                                 onClick = onSearchTheInternetClick,
                                 enabled = !screenState.loading,
                             )
-                            GridItem.Gallery -> GalleryTile(
+                            GridItem.GalleryAction -> GalleryTile(
                                 onClick = {
                                     val cropOptions = CropImageContractOptions(
                                         uri = null,
@@ -105,7 +111,7 @@ internal fun SearchContent(
                                 },
                                 enabled = !screenState.loading,
                             )
-                            GridItem.MakePhoto -> CameraTile(
+                            GridItem.MakePhotoAction -> CameraTile(
                                 onClick = {
                                     val cropOptions = CropImageContractOptions(
                                         uri = null,
@@ -115,11 +121,6 @@ internal fun SearchContent(
                                     imageCropLauncher.launch(cropOptions)
                                 },
                                 enabled = !screenState.loading,
-                            )
-                            is GridItem.Internet -> InternetItemTile(
-                                item = item,
-                                enabled = !screenState.loading,
-                                onClick = onInternetItemClick,
                             )
                         }
                     }

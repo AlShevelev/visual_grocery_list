@@ -28,7 +28,7 @@ import com.shevelev.visualgrocerylist.shared.ui.theme.LocalDimensions
 internal fun NameConfirmationDialog(
     popupInfo: NamePopup,
     onDismiss: () -> Unit,
-    onConfirmation: (String, GridItem.Internet) -> Unit,
+    onConfirmation: (String, GridItem) -> Unit,
 ) {
     val context = LocalContext.current
     val dimensions = LocalDimensions.current

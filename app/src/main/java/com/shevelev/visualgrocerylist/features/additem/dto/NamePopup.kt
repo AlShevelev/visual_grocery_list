@@ -2,5 +2,5 @@ package com.shevelev.visualgrocerylist.com.shevelev.visualgrocerylist.features.a
 
 internal data class NamePopup(
     val name: String,
-    val item: GridItem.Internet,
+    val item: GridItem,
 )

@@ -79,8 +79,8 @@ internal fun Content(
     if (namePopup != null) {
         NameConfirmationDialog(
             popupInfo = namePopup,
-            onDismiss = viewModel::onInternetItemNameRejected,
-            onConfirmation = {name, item -> viewModel.onInternetItemNameConfirmed(item, name) }
+            onDismiss = viewModel::onNameRejected,
+            onConfirmation = {name, item -> viewModel.onNameConfirmed(item, name) }
         )
     }
 
@@ -93,6 +93,8 @@ internal fun Content(
         onSearchTheInternetClick = viewModel::onSearchTheInternetClick,
         onDbItemClick = viewModel::onDbItemClick,
         onInternetItemClick = viewModel::onInternetItemClick,
+        onCapturedItemClick = viewModel::onCapturedItemClick,
+        onBitmapCaptured = viewModel::onBitmapCaptured,
         modifier = modifier,
     )
 

@@ -1,5 +1,6 @@
 package com.shevelev.visualgrocerylist.com.shevelev.visualgrocerylist.features.additem.dto
 
+import android.graphics.Bitmap
 import android.net.Uri
 import java.io.File
 
@@ -16,9 +17,14 @@ internal sealed class GridItem(val id: String) {
         val imageLink: Uri,
     ): GridItem(id)
 
-    data object SearchInternet: GridItem(Long.MIN_VALUE.toString())
+    class Captured(
+        id: String,
+        val bitmap: Bitmap,
+    ): GridItem(id)
 
-    data object Gallery: GridItem((Long.MIN_VALUE + 1).toString())
+    data object SearchInternetAction: GridItem(Long.MIN_VALUE.toString())
 
-    data object MakePhoto: GridItem((Long.MIN_VALUE + 2).toString())
+    data object GalleryAction: GridItem((Long.MIN_VALUE + 1).toString())
+
+    data object MakePhotoAction: GridItem((Long.MIN_VALUE + 2).toString())
 }

@@ -32,6 +32,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.shevelev.visualgrocerylist.R
 import com.shevelev.visualgrocerylist.com.shevelev.visualgrocerylist.features.additem.dto.GridItem
+import com.shevelev.visualgrocerylist.com.shevelev.visualgrocerylist.shared.ui.components.AsyncBitmap
 import com.shevelev.visualgrocerylist.com.shevelev.visualgrocerylist.shared.ui.components.AsyncImageFile
 import com.shevelev.visualgrocerylist.com.shevelev.visualgrocerylist.shared.ui.components.AsyncImageUrl
 import com.shevelev.visualgrocerylist.com.shevelev.visualgrocerylist.shared.ui.components.GridTile
@@ -201,5 +202,30 @@ internal fun InternetItemTile(
                 )
             }
         }
+    }
+}
+
+@Composable
+internal fun CapturedItemTile(
+    item: GridItem.Captured,
+    enabled: Boolean,
+    onClick: (GridItem.Captured) -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    val keyboardController = LocalSoftwareKeyboardController.current
+
+    return GridTile(
+        modifier = modifier,
+        enabled = enabled,
+        onClick = {
+            keyboardController?.hide()
+            onClick(item)
+        }
+    ) {
+        AsyncBitmap(
+            bitmap = item.bitmap,
+            modifier = Modifier.fillMaxSize(),
+            onError = { Timber.e(it) },
+        )
     }
 }

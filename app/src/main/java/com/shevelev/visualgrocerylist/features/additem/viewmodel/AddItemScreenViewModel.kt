@@ -1,5 +1,6 @@
 package com.shevelev.visualgrocerylist.features.additem.viewmodel
 
+import android.graphics.Bitmap
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -16,6 +17,8 @@ import com.shevelev.visualgrocerylist.storage.database.repository.DatabaseReposi
 import com.shevelev.visualgrocerylist.network.repository.SearchRepository
 import kotlin.String
 import kotlin.time.Duration.Companion.milliseconds
+import kotlin.uuid.ExperimentalUuidApi
+import kotlin.uuid.Uuid
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -41,8 +44,6 @@ internal class AddItemScreenViewModel(
     private val _screenEvent = MutableSharedFlow< ScreenEvent>()
     val screenEvent: SharedFlow<ScreenEvent> = _screenEvent.asSharedFlow()
 
-    private var dbItems: List<GridItem> = emptyList()
-
     private var _searchJob: Job? = null
 
     fun onSearchQueryChange(newQuery: String) {
@@ -51,11 +52,11 @@ internal class AddItemScreenViewModel(
         _searchJob?.cancel()
         _searchJob = viewModelScope.launch {
             val result = if (newQuery.isEmpty()) {
-                listOf(GridItem.Gallery, GridItem.MakePhoto)
+                emptyList<GridItem>()
             } else {
                 delay(SEARCH_DEBOUNCE_PAUSE.milliseconds)
 
-                dbItems = databaseRepository
+                val dbItems = databaseRepository
                     .findGroceryItemByKeyWord(searchQuery)
                     .map {
                         GridItem.Db(
@@ -66,9 +67,12 @@ internal class AddItemScreenViewModel(
                         )
                     }
 
-                listOf(GridItem.SearchInternet, GridItem.Gallery, GridItem.MakePhoto) + dbItems
+                dbItems + listOf(
+                    GridItem.SearchInternetAction,
+                    GridItem.GalleryAction,
+                    GridItem.MakePhotoAction
+                )
             }
-
 
             _screenState.emit(ScreenState(items = result))
         }
@@ -81,20 +85,20 @@ internal class AddItemScreenViewModel(
 
             val searchResult = searchRepository.search(searchQuery)
 
-            val oldValues = listOf(GridItem.Gallery, GridItem.MakePhoto) + dbItems
+            val items = _screenState.value.items.toMutableList()
+            items.removeAll { it is GridItem.SearchInternetAction }
 
             searchResult.onSuccess { result ->
-                _screenState.emit(
-                    ScreenState(
-                        items = oldValues + result.images.map {
-                            GridItem.Internet(
-                                id = it.id,
-                                imageLink = it.thumbnailLink,
-                            )
-                        },
-                        loading = false,
+                val itemsToAdd = result.images.map {
+                    GridItem.Internet(
+                        id = it.id,
+                        imageLink = it.thumbnailLink,
                     )
-                )
+                }
+
+                items.addAll(getIndexToInsertNewItems(), itemsToAdd)
+
+                _screenState.emit(ScreenState(items = items, loading = false))
             }.onFailure {
                 _screenEvent.emit(ScreenEvent.Error)
                 setLoading(false)
@@ -110,12 +114,26 @@ internal class AddItemScreenViewModel(
         }
     }
 
-    fun onInternetItemNameConfirmed(item: GridItem.Internet, name: String) {
+    fun onCapturedItemClick(item: GridItem.Captured) {
+        viewModelScope.launch {
+            _screenState.emit(
+                _screenState.value.copy(namePopup = NamePopup(name = searchQuery, item = item))
+            )
+        }
+    }
+
+    fun onNameConfirmed(item: GridItem, name: String) {
         viewModelScope.launch {
             _screenState.emit(_screenState.value.copy(namePopup = null))
             setLoading(true)
 
-            fileRepository.download(item.imageLink).onSuccess { fileName ->
+            val result = when (item) {
+                is GridItem.Internet -> fileRepository.download(item.imageLink)
+                is GridItem.Captured -> fileRepository.save(item.bitmap)
+                else -> Result.failure(IllegalArgumentException())
+            }
+
+            result.onSuccess { fileName ->
                 val itemDbId = databaseRepository.addGroceryItem(name, fileName)
                 databaseRepository.addGroceryListItemToTop(groceryItemDbId = itemDbId)
 
@@ -127,7 +145,7 @@ internal class AddItemScreenViewModel(
         }
     }
 
-    fun onInternetItemNameRejected() {
+    fun onNameRejected() {
         viewModelScope.launch {
             _screenState.emit(_screenState.value.copy(namePopup = null))
         }
@@ -146,6 +164,31 @@ internal class AddItemScreenViewModel(
             closeScreen()
         }
     }
+
+    @OptIn(ExperimentalUuidApi::class)
+    fun onBitmapCaptured(bitmap: Bitmap) {
+        viewModelScope.launch {
+            val indexToInsert = getIndexToInsertNewItems()
+
+            val itemToInsert = GridItem.Captured(
+                id = Uuid.random().toString(),
+                bitmap = bitmap,
+            )
+
+            val items = _screenState.value.items.toMutableList()
+
+            items.add(indexToInsert, itemToInsert)
+
+            _screenState.emit(_screenState.value.copy(items = items))
+        }
+    }
+
+    private fun getIndexToInsertNewItems(): Int = 0
+        //_screenState.value.items.indexOfFirst {
+        //    it !is GridItem.SearchInternetAction &&
+        //    it !is GridItem.GalleryAction &&
+        //    it !is GridItem.MakePhotoAction
+        //}.takeIf { it != -1 } ?: 0
 
     private suspend fun setLoading(loading: Boolean) {
         _screenState.emit(
