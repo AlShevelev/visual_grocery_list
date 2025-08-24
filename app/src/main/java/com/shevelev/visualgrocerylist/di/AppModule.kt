@@ -1,5 +1,6 @@
 package com.shevelev.visualgrocerylist.com.shevelev.visualgrocerylist.di
 
+import com.shevelev.visualgrocerylist.com.shevelev.visualgrocerylist.features.edititems.viewmodel.EditItemsViewModel
 import com.shevelev.visualgrocerylist.com.shevelev.visualgrocerylist.features.list.viewmodel.ListViewModel
 import com.shevelev.visualgrocerylist.com.shevelev.visualgrocerylist.shared.architecture.FlagsStorageImpl
 import com.shevelev.visualgrocerylist.com.shevelev.visualgrocerylist.shared.architecture.FlagsStorage
@@ -12,6 +13,8 @@ import org.koin.dsl.module
 
 val appModule = module {
     viewModelOf(::AddItemScreenViewModel)
+
+    viewModelOf(::EditItemsViewModel)
 
     viewModelOf(::ListViewModel)
 

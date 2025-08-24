@@ -4,9 +4,11 @@
     <string name="settings">Settings</string>
     <string name="clear_list">Clear the list</string>
     <string name="app_item">Add item</string>
+    <string name="edit_items">Edit items</string>
     <string name="search_here">Search here</string>
     <string name="nothing_found">Nothing found</string>
     <string name="try_adjusting_your_search">Try adjusting your search</string>
+    <string name="try_to_add">Try to add new items first</string>
     <string name="search_the_internet">Search the internet</string>
     <string name="get_from_gallery">Get from the gallery</string>
     <string name="make_photo">Make photo</string>

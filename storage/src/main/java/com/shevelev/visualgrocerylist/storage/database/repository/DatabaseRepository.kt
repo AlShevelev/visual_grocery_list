@@ -7,6 +7,8 @@ import com.shevelev.visualgrocerylist.storage.database.entities.GroceryListItemC
 interface DatabaseRepository {
     suspend fun findGroceryItemByKeyWord(keyWord: String): List<GroceryItem>
 
+    suspend fun getAllGroceryItems(): List<GroceryItem>
+
     suspend fun addGroceryItem(keyWord: String, fileName: String): Long
 
     suspend fun addGroceryListItemToTop(groceryItemDbId: Long): Long

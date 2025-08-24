@@ -12,6 +12,7 @@ import androidx.navigation3.runtime.NavEntry
 import androidx.navigation3.runtime.rememberSavedStateNavEntryDecorator
 import androidx.navigation3.ui.NavDisplay
 import com.shevelev.visualgrocerylist.features.additem.ui.ScreenRoot as AddItemScreenRoot
+import com.shevelev.visualgrocerylist.features.edititems.ui.ScreenRoot as EditItemsScreenRoot
 import com.shevelev.visualgrocerylist.features.list.ui.ScreenRoot as ListScreenRoot
 import com.shevelev.visualgrocerylist.shared.ui.navigation.Route
 import com.shevelev.visualgrocerylist.shared.ui.theme.VisualGroceryListTheme
@@ -41,6 +42,10 @@ class MainActivity : ComponentActivity() {
 
                             is Route.AddItemScreenRoute -> NavEntry(key) {
                                 AddItemScreenRoot(backStack)
+                            }
+
+                            is Route.EditItemsScreenRoute -> NavEntry(key) {
+                                EditItemsScreenRoot(backStack)
                             }
                         }
                     }

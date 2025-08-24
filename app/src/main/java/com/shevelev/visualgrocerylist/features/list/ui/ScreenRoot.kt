@@ -1,10 +1,13 @@
 package com.shevelev.visualgrocerylist.features.list.ui
 
+import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.requiredWidth
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
@@ -15,6 +18,7 @@ import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.outlined.Edit
 import androidx.compose.material.icons.outlined.Settings
+import androidx.compose.material3.DrawerDefaults
 import androidx.compose.material3.DrawerState
 import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.DropdownMenu
@@ -45,7 +49,9 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.shevelev.visualgrocerylist.R
 import com.shevelev.visualgrocerylist.com.shevelev.visualgrocerylist.features.list.dto.ScreenEvent
@@ -58,6 +64,7 @@ import com.shevelev.visualgrocerylist.com.shevelev.visualgrocerylist.features.li
 import com.shevelev.visualgrocerylist.shared.ui.navigation.Route
 import com.shevelev.visualgrocerylist.shared.ui.theme.LocalDimensions
 import com.shevelev.visualgrocerylist.shared.ui.theme.LocalUiConstants
+import kotlin.collections.MutableList
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -74,8 +81,8 @@ internal fun ScreenRoot(
     val snackbarHostState = remember { SnackbarHostState() }
 
     ModalNavigationDrawer(
-        drawerContent = { DrawerContent() },
-        drawerState = drawerState
+        drawerContent = { DrawerContent(backStack) },
+        drawerState = drawerState,
     ) {
         Scaffold(
             topBar = { AppBar(
@@ -85,7 +92,7 @@ internal fun ScreenRoot(
             floatingActionButton = { MainButton(backStack) },
             snackbarHost = {
                 SnackbarHost(hostState = snackbarHostState)
-            }
+            },
         ) { innerPadding ->
             Content(
                 modifier = Modifier.padding(innerPadding),
@@ -168,12 +175,19 @@ internal fun AppBar(
     )
 }
 
+@SuppressLint("ConfigurationScreenWidthHeight")
 @Composable
-fun DrawerContent() {
+fun DrawerContent(
+    backStack: MutableList<Route>,
+) {
     val dimensions = LocalDimensions.current
     val context = LocalContext.current
 
-    ModalDrawerSheet {
+    val screenWidthDp = LocalConfiguration.current.screenWidthDp.dp
+
+    ModalDrawerSheet(
+        modifier = Modifier.requiredWidth(screenWidthDp * 0.75f).fillMaxHeight()
+    ) {
         Column(
             modifier = Modifier
                 .padding(horizontal = dimensions.paddingDouble)
@@ -195,7 +209,7 @@ fun DrawerContent() {
                 label = { Text(context.getString(R.string.edit_grocery_items)) },
                 selected = false,
                 icon = { Icon(Icons.Outlined.Edit, contentDescription = null) },
-                onClick = { /* Handle click */ }
+                onClick = { backStack.add(Route.EditItemsScreenRoute) }
             )
             NavigationDrawerItem(
                 label = { Text(context.getString(R.string.settings)) },

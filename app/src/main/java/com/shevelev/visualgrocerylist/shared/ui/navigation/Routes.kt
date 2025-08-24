@@ -4,4 +4,6 @@ sealed interface Route {
     data object ListScreenRoute: Route
 
     data object AddItemScreenRoute: Route
+
+    data object EditItemsScreenRoute: Route
 }

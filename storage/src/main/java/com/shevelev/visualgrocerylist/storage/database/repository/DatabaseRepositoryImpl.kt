@@ -20,6 +20,8 @@ internal class DatabaseRepositoryImpl(
     override suspend fun findGroceryItemByKeyWord(keyWord: String): List<GroceryItem> =
         db.groceryItem.readByKeyWord(keyWord.lowercase())
 
+    override suspend fun getAllGroceryItems(): List<GroceryItem> = db.groceryItem.readAll()
+
     override suspend fun addGroceryItem(keyWord: String, fileName: String): Long {
         val itemToCreate = GroceryItem(
             id = 0L,

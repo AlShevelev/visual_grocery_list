@@ -7,27 +7,21 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material3.Badge
-import androidx.compose.material3.BadgedBox
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.CheckboxDefaults
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.dropShadow
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.shadow.Shadow as IconShadow
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.shevelev.visualgrocerylist.R
 import com.shevelev.visualgrocerylist.com.shevelev.visualgrocerylist.features.list.dto.GridItem
 import com.shevelev.visualgrocerylist.com.shevelev.visualgrocerylist.shared.ui.components.AsyncImageFile
 import com.shevelev.visualgrocerylist.com.shevelev.visualgrocerylist.shared.ui.components.GridTile
+import com.shevelev.visualgrocerylist.com.shevelev.visualgrocerylist.shared.ui.components.TileButton
 import com.shevelev.visualgrocerylist.com.shevelev.visualgrocerylist.shared.ui.components.TileTitle
 import com.shevelev.visualgrocerylist.shared.ui.theme.LocalDimensions
 import timber.log.Timber
@@ -45,7 +39,7 @@ internal fun GroceryListItemTile(
 
     val dimensions = LocalDimensions.current
 
-    return GridTile(
+    GridTile(
         modifier = modifier,
     ) {
         Box(
@@ -85,49 +79,20 @@ internal fun GroceryListItemTile(
                                 shadow = IconShadow(radius = 0.dp, alpha = 0.15f)
                             )
                     )
-                    IconButton(
+                    TileButton(
                         onClick = { onDeleteClick(item.dbId) },
+                        tint = foregroundColor,
+                        iconResId = R.drawable.ic_rounded_delete_24,
                         modifier = Modifier.padding(start = dimensions.paddingHalf)
-                    ) {
-                        Icon(
-                            painter = painterResource(R.drawable.ic_rounded_delete_24),
-                            contentDescription = "",
-                            tint = foregroundColor,
-                            modifier = Modifier
-                                .dropShadow(
-                                    shape = CircleShape,
-                                    shadow = IconShadow(radius = 25.dp, alpha = 0.8f)
-                                )
-                        )
-                    }
-                    IconButton(onClick = { onNoteClick(item.dbId) }) {
-                        NoteButtonIcon(tint = foregroundColor)
-
-                        if (item.hasNote) {
-                            BadgedBox(
-                                badge = { Badge(modifier = Modifier.size(10.dp)) }
-                            ) {
-                                NoteButtonIcon(tint = foregroundColor)
-                            }
-                        }
-                    }
+                    )
+                    TileButton(
+                        onClick = { onNoteClick(item.dbId) },
+                        tint = foregroundColor,
+                        iconResId = R.drawable.ic_add_note_24,
+                        hasBadge = item.hasNote,
+                    )
                 }
             }
         }
     }
-}
-
-@Composable
-private fun NoteButtonIcon(
-    tint: Color,
-) {
-    Icon(
-        painter = painterResource(R.drawable.ic_add_note_24),
-        contentDescription = "",
-        tint = tint,
-        modifier = Modifier.dropShadow(
-            shape = CircleShape,
-            shadow = IconShadow(radius = 25.dp, alpha = 0.8f)
-        )
-    )
 }

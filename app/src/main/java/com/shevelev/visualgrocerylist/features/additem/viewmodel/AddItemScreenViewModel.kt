@@ -10,6 +10,7 @@ import com.shevelev.visualgrocerylist.com.shevelev.visualgrocerylist.features.ad
 import com.shevelev.visualgrocerylist.com.shevelev.visualgrocerylist.features.additem.dto.NamePopup
 import com.shevelev.visualgrocerylist.com.shevelev.visualgrocerylist.features.additem.dto.ScreenEvent
 import com.shevelev.visualgrocerylist.com.shevelev.visualgrocerylist.features.additem.dto.ScreenState
+import com.shevelev.visualgrocerylist.com.shevelev.visualgrocerylist.shared.Constants
 import com.shevelev.visualgrocerylist.com.shevelev.visualgrocerylist.shared.architecture.Flags
 import com.shevelev.visualgrocerylist.com.shevelev.visualgrocerylist.shared.architecture.FlagsStorage
 import com.shevelev.visualgrocerylist.storage.file.FileRepository
@@ -54,7 +55,7 @@ internal class AddItemScreenViewModel(
             val result = if (newQuery.isEmpty()) {
                 emptyList<GridItem>()
             } else {
-                delay(SEARCH_DEBOUNCE_PAUSE.milliseconds)
+                delay(Constants.SEARCH_DEBOUNCE_PAUSE_MILLIS.milliseconds)
 
                 val dbItems = databaseRepository
                     .findGroceryItemByKeyWord(searchQuery)
@@ -199,9 +200,5 @@ internal class AddItemScreenViewModel(
     private suspend fun closeScreen() {
         flags.setFlag(Flags.MUST_REFRESH_LIST)
         _screenEvent.emit(ScreenEvent.Close)
-    }
-
-    companion object {
-        private const val SEARCH_DEBOUNCE_PAUSE = 500L
     }
 }

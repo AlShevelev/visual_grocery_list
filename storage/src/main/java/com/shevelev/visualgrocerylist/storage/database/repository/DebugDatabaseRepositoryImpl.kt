@@ -33,6 +33,10 @@ internal class DebugDatabaseRepositoryImpl: DatabaseRepository {
         return source.filter { it.keyWord.contains(kw) }
     }
 
+    override suspend fun getAllGroceryItems(): List<GroceryItem> {
+        TODO("Not yet implemented")
+    }
+
     override suspend fun addGroceryItem(keyWord: String, fileName: String): Long {
         TODO("Not yet implemented")
     }
