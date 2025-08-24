@@ -30,4 +30,7 @@ internal interface GroceryListItemDao {
 
     @Delete
     suspend fun delete(item: GroceryListItem)
+
+    @Query("DELETE FROM grocery_list_item where grocery_item_id = :groceryItemId")
+    suspend fun deleteByGroceryItemId(groceryItemId: Long)
 }

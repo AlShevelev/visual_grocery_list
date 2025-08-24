@@ -22,6 +22,11 @@ internal class DatabaseRepositoryImpl(
 
     override suspend fun getAllGroceryItems(): List<GroceryItem> = db.groceryItem.readAll()
 
+    override suspend fun removeGroceryItemById(dbId: Long) = db.groceryItem.delete(dbId)
+
+    override suspend fun removeGroceryListItemByGroceryItemId(dbId: Long) =
+        db.groceryListItem.deleteByGroceryItemId(dbId)
+
     override suspend fun addGroceryItem(keyWord: String, fileName: String): Long {
         val itemToCreate = GroceryItem(
             id = 0L,

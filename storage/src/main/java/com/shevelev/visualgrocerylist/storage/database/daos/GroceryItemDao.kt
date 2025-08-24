@@ -21,6 +21,6 @@ internal interface GroceryItemDao {
     @Update
     suspend fun update(item: GroceryItem)
 
-    @Delete
-    suspend fun delete(item: GroceryItem)
+    @Query("DELETE FROM grocery_item WHERE grocery_item_id = :id")
+    suspend fun delete(id: Long)
 }

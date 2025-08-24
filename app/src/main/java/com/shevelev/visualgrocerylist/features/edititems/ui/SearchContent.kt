@@ -8,23 +8,18 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material3.Checkbox
-import androidx.compose.material3.CheckboxDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.dropShadow
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.unit.dp
 import com.shevelev.visualgrocerylist.R
 import com.shevelev.visualgrocerylist.com.shevelev.visualgrocerylist.features.edititems.dto.GridItem
 import com.shevelev.visualgrocerylist.com.shevelev.visualgrocerylist.features.edititems.dto.ScreenState
+import com.shevelev.visualgrocerylist.com.shevelev.visualgrocerylist.features.edititems.viewmodel.UserActionsHandler
 import com.shevelev.visualgrocerylist.com.shevelev.visualgrocerylist.shared.ui.components.AsyncImageFile
 import com.shevelev.visualgrocerylist.com.shevelev.visualgrocerylist.shared.ui.components.EmptySearchResult
 import com.shevelev.visualgrocerylist.com.shevelev.visualgrocerylist.shared.ui.components.GridTile
@@ -40,6 +35,7 @@ internal fun SearchContent(
     searchQuery: String,
     screenState: ScreenState,
     onSearchQueryChange: (String) -> Unit,
+    userActionsHandler: UserActionsHandler,
     modifier: Modifier = Modifier,
 ) {
     val dimensions = LocalDimensions.current
@@ -78,6 +74,7 @@ internal fun SearchContent(
                         ItemTile(
                             item = screenState.items[index],
                             enabled = !screenState.loading,
+                            userActionsHandler = userActionsHandler,
                         )
                     }
                 )
@@ -90,6 +87,7 @@ internal fun SearchContent(
 internal fun ItemTile(
     item: GridItem,
     enabled: Boolean,
+    userActionsHandler: UserActionsHandler,
     modifier: Modifier = Modifier,
 ) {
     val foregroundColor = MaterialTheme.colorScheme.onPrimary
@@ -123,20 +121,24 @@ internal fun ItemTile(
                     modifier = Modifier.fillMaxWidth()
                 ) {
                     TileButton(
-                        onClick = {  },
+                        onClick = { userActionsHandler.onDeleteItemClick(item) },
                         tint = foregroundColor,
+
                         iconResId = R.drawable.ic_rounded_delete_24,
+                        enabled = enabled,
                     )
                     Spacer(modifier = Modifier.weight(1f))
                     TileButton(
                         onClick = {  },
                         tint = foregroundColor,
                         iconResId = R.drawable.ic_edit_24,
+                        enabled = enabled,
                     )
                     TileButton(
                         onClick = {  },
                         tint = foregroundColor,
                         iconResId = R.drawable.ic_photo_camera_24,
+                        enabled = enabled,
                     )
                 }
             }

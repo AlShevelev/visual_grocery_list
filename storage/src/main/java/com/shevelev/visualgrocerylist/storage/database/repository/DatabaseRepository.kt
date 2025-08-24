@@ -9,6 +9,10 @@ interface DatabaseRepository {
 
     suspend fun getAllGroceryItems(): List<GroceryItem>
 
+    suspend fun removeGroceryItemById(dbId: Long)
+
+    suspend fun removeGroceryListItemByGroceryItemId(dbId: Long)
+
     suspend fun addGroceryItem(keyWord: String, fileName: String): Long
 
     suspend fun addGroceryListItemToTop(groceryItemDbId: Long): Long

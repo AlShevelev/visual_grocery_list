@@ -6,6 +6,7 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.shevelev.visualgrocerylist.com.shevelev.visualgrocerylist.features.edititems.dto.GridItem
+import com.shevelev.visualgrocerylist.com.shevelev.visualgrocerylist.features.edititems.dto.Popup
 import com.shevelev.visualgrocerylist.com.shevelev.visualgrocerylist.features.edititems.dto.ScreenEvent
 import com.shevelev.visualgrocerylist.com.shevelev.visualgrocerylist.features.edititems.dto.ScreenState
 import com.shevelev.visualgrocerylist.com.shevelev.visualgrocerylist.shared.Constants
@@ -27,7 +28,7 @@ internal class EditItemsViewModel(
     private val databaseRepository: DatabaseRepository,
     private val fileRepository: FileRepository,
     private val flags: FlagsStorage,
-) : ViewModel() {
+) : ViewModel(), UserActionsHandler {
     var searchQuery by mutableStateOf("")
         private set
 
@@ -38,6 +39,8 @@ internal class EditItemsViewModel(
     val screenEvent: SharedFlow<ScreenEvent> = _screenEvent.asSharedFlow()
 
     private var _searchJob: Job? = null
+
+    private var itemsWereEdited = false
 
     init {
         viewModelScope.launch {
@@ -78,6 +81,32 @@ internal class EditItemsViewModel(
             }
 
             _screenState.emit(ScreenState(items = result))
+        }
+    }
+
+    override fun onDeleteItemClick(item: GridItem) {
+        viewModelScope.launch {
+            _screenState.emit(_screenState.value.copy(popup = Popup.DeleteConfirmationPopup(item)))
+        }
+    }
+
+    override fun onDeleteItemConfirmed(dbId: Long) {
+        viewModelScope.launch {
+            databaseRepository.removeGroceryListItemByGroceryItemId(dbId)
+            databaseRepository.removeGroceryItemById(dbId)
+
+            val items = _screenState.value.items.toMutableList()
+            items.removeIf { it.dbId == dbId }
+
+            itemsWereEdited = true
+
+            _screenState.emit(_screenState.value.copy(popup = null, items = items))
+        }
+    }
+
+    override fun onDeleteItemRejected() {
+        viewModelScope.launch {
+            _screenState.emit(_screenState.value.copy(popup = null))
         }
     }
 }

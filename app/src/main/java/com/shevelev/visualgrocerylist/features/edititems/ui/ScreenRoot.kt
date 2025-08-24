@@ -17,8 +17,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.shevelev.visualgrocerylist.R
+import com.shevelev.visualgrocerylist.com.shevelev.visualgrocerylist.features.edititems.dto.Popup
 import com.shevelev.visualgrocerylist.com.shevelev.visualgrocerylist.features.edititems.ui.SearchContent
 import com.shevelev.visualgrocerylist.com.shevelev.visualgrocerylist.features.edititems.viewmodel.EditItemsViewModel
+import com.shevelev.visualgrocerylist.com.shevelev.visualgrocerylist.shared.ui.components.ConfirmationDialog
 import com.shevelev.visualgrocerylist.shared.ui.navigation.Route
 import org.koin.androidx.compose.koinViewModel
 
@@ -70,6 +72,30 @@ internal fun Content(
 ) {
     val screenState by viewModel.screenState.collectAsStateWithLifecycle()
 
+    val popup = screenState.popup
+    when (popup) {
+        is Popup.DeleteConfirmationPopup -> {
+            val context = LocalContext.current
+
+            ConfirmationDialog(
+                text = context.getString(R.string.item_will_be_removed, popup.item.title),
+                onConfirmation = {viewModel.onDeleteItemConfirmed(popup.item.dbId)},
+                onDismiss = viewModel::onDeleteItemRejected
+            )
+        }
+
+        else -> {}
+    }
+
+    //if (namePopup != null) {
+    //    NameConfirmationDialog(
+    //        popupInfo = namePopup,
+    //        onDismiss = viewModel::onNameRejected,
+    //        onConfirmation = {name, item -> viewModel.onNameConfirmed(item, name) }
+    //    )
+    //}
+
+
     //val namePopup = screenState.namePopup
     //if (namePopup != null) {
     //    NameConfirmationDialog(
@@ -86,6 +112,7 @@ internal fun Content(
         screenState = screenState,
         onSearchQueryChange = { viewModel.onSearchQueryChange(it) },
         modifier = modifier,
+        userActionsHandler = viewModel,
     )
 
     //LaunchedEffect(Unit) {

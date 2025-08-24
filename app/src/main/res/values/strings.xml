@@ -14,6 +14,7 @@
     <string name="make_photo">Make photo</string>
     <string name="empty_list">The list is empty - add something to it</string>
     <string name="item_has_been_removed">\'%s\' has been removed.</string>
+    <string name="item_will_be_removed">The item \'%s\' will be removed. Continue?</string>
     <string name="restore">Restore</string>
     <string name="save">Save</string>
     <string name="note_sheet_caption">Notes for \'%s\'</string>

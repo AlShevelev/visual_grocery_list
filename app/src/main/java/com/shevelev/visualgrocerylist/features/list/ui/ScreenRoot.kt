@@ -18,7 +18,6 @@ import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.outlined.Edit
 import androidx.compose.material.icons.outlined.Settings
-import androidx.compose.material3.DrawerDefaults
 import androidx.compose.material3.DrawerState
 import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.DropdownMenu
@@ -56,11 +55,11 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.shevelev.visualgrocerylist.R
 import com.shevelev.visualgrocerylist.com.shevelev.visualgrocerylist.features.list.dto.ScreenEvent
 import com.shevelev.visualgrocerylist.com.shevelev.visualgrocerylist.features.list.dto.ScreenState
-import com.shevelev.visualgrocerylist.com.shevelev.visualgrocerylist.features.list.ui.ClearListConfirmationDialog
 import com.shevelev.visualgrocerylist.com.shevelev.visualgrocerylist.features.list.ui.GroceryListPlaceholder
 import com.shevelev.visualgrocerylist.com.shevelev.visualgrocerylist.features.list.ui.NoteBottomSheet
 import com.shevelev.visualgrocerylist.com.shevelev.visualgrocerylist.features.list.viewmodel.ListViewModel
 import com.shevelev.visualgrocerylist.com.shevelev.visualgrocerylist.features.list.viewmodel.UserActionsHandler
+import com.shevelev.visualgrocerylist.com.shevelev.visualgrocerylist.shared.ui.components.ConfirmationDialog
 import com.shevelev.visualgrocerylist.shared.ui.navigation.Route
 import com.shevelev.visualgrocerylist.shared.ui.theme.LocalDimensions
 import com.shevelev.visualgrocerylist.shared.ui.theme.LocalUiConstants
@@ -246,7 +245,8 @@ internal fun Content(
     val clearListConfirmationDialogIsShown = (screenState as? ScreenState.Data)
         ?.clearListConfirmationDialogIsShown
     if (clearListConfirmationDialogIsShown == true) {
-        ClearListConfirmationDialog(
+        ConfirmationDialog(
+            text = context.getString(R.string.clearListConfirmation),
             onConfirmation = viewModel::onListClearConfirmed,
             onDismiss = viewModel::onListClearRejected
         )
