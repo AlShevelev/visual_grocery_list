@@ -5,11 +5,15 @@ import com.shevelev.visualgrocerylist.storage.database.entities.GroceryListItem
 import com.shevelev.visualgrocerylist.storage.database.entities.GroceryListItemCombined
 
 interface DatabaseRepository {
-    suspend fun findGroceryItemByKeyWord(keyWord: String): List<GroceryItem>
+    suspend fun getGroceryItemByKeyWord(keyWord: String): List<GroceryItem>
+
+    suspend fun getGroceryItemById(dbId: Long): GroceryItem?
 
     suspend fun getAllGroceryItems(): List<GroceryItem>
 
-    suspend fun removeGroceryItemById(dbId: Long)
+    suspend fun removeGroceryItem(item: GroceryItem)
+
+    suspend fun updateGroceryItem(item: GroceryItem)
 
     suspend fun removeGroceryListItemByGroceryItemId(dbId: Long)
 

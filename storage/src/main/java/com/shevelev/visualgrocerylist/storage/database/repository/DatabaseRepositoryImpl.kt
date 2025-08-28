@@ -17,12 +17,17 @@ internal class DatabaseRepositoryImpl(
         ).build()
     }
 
-    override suspend fun findGroceryItemByKeyWord(keyWord: String): List<GroceryItem> =
+    override suspend fun getGroceryItemByKeyWord(keyWord: String): List<GroceryItem> =
         db.groceryItem.readByKeyWord(keyWord.lowercase())
+
+    override suspend fun getGroceryItemById(dbId: Long): GroceryItem? =
+        db.groceryItem.readById(dbId).firstOrNull()
 
     override suspend fun getAllGroceryItems(): List<GroceryItem> = db.groceryItem.readAll()
 
-    override suspend fun removeGroceryItemById(dbId: Long) = db.groceryItem.delete(dbId)
+    override suspend fun removeGroceryItem(item: GroceryItem) = db.groceryItem.delete(item)
+
+    override suspend fun updateGroceryItem(item: GroceryItem) = db.groceryItem.update(item)
 
     override suspend fun removeGroceryListItemByGroceryItemId(dbId: Long) =
         db.groceryListItem.deleteByGroceryItemId(dbId)

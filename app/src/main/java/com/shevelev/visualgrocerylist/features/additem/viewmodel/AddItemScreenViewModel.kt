@@ -58,7 +58,7 @@ internal class AddItemScreenViewModel(
                 delay(Constants.SEARCH_DEBOUNCE_PAUSE_MILLIS.milliseconds)
 
                 val dbItems = databaseRepository
-                    .findGroceryItemByKeyWord(searchQuery)
+                    .getGroceryItemByKeyWord(searchQuery)
                     .map {
                         GridItem.Db(
                             id = it.id.toString(),

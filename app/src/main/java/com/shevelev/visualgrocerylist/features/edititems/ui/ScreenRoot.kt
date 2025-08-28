@@ -21,6 +21,7 @@ import com.shevelev.visualgrocerylist.com.shevelev.visualgrocerylist.features.ed
 import com.shevelev.visualgrocerylist.com.shevelev.visualgrocerylist.features.edititems.ui.SearchContent
 import com.shevelev.visualgrocerylist.com.shevelev.visualgrocerylist.features.edititems.viewmodel.EditItemsViewModel
 import com.shevelev.visualgrocerylist.com.shevelev.visualgrocerylist.shared.ui.components.ConfirmationDialog
+import com.shevelev.visualgrocerylist.com.shevelev.visualgrocerylist.shared.ui.components.NameConfirmationDialog
 import com.shevelev.visualgrocerylist.shared.ui.navigation.Route
 import org.koin.androidx.compose.koinViewModel
 
@@ -81,6 +82,15 @@ internal fun Content(
                 text = context.getString(R.string.item_will_be_removed, popup.item.title),
                 onConfirmation = {viewModel.onDeleteItemConfirmed(popup.item.dbId)},
                 onDismiss = viewModel::onDeleteItemRejected
+            )
+        }
+
+        is Popup.NamePopup -> {
+            NameConfirmationDialog(
+                item = popup.item,
+                startName = popup.name,
+                onDismiss = viewModel::onEditNameRejected,
+                onConfirmation = { name, item -> viewModel.onEditNameConfirmed(name, item) },
             )
         }
 

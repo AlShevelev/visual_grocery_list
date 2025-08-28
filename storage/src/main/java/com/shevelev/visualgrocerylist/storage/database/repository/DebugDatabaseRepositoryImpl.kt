@@ -28,16 +28,24 @@ internal class DebugDatabaseRepositoryImpl: DatabaseRepository {
         ),
     )
 
-    override suspend fun findGroceryItemByKeyWord(keyWord: String): List<GroceryItem> {
+    override suspend fun getGroceryItemByKeyWord(keyWord: String): List<GroceryItem> {
         val kw = keyWord.lowercase()
         return source.filter { it.keyWord.contains(kw) }
+    }
+
+    override suspend fun getGroceryItemById(dbId: Long): GroceryItem? {
+        TODO("Not yet implemented")
     }
 
     override suspend fun getAllGroceryItems(): List<GroceryItem> {
         TODO("Not yet implemented")
     }
 
-    override suspend fun removeGroceryItemById(dbId: Long) {
+    override suspend fun removeGroceryItem(item: GroceryItem) {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun updateGroceryItem(item: GroceryItem) {
         TODO("Not yet implemented")
     }
 

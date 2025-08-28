@@ -129,7 +129,7 @@ internal fun ItemTile(
                     )
                     Spacer(modifier = Modifier.weight(1f))
                     TileButton(
-                        onClick = {  },
+                        onClick = { userActionsHandler.onEditNameClick(item) },
                         tint = foregroundColor,
                         iconResId = R.drawable.ic_edit_24,
                         enabled = enabled,

@@ -54,7 +54,7 @@ internal class EditItemsViewModel(
                 )
             }
 
-            _screenState.emit(_screenState.value.copy(loading = false, items = screenItems))
+            updateState { it.copy(loading = false, items = screenItems) }
         }
     }
 
@@ -69,7 +69,7 @@ internal class EditItemsViewModel(
                 delay(Constants.SEARCH_DEBOUNCE_PAUSE_MILLIS.milliseconds)
 
                 databaseRepository
-                    .findGroceryItemByKeyWord(searchQuery)
+                    .getGroceryItemByKeyWord(searchQuery)
                     .map {
                         GridItem(
                             id = it.id.toString(),
@@ -86,27 +86,75 @@ internal class EditItemsViewModel(
 
     override fun onDeleteItemClick(item: GridItem) {
         viewModelScope.launch {
-            _screenState.emit(_screenState.value.copy(popup = Popup.DeleteConfirmationPopup(item)))
+            updateState { it.copy(popup = Popup.DeleteConfirmationPopup(item)) }
         }
     }
 
     override fun onDeleteItemConfirmed(dbId: Long) {
         viewModelScope.launch {
             databaseRepository.removeGroceryListItemByGroceryItemId(dbId)
-            databaseRepository.removeGroceryItemById(dbId)
+
+            databaseRepository.getGroceryItemById(dbId)?.let {
+                databaseRepository.removeGroceryItem(it)
+            }
 
             val items = _screenState.value.items.toMutableList()
             items.removeIf { it.dbId == dbId }
 
             itemsWereEdited = true
 
-            _screenState.emit(_screenState.value.copy(popup = null, items = items))
+            updateState { it.copy(popup = null, items = items) }
         }
     }
 
     override fun onDeleteItemRejected() {
         viewModelScope.launch {
-            _screenState.emit(_screenState.value.copy(popup = null))
+            updateState { it.copy(popup = null) }
         }
+    }
+
+    override fun onEditNameClick(item: GridItem) {
+        viewModelScope.launch {
+            updateState {
+                it.copy(popup = Popup.NamePopup(
+                    name = item.title,
+                    item = item,
+                ))
+            }
+        }
+    }
+
+    override fun onEditNameConfirmed(
+        newName: String,
+        item: GridItem,
+    ) {
+        viewModelScope.launch {
+            val dbItem = databaseRepository.getGroceryItemById(item.dbId) ?: return@launch
+
+            databaseRepository.updateGroceryItem(dbItem.copy(keyWord = newName))
+
+            val items = _screenState.value.items.toMutableList()
+
+            items
+                .indexOfFirst { it.dbId == item.dbId }
+                .takeIf { it != -1 }
+                ?.also { index ->
+                    items[index] = item.copy(title = newName)
+                }
+
+            itemsWereEdited = true
+
+            updateState { it.copy(items = items, popup = null) }
+        }
+    }
+
+    override fun onEditNameRejected() {
+        viewModelScope.launch {
+            updateState { it.copy(popup = null) }
+        }
+    }
+
+    private suspend fun updateState(updateAction: (ScreenState) -> ScreenState) {
+        _screenState.emit(updateAction(_screenState.value))
     }
 }

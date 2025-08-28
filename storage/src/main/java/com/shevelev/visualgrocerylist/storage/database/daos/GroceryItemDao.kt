@@ -18,9 +18,12 @@ internal interface GroceryItemDao {
     @Query("SELECT * FROM grocery_item WHERE key_word LIKE '%' || :keyWord || '%' order by key_word")
     suspend fun readByKeyWord(keyWord: String): List<GroceryItem>
 
+    @Query("SELECT * FROM grocery_item WHERE grocery_item_id = :id")
+    suspend fun readById(id: Long): List<GroceryItem>
+
     @Update
     suspend fun update(item: GroceryItem)
 
-    @Query("DELETE FROM grocery_item WHERE grocery_item_id = :id")
-    suspend fun delete(id: Long)
+    @Delete
+    suspend fun delete(item: GroceryItem)
 }

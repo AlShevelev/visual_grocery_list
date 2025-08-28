@@ -8,4 +8,10 @@ internal interface UserActionsHandler {
     fun onDeleteItemConfirmed(dbId: Long)
 
     fun onDeleteItemRejected()
+
+    fun onEditNameClick(item: GridItem)
+
+    fun onEditNameConfirmed(newName: String, item: GridItem)
+
+    fun onEditNameRejected()
 }

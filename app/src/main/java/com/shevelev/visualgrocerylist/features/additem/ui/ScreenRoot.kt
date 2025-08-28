@@ -19,9 +19,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.shevelev.visualgrocerylist.R
+import com.shevelev.visualgrocerylist.com.shevelev.visualgrocerylist.features.additem.dto.GridItem
 import com.shevelev.visualgrocerylist.com.shevelev.visualgrocerylist.features.additem.dto.ScreenEvent
-import com.shevelev.visualgrocerylist.com.shevelev.visualgrocerylist.features.additem.ui.NameConfirmationDialog
 import com.shevelev.visualgrocerylist.com.shevelev.visualgrocerylist.features.additem.ui.search.SearchContent
+import com.shevelev.visualgrocerylist.com.shevelev.visualgrocerylist.shared.ui.components.NameConfirmationDialog
 import com.shevelev.visualgrocerylist.features.additem.viewmodel.AddItemScreenViewModel
 import com.shevelev.visualgrocerylist.shared.ui.navigation.Route
 import org.koin.androidx.compose.koinViewModel
@@ -77,8 +78,9 @@ internal fun Content(
 
     val namePopup = searchResults.namePopup
     if (namePopup != null) {
-        NameConfirmationDialog(
-            popupInfo = namePopup,
+        NameConfirmationDialog<GridItem>(
+            item = namePopup.item,
+            startName = namePopup.name,
             onDismiss = viewModel::onNameRejected,
             onConfirmation = {name, item -> viewModel.onNameConfirmed(item, name) }
         )
