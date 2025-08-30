@@ -41,28 +41,16 @@ internal fun ConfirmationDialog(
             onDismiss()
         },
         confirmButton = {
-            TextButton(
-                onClick = {
-                    onConfirmation()
-                }
-            ) {
-                Text(
-                    text = context.getString(R.string.yes),
-                    style = MaterialTheme.typography.titleMedium,
-                )
-            }
+            GeneralTextButton(
+                onClick = onConfirmation,
+                text = context.getString(R.string.yes),
+            )
         },
         dismissButton = {
-            TextButton(
-                onClick = {
-                    onDismiss()
-                }
-            ) {
-                Text(
-                    text = context.getString(R.string.no),
-                    style = MaterialTheme.typography.titleMedium,
-                )
-            }
+            GeneralTextButton(
+                onClick = onDismiss,
+                text = context.getString(R.string.no),
+            )
         }
     )
 }
@@ -115,17 +103,11 @@ internal fun <T>NameConfirmationDialog(
         },
         onDismissRequest = onDismiss,
         confirmButton = {
-            TextButton(
+            GeneralTextButton(
                 enabled = name.isNotBlank() && name.isNotEmpty(),
-                onClick = {
-                    onConfirmation(name, item)
-                }
-            ) {
-                Text(
-                    text = context.getString(R.string.save),
-                    style = MaterialTheme.typography.titleMedium,
-                )
-            }
+                onClick = { onConfirmation(name, item) },
+                text = context.getString(R.string.save),
+            )
         },
     )
 }

@@ -154,6 +154,35 @@ internal class EditItemsViewModel(
         }
     }
 
+    override fun onEditImageClick(item: GridItem) {
+        viewModelScope.launch {
+            updateState {
+                it.copy(popup = Popup.ImageSelectionPopup(item = item))
+            }
+        }
+    }
+
+    override fun onEditImageCameraSelected(item: GridItem) {
+        // remove the old file
+        TODO("Not yet implemented")
+    }
+
+    override fun onEditImageGallerySelected(item: GridItem) {
+        // remove the old file
+        TODO("Not yet implemented")
+    }
+
+    override fun onEditImageSearchSelected(item: GridItem) {
+        // remove the old file
+        TODO("Not yet implemented")
+    }
+
+    override fun onEditImageRejected() {
+        viewModelScope.launch {
+            updateState { it.copy(popup = null) }
+        }
+    }
+
     private suspend fun updateState(updateAction: (ScreenState) -> ScreenState) {
         _screenState.emit(updateAction(_screenState.value))
     }

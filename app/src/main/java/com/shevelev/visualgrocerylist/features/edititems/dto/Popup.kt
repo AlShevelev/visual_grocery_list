@@ -10,5 +10,7 @@ internal sealed interface Popup {
         val item: GridItem,
     ) : Popup
 
-    data object ImageSelectionPopup : Popup
+    data class ImageSelectionPopup(
+        val item: GridItem,
+    ) : Popup
 }

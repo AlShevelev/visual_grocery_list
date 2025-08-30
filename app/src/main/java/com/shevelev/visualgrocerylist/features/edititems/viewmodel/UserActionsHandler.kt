@@ -14,4 +14,15 @@ internal interface UserActionsHandler {
     fun onEditNameConfirmed(newName: String, item: GridItem)
 
     fun onEditNameRejected()
+
+    fun onEditImageClick(item: GridItem)
+
+    fun onEditImageCameraSelected(item: GridItem)
+
+    fun onEditImageGallerySelected(item: GridItem)
+
+    fun onEditImageSearchSelected(item: GridItem)
+
+    fun onEditImageRejected()
+
 }

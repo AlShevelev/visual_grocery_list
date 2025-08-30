@@ -9,7 +9,7 @@
     <string name="nothing_found">Nothing found</string>
     <string name="try_adjusting_your_search">Try adjusting your search</string>
     <string name="try_to_add">Try to add new items first</string>
-    <string name="search_the_internet">Search the internet</string>
+    <string name="search_the_internet">Search the Internet</string>
     <string name="get_from_gallery">Get from the gallery</string>
     <string name="make_photo">Make photo</string>
     <string name="empty_list">The list is empty - add something to it</string>
@@ -19,6 +19,10 @@
     <string name="save">Save</string>
     <string name="note_sheet_caption">Notes for \'%s\'</string>
     <string name="enter_note">Enter your note</string>
+    <string name="edit_image_using">Edit the image using…</string>
+    <string name="camera">Camera</string>
+    <string name="gallery">Gallery</string>
+    <string name="searching_internet">Searching the Internet</string>
 
     <string name="clearListConfirmation">Are you sure you want to clear the list?</string>
     <string name="yes">Yes</string>

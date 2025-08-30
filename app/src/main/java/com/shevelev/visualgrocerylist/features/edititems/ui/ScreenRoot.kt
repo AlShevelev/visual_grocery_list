@@ -19,6 +19,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.shevelev.visualgrocerylist.R
 import com.shevelev.visualgrocerylist.com.shevelev.visualgrocerylist.features.edititems.dto.Popup
 import com.shevelev.visualgrocerylist.com.shevelev.visualgrocerylist.features.edititems.ui.SearchContent
+import com.shevelev.visualgrocerylist.com.shevelev.visualgrocerylist.features.edititems.ui.SelectImageDialog
 import com.shevelev.visualgrocerylist.com.shevelev.visualgrocerylist.features.edititems.viewmodel.EditItemsViewModel
 import com.shevelev.visualgrocerylist.com.shevelev.visualgrocerylist.shared.ui.components.ConfirmationDialog
 import com.shevelev.visualgrocerylist.com.shevelev.visualgrocerylist.shared.ui.components.NameConfirmationDialog
@@ -94,28 +95,17 @@ internal fun Content(
             )
         }
 
-        else -> {}
+        is Popup.ImageSelectionPopup -> {
+            SelectImageDialog(
+                onDismiss = viewModel::onEditImageRejected,
+                onCamera = { viewModel.onEditImageCameraSelected(popup.item) },
+                onGallery = { viewModel.onEditImageGallerySelected(popup.item) },
+                onSearch = { viewModel.onEditImageSearchSelected(popup.item) }
+            )
+        }
+
+        else -> { }
     }
-
-    //if (namePopup != null) {
-    //    NameConfirmationDialog(
-    //        popupInfo = namePopup,
-    //        onDismiss = viewModel::onNameRejected,
-    //        onConfirmation = {name, item -> viewModel.onNameConfirmed(item, name) }
-    //    )
-    //}
-
-
-    //val namePopup = screenState.namePopup
-    //if (namePopup != null) {
-    //    NameConfirmationDialog(
-    //        popupInfo = namePopup,
-    //        onDismiss = viewModel::onNameRejected,
-    //        onConfirmation = {name, item -> viewModel.onNameConfirmed(item, name) }
-    //    )
-    //}
-
-    val context = LocalContext.current
 
     SearchContent(
         searchQuery = viewModel.searchQuery,

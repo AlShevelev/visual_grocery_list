@@ -12,6 +12,11 @@ data class Dimensions(
     val paddingSingle: Dp = 8.dp,
     val paddingSingleAndHalf: Dp = 12.dp,
     val paddingDouble: Dp = 16.dp,
+    val paddingDoubleAndHalf: Dp = 20.dp,
+    val paddingTriple: Dp = 24.dp,
+
+    val dialogCorners: Dp = 28.dp,
+    val dialogContent: Dp = 24.dp,
 )
 
 val LocalDimensions = staticCompositionLocalOf<Dimensions> {

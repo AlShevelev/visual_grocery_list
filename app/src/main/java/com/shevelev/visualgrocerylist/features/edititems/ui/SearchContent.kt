@@ -135,7 +135,7 @@ internal fun ItemTile(
                         enabled = enabled,
                     )
                     TileButton(
-                        onClick = {  },
+                        onClick = { userActionsHandler.onEditImageClick(item) },
                         tint = foregroundColor,
                         iconResId = R.drawable.ic_photo_camera_24,
                         enabled = enabled,
