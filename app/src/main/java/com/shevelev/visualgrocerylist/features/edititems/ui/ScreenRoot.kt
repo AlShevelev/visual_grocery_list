@@ -1,5 +1,6 @@
 package com.shevelev.visualgrocerylist.features.edititems.ui
 
+import android.widget.Toast
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
@@ -12,12 +13,17 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.canhub.cropper.CropImageContractOptions
 import com.shevelev.visualgrocerylist.R
+import com.shevelev.visualgrocerylist.com.shevelev.visualgrocerylist.features.additem.ui.search.createImageCropLauncher
+import com.shevelev.visualgrocerylist.com.shevelev.visualgrocerylist.features.additem.ui.search.getCropImageOptions
 import com.shevelev.visualgrocerylist.com.shevelev.visualgrocerylist.features.edititems.dto.Popup
+import com.shevelev.visualgrocerylist.com.shevelev.visualgrocerylist.features.edititems.dto.ScreenEvent
 import com.shevelev.visualgrocerylist.com.shevelev.visualgrocerylist.features.edititems.ui.SearchContent
 import com.shevelev.visualgrocerylist.com.shevelev.visualgrocerylist.features.edititems.ui.SelectImageDialog
 import com.shevelev.visualgrocerylist.com.shevelev.visualgrocerylist.features.edititems.viewmodel.EditItemsViewModel
@@ -74,6 +80,9 @@ internal fun Content(
 ) {
     val screenState by viewModel.screenState.collectAsStateWithLifecycle()
 
+    val imageCropLauncher = createImageCropLauncher { viewModel.onBitmapCaptured(it) }
+    val cropImageOptions = getCropImageOptions()
+
     val popup = screenState.popup
     when (popup) {
         is Popup.DeleteConfirmationPopup -> {
@@ -81,7 +90,7 @@ internal fun Content(
 
             ConfirmationDialog(
                 text = context.getString(R.string.item_will_be_removed, popup.item.title),
-                onConfirmation = {viewModel.onDeleteItemConfirmed(popup.item.dbId)},
+                onConfirmation = {viewModel.onDeleteItemConfirmed()},
                 onDismiss = viewModel::onDeleteItemRejected
             )
         }
@@ -91,16 +100,34 @@ internal fun Content(
                 item = popup.item,
                 startName = popup.name,
                 onDismiss = viewModel::onEditNameRejected,
-                onConfirmation = { name, item -> viewModel.onEditNameConfirmed(name, item) },
+                onConfirmation = { name, item -> viewModel.onEditNameConfirmed(name) },
             )
         }
 
         is Popup.ImageSelectionPopup -> {
             SelectImageDialog(
-                onDismiss = viewModel::onEditImageRejected,
-                onCamera = { viewModel.onEditImageCameraSelected(popup.item) },
-                onGallery = { viewModel.onEditImageGallerySelected(popup.item) },
-                onSearch = { viewModel.onEditImageSearchSelected(popup.item) }
+                onDismiss = viewModel::onEditImageDismissed,
+                onCamera = {
+                    viewModel.onEditImageDismissed()
+
+                    val cropOptions = CropImageContractOptions(
+                        uri = null,
+                        cropImageOptions = cropImageOptions
+                            .copy(imageSourceIncludeGallery = false)
+                    )
+                    imageCropLauncher.launch(cropOptions)
+                },
+                onGallery = {
+                    viewModel.onEditImageDismissed()
+
+                    val cropOptions = CropImageContractOptions(
+                        uri = null,
+                        cropImageOptions = cropImageOptions
+                            .copy(imageSourceIncludeCamera = false)
+                    )
+                    imageCropLauncher.launch(cropOptions)
+                },
+                onSearch = { viewModel.onEditImageSearchSelected() }
             )
         }
 
@@ -115,15 +142,17 @@ internal fun Content(
         userActionsHandler = viewModel,
     )
 
-    //LaunchedEffect(Unit) {
-    //    viewModel.screenEvent.collect {
-    //        when (it) {
-    //            is ScreenEvent.Error -> Toast
-    //                .makeText(context, R.string.error_network, Toast.LENGTH_SHORT)
-    //                .show()
-    //
-    //            is ScreenEvent.Close -> backStack.removeLastOrNull()
-    //        }
-    //    }
-    //}
+    val context = LocalContext.current
+
+    LaunchedEffect(Unit) {
+        viewModel.screenEvent.collect {
+            when (it) {
+                is ScreenEvent.Error -> Toast
+                    .makeText(context, R.string.error_network, Toast.LENGTH_SHORT)
+                    .show()
+
+                is ScreenEvent.Close -> backStack.removeLastOrNull()
+            }
+        }
+    }
 }

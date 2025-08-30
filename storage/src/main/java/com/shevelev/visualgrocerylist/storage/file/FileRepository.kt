@@ -16,4 +16,6 @@ interface FileRepository {
     suspend fun save(bitmap: Bitmap): Result<String>
 
     fun getFileByName(fileName: String): File
+
+    fun delete(file: File)
 }

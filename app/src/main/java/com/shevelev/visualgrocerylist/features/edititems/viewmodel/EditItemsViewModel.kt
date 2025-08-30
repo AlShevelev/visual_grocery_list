@@ -1,5 +1,6 @@
 package com.shevelev.visualgrocerylist.com.shevelev.visualgrocerylist.features.edititems.viewmodel
 
+import android.graphics.Bitmap
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -41,6 +42,8 @@ internal class EditItemsViewModel(
     private var _searchJob: Job? = null
 
     private var itemsWereEdited = false
+
+    private var selectedItem: GridItem? = null
 
     init {
         viewModelScope.launch {
@@ -85,21 +88,25 @@ internal class EditItemsViewModel(
     }
 
     override fun onDeleteItemClick(item: GridItem) {
+        selectedItem = item
+
         viewModelScope.launch {
             updateState { it.copy(popup = Popup.DeleteConfirmationPopup(item)) }
         }
     }
 
-    override fun onDeleteItemConfirmed(dbId: Long) {
+    override fun onDeleteItemConfirmed() {
         viewModelScope.launch {
-            databaseRepository.removeGroceryListItemByGroceryItemId(dbId)
+            val item = selectedItem ?: return@launch
 
-            databaseRepository.getGroceryItemById(dbId)?.let {
+            databaseRepository.removeGroceryListItemByGroceryItemId(item.dbId)
+
+            databaseRepository.getGroceryItemById(item.dbId)?.let {
                 databaseRepository.removeGroceryItem(it)
             }
 
             val items = _screenState.value.items.toMutableList()
-            items.removeIf { it.dbId == dbId }
+            items.removeIf { it.dbId == item.dbId }
 
             itemsWereEdited = true
 
@@ -114,6 +121,8 @@ internal class EditItemsViewModel(
     }
 
     override fun onEditNameClick(item: GridItem) {
+        selectedItem = item
+
         viewModelScope.launch {
             updateState {
                 it.copy(popup = Popup.NamePopup(
@@ -124,11 +133,10 @@ internal class EditItemsViewModel(
         }
     }
 
-    override fun onEditNameConfirmed(
-        newName: String,
-        item: GridItem,
-    ) {
+    override fun onEditNameConfirmed(newName: String) {
         viewModelScope.launch {
+            val item = selectedItem ?: return@launch
+
             val dbItem = databaseRepository.getGroceryItemById(item.dbId) ?: return@launch
 
             databaseRepository.updateGroceryItem(dbItem.copy(keyWord = newName))
@@ -155,6 +163,8 @@ internal class EditItemsViewModel(
     }
 
     override fun onEditImageClick(item: GridItem) {
+        selectedItem = item
+
         viewModelScope.launch {
             updateState {
                 it.copy(popup = Popup.ImageSelectionPopup(item = item))
@@ -162,25 +172,47 @@ internal class EditItemsViewModel(
         }
     }
 
-    override fun onEditImageCameraSelected(item: GridItem) {
+    override fun onEditImageSearchSelected() {
         // remove the old file
         TODO("Not yet implemented")
     }
 
-    override fun onEditImageGallerySelected(item: GridItem) {
-        // remove the old file
-        TODO("Not yet implemented")
-    }
-
-    override fun onEditImageSearchSelected(item: GridItem) {
-        // remove the old file
-        TODO("Not yet implemented")
-    }
-
-    override fun onEditImageRejected() {
+    override fun onEditImageDismissed() {
         viewModelScope.launch {
             updateState { it.copy(popup = null) }
         }
+    }
+
+    override fun onBitmapCaptured(bitmap: Bitmap) {
+        viewModelScope.launch {
+            val item = selectedItem ?: return@launch
+
+            val dbItem = databaseRepository.getGroceryItemById(item.dbId) ?: return@launch
+
+            val itemIndex = _screenState.value.items
+                .indexOfFirst { it.id == item.id }
+                .takeIf { it != -1 }
+                ?: return@launch
+
+            fileRepository.delete(item.imageFile)
+            val saveResult = fileRepository.save(bitmap)
+
+            saveResult.onSuccess { fileName ->
+                databaseRepository.updateGroceryItem(dbItem.copy(imageFile = fileName))
+
+                val imageFile = fileRepository.getFileByName(fileName)
+
+                val items = _screenState.value.items.toMutableList()
+                items[itemIndex] = item.copy(imageFile = imageFile)
+
+                updateState { it.copy(items = items) }
+
+                itemsWereEdited = true
+            }.onFailure {
+                _screenEvent.emit(ScreenEvent.Error)
+            }
+        }
+        // update the item and the screen state
     }
 
     private suspend fun updateState(updateAction: (ScreenState) -> ScreenState) {

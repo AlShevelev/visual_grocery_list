@@ -58,6 +58,10 @@ internal class FileRepositoryImpl(
 
     override fun getFileByName(fileName: String): File = File(context.filesDir, fileName)
 
+    override fun delete(file: File) {
+        file.delete()
+    }
+
     companion object {
         private const val MAX_BITMAP_SIZE_PX = 250
 

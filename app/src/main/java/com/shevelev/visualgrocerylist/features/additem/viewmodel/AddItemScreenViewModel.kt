@@ -185,11 +185,6 @@ internal class AddItemScreenViewModel(
     }
 
     private fun getIndexToInsertNewItems(): Int = 0
-        //_screenState.value.items.indexOfFirst {
-        //    it !is GridItem.SearchInternetAction &&
-        //    it !is GridItem.GalleryAction &&
-        //    it !is GridItem.MakePhotoAction
-        //}.takeIf { it != -1 } ?: 0
 
     private suspend fun setLoading(loading: Boolean) {
         _screenState.emit(
