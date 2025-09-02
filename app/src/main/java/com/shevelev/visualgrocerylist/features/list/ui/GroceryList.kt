@@ -1,4 +1,4 @@
-package com.shevelev.visualgrocerylist.com.shevelev.visualgrocerylist.features.list.ui
+package com.shevelev.visualgrocerylist.features.list.ui
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
@@ -14,9 +14,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import com.shevelev.visualgrocerylist.R
-import com.shevelev.visualgrocerylist.com.shevelev.visualgrocerylist.features.list.dto.GridItem
-import com.shevelev.visualgrocerylist.com.shevelev.visualgrocerylist.features.list.dto.ScreenState
-import com.shevelev.visualgrocerylist.com.shevelev.visualgrocerylist.features.list.viewmodel.UserActionsHandler
+import com.shevelev.visualgrocerylist.features.list.dto.GridItem
+import com.shevelev.visualgrocerylist.features.list.dto.ScreenState
+import com.shevelev.visualgrocerylist.features.list.viewmodel.UserActionsHandler
 import com.shevelev.visualgrocerylist.shared.ui.theme.LocalDimensions
 import org.burnoutcrew.reorderable.ReorderableItem
 import org.burnoutcrew.reorderable.detectReorderAfterLongPress

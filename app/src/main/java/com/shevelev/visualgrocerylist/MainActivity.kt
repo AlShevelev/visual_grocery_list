@@ -11,9 +11,11 @@ import androidx.lifecycle.viewmodel.navigation3.rememberViewModelStoreNavEntryDe
 import androidx.navigation3.runtime.NavEntry
 import androidx.navigation3.runtime.rememberSavedStateNavEntryDecorator
 import androidx.navigation3.ui.NavDisplay
+import com.shevelev.visualgrocerylist.com.shevelev.visualgrocerylist.shared.ui.navigation.NavigatorImpl
 import com.shevelev.visualgrocerylist.features.additem.ui.ScreenRoot as AddItemScreenRoot
 import com.shevelev.visualgrocerylist.features.edititems.ui.ScreenRoot as EditItemsScreenRoot
 import com.shevelev.visualgrocerylist.features.list.ui.ScreenRoot as ListScreenRoot
+import com.shevelev.visualgrocerylist.features.searchimage.ui.ScreenRoot as SearchImageScreenRoot
 import com.shevelev.visualgrocerylist.shared.ui.navigation.Route
 import com.shevelev.visualgrocerylist.shared.ui.theme.VisualGroceryListTheme
 
@@ -26,6 +28,7 @@ class MainActivity : ComponentActivity() {
         setContent {
             VisualGroceryListTheme(dynamicColor = false) {
                 val backStack = remember { mutableStateListOf<Route>(Route.ListScreenRoute) }
+                val navigator = remember { NavigatorImpl(backStack) }
 
                 NavDisplay(
                     entryDecorators = listOf(
@@ -33,19 +36,23 @@ class MainActivity : ComponentActivity() {
                         rememberViewModelStoreNavEntryDecorator()
                     ),
                     backStack = backStack,
-                    onBack = { backStack.removeLastOrNull() },
+                    onBack = { navigator.backHard() },
                     entryProvider = { key ->
                         when (key) {
                             is Route.ListScreenRoute -> NavEntry(key) {
-                                ListScreenRoot(backStack)
+                                ListScreenRoot(navigator)
                             }
 
                             is Route.AddItemScreenRoute -> NavEntry(key) {
-                                AddItemScreenRoot(backStack)
+                                AddItemScreenRoot(navigator)
                             }
 
                             is Route.EditItemsScreenRoute -> NavEntry(key) {
-                                EditItemsScreenRoot(backStack)
+                                EditItemsScreenRoot(navigator)
+                            }
+
+                            is Route.SearchImageRoute -> NavEntry(key) {
+                                SearchImageScreenRoot(navigator, keyword = key.keyword)
                             }
                         }
                     }

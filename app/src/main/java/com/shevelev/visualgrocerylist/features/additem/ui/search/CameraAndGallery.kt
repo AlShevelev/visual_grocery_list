@@ -1,4 +1,4 @@
-package com.shevelev.visualgrocerylist.com.shevelev.visualgrocerylist.features.additem.ui.search
+package com.shevelev.visualgrocerylist.features.additem.ui.search
 
 import android.app.Activity
 import android.graphics.Bitmap

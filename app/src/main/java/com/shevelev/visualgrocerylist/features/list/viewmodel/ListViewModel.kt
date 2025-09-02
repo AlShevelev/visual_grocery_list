@@ -1,14 +1,14 @@
-package com.shevelev.visualgrocerylist.com.shevelev.visualgrocerylist.features.list.viewmodel
+package com.shevelev.visualgrocerylist.features.list.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.shevelev.visualgrocerylist.com.shevelev.visualgrocerylist.features.list.dto.GridItem
-import com.shevelev.visualgrocerylist.com.shevelev.visualgrocerylist.features.list.dto.LastDeletedItem
-import com.shevelev.visualgrocerylist.com.shevelev.visualgrocerylist.features.list.dto.NotePopup
-import com.shevelev.visualgrocerylist.com.shevelev.visualgrocerylist.features.list.dto.ScreenEvent
-import com.shevelev.visualgrocerylist.com.shevelev.visualgrocerylist.features.list.dto.ScreenState
-import com.shevelev.visualgrocerylist.com.shevelev.visualgrocerylist.shared.architecture.Flags
-import com.shevelev.visualgrocerylist.com.shevelev.visualgrocerylist.shared.architecture.FlagsStorage
+import com.shevelev.visualgrocerylist.features.list.dto.GridItem
+import com.shevelev.visualgrocerylist.features.list.dto.LastDeletedItem
+import com.shevelev.visualgrocerylist.features.list.dto.NotePopup
+import com.shevelev.visualgrocerylist.features.list.dto.ScreenEvent
+import com.shevelev.visualgrocerylist.features.list.dto.ScreenState
+import com.shevelev.visualgrocerylist.shared.architecture.Flag
+import com.shevelev.visualgrocerylist.shared.architecture.FlagsStorage
 import com.shevelev.visualgrocerylist.storage.database.entities.GroceryListItemCombined
 import com.shevelev.visualgrocerylist.storage.file.FileRepository
 import com.shevelev.visualgrocerylist.storage.database.repository.DatabaseRepository
@@ -42,7 +42,7 @@ internal class ListViewModel(
         refresh(needRefresh = true)
     }
 
-    fun tryToRefresh() = refresh(flags.hasFlag(Flags.MUST_REFRESH_LIST))
+    fun tryToRefresh() = refresh(flags.hasFlag<Flag.MustRefreshList>() != null)
 
     override fun onCheckedChange(dbId: Long) {
         viewModelScope.launch {

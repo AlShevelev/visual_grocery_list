@@ -6,16 +6,16 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.shevelev.visualgrocerylist.com.shevelev.visualgrocerylist.features.additem.dto.GridItem
-import com.shevelev.visualgrocerylist.com.shevelev.visualgrocerylist.features.additem.dto.NamePopup
-import com.shevelev.visualgrocerylist.com.shevelev.visualgrocerylist.features.additem.dto.ScreenEvent
-import com.shevelev.visualgrocerylist.com.shevelev.visualgrocerylist.features.additem.dto.ScreenState
-import com.shevelev.visualgrocerylist.com.shevelev.visualgrocerylist.shared.Constants
-import com.shevelev.visualgrocerylist.com.shevelev.visualgrocerylist.shared.architecture.Flags
-import com.shevelev.visualgrocerylist.com.shevelev.visualgrocerylist.shared.architecture.FlagsStorage
+import com.shevelev.visualgrocerylist.features.additem.dto.GridItem
+import com.shevelev.visualgrocerylist.features.additem.dto.NamePopup
+import com.shevelev.visualgrocerylist.features.additem.dto.ScreenEvent
+import com.shevelev.visualgrocerylist.features.additem.dto.ScreenState
+import com.shevelev.visualgrocerylist.shared.Constants
+import com.shevelev.visualgrocerylist.shared.architecture.FlagsStorage
 import com.shevelev.visualgrocerylist.storage.file.FileRepository
 import com.shevelev.visualgrocerylist.storage.database.repository.DatabaseRepository
 import com.shevelev.visualgrocerylist.network.repository.SearchRepository
+import com.shevelev.visualgrocerylist.shared.architecture.Flag
 import kotlin.String
 import kotlin.time.Duration.Companion.milliseconds
 import kotlin.uuid.ExperimentalUuidApi
@@ -193,7 +193,7 @@ internal class AddItemScreenViewModel(
     }
 
     private suspend fun closeScreen() {
-        flags.setFlag(Flags.MUST_REFRESH_LIST)
+        flags.setFlag(Flag.MustRefreshList)
         _screenEvent.emit(ScreenEvent.Close)
     }
 }

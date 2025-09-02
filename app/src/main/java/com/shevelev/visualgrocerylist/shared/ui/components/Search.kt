@@ -1,8 +1,9 @@
-package com.shevelev.visualgrocerylist.com.shevelev.visualgrocerylist.shared.ui.components
+package com.shevelev.visualgrocerylist.shared.ui.components
 
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -31,6 +32,7 @@ internal fun SearchTextField(
     searchQuery: String,
     onSearchQueryChange: (String) -> Unit,
     enabled: Boolean,
+    loading: Boolean,
     modifier: Modifier = Modifier,
 ) {
     val dimensions = LocalDimensions.current
@@ -57,7 +59,7 @@ internal fun SearchTextField(
                     .height(50.dp)
                     .padding(dimensions.paddingSingleAndHalf)
             ) {
-                if (!enabled) {
+                if (loading) {
                     CircularProgressIndicator(
                         modifier = Modifier.width(24.dp),
                         color = MaterialTheme.colorScheme.secondary,
@@ -118,3 +120,20 @@ internal fun EmptySearchResult(
         )
     }
 }
+
+@Composable
+internal fun EmptySearchResultLoading(
+    modifier: Modifier = Modifier
+) {
+    Box(
+        contentAlignment = Alignment.Center,
+        modifier = modifier
+    ) {
+        CircularProgressIndicator(
+            modifier = Modifier.width(48.dp),
+            color = MaterialTheme.colorScheme.secondary,
+            trackColor = MaterialTheme.colorScheme.surfaceVariant,
+        )
+    }
+}
+

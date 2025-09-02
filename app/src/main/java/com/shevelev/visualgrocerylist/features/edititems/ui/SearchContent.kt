@@ -1,4 +1,4 @@
-package com.shevelev.visualgrocerylist.com.shevelev.visualgrocerylist.features.edititems.ui
+package com.shevelev.visualgrocerylist.features.edititems.ui
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -17,15 +17,15 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import com.shevelev.visualgrocerylist.R
-import com.shevelev.visualgrocerylist.com.shevelev.visualgrocerylist.features.edititems.dto.GridItem
-import com.shevelev.visualgrocerylist.com.shevelev.visualgrocerylist.features.edititems.dto.ScreenState
-import com.shevelev.visualgrocerylist.com.shevelev.visualgrocerylist.features.edititems.viewmodel.UserActionsHandler
-import com.shevelev.visualgrocerylist.com.shevelev.visualgrocerylist.shared.ui.components.AsyncImageFile
-import com.shevelev.visualgrocerylist.com.shevelev.visualgrocerylist.shared.ui.components.EmptySearchResult
-import com.shevelev.visualgrocerylist.com.shevelev.visualgrocerylist.shared.ui.components.GridTile
-import com.shevelev.visualgrocerylist.com.shevelev.visualgrocerylist.shared.ui.components.SearchTextField
-import com.shevelev.visualgrocerylist.com.shevelev.visualgrocerylist.shared.ui.components.TileButton
-import com.shevelev.visualgrocerylist.com.shevelev.visualgrocerylist.shared.ui.components.TileTitle
+import com.shevelev.visualgrocerylist.features.edititems.dto.GridItem
+import com.shevelev.visualgrocerylist.features.edititems.dto.ScreenState
+import com.shevelev.visualgrocerylist.features.edititems.viewmodel.UserActionsHandler
+import com.shevelev.visualgrocerylist.shared.ui.components.AsyncImageFile
+import com.shevelev.visualgrocerylist.shared.ui.components.EmptySearchResult
+import com.shevelev.visualgrocerylist.shared.ui.components.GridTile
+import com.shevelev.visualgrocerylist.shared.ui.components.SearchTextField
+import com.shevelev.visualgrocerylist.shared.ui.components.TileButton
+import com.shevelev.visualgrocerylist.shared.ui.components.TileTitle
 import com.shevelev.visualgrocerylist.shared.ui.theme.LocalDimensions
 import timber.log.Timber
 
@@ -47,6 +47,7 @@ internal fun SearchContent(
             searchQuery = searchQuery,
             onSearchQueryChange = onSearchQueryChange,
             enabled = !screenState.loading,
+            loading = screenState.loading,
         )
 
         if (screenState.items.isEmpty()) {

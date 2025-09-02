@@ -1,4 +1,4 @@
-package com.shevelev.visualgrocerylist.com.shevelev.visualgrocerylist.features.edititems.viewmodel
+package com.shevelev.visualgrocerylist.features.edititems.viewmodel
 
 import android.graphics.Bitmap
 import androidx.compose.runtime.getValue
@@ -6,12 +6,16 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.shevelev.visualgrocerylist.com.shevelev.visualgrocerylist.features.edititems.dto.GridItem
-import com.shevelev.visualgrocerylist.com.shevelev.visualgrocerylist.features.edititems.dto.Popup
-import com.shevelev.visualgrocerylist.com.shevelev.visualgrocerylist.features.edititems.dto.ScreenEvent
-import com.shevelev.visualgrocerylist.com.shevelev.visualgrocerylist.features.edititems.dto.ScreenState
-import com.shevelev.visualgrocerylist.com.shevelev.visualgrocerylist.shared.Constants
-import com.shevelev.visualgrocerylist.com.shevelev.visualgrocerylist.shared.architecture.FlagsStorage
+import com.shevelev.visualgrocerylist.com.shevelev.visualgrocerylist.shared.ui.navigation.NavigatorBehaviour
+import com.shevelev.visualgrocerylist.features.edititems.dto.GridItem
+import com.shevelev.visualgrocerylist.features.edititems.dto.Popup
+import com.shevelev.visualgrocerylist.features.edititems.dto.ScreenEvent
+import com.shevelev.visualgrocerylist.features.edititems.dto.ScreenState
+import com.shevelev.visualgrocerylist.shared.Constants
+import com.shevelev.visualgrocerylist.shared.architecture.Flag
+import com.shevelev.visualgrocerylist.shared.architecture.Flag.MustRefreshList
+import com.shevelev.visualgrocerylist.shared.architecture.FlagsStorage
+import com.shevelev.visualgrocerylist.shared.ui.navigation.Route
 import com.shevelev.visualgrocerylist.storage.database.repository.DatabaseRepository
 import com.shevelev.visualgrocerylist.storage.file.FileRepository
 import kotlin.time.Duration.Companion.milliseconds
@@ -29,7 +33,7 @@ internal class EditItemsViewModel(
     private val databaseRepository: DatabaseRepository,
     private val fileRepository: FileRepository,
     private val flags: FlagsStorage,
-) : ViewModel(), UserActionsHandler {
+) : ViewModel(), UserActionsHandler, NavigatorBehaviour {
     var searchQuery by mutableStateOf("")
         private set
 
@@ -138,13 +142,12 @@ internal class EditItemsViewModel(
             val item = selectedItem ?: return@launch
 
             val dbItem = databaseRepository.getGroceryItemById(item.dbId) ?: return@launch
-
             databaseRepository.updateGroceryItem(dbItem.copy(keyWord = newName))
 
             val items = _screenState.value.items.toMutableList()
 
             items
-                .indexOfFirst { it.dbId == item.dbId }
+                .indexOfFirst { it.id == item.id }
                 .takeIf { it != -1 }
                 ?.also { index ->
                     items[index] = item.copy(title = newName)
@@ -173,8 +176,13 @@ internal class EditItemsViewModel(
     }
 
     override fun onEditImageSearchSelected() {
-        // remove the old file
-        TODO("Not yet implemented")
+        viewModelScope.launch {
+            val item = selectedItem ?: return@launch
+
+            itemsWereEdited = true
+
+            _screenEvent.emit(ScreenEvent.NavigateToSearchImage(item.title))
+        }
     }
 
     override fun onEditImageDismissed() {
@@ -212,7 +220,43 @@ internal class EditItemsViewModel(
                 _screenEvent.emit(ScreenEvent.Error)
             }
         }
-        // update the item and the screen state
+    }
+
+    fun tryToUpdateList() {
+        viewModelScope.launch {
+            val item = selectedItem ?: return@launch
+            val fileName = flags.hasFlag<Flag.SearchedImage>()?.fileName ?: return@launch
+
+            val itemIndex = _screenState.value.items
+                .indexOfFirst { it.id == item.id }
+                .takeIf { it != -1 }
+                ?: return@launch
+
+            val dbItem = databaseRepository.getGroceryItemById(item.dbId) ?: return@launch
+            databaseRepository.updateGroceryItem(dbItem.copy(imageFile = fileName))
+
+            fileRepository.delete(item.imageFile)
+            val file = fileRepository.getFileByName(fileName)
+
+            val items = _screenState.value.items.toMutableList()
+            items[itemIndex] = item.copy(imageFile = file)
+
+            updateState { it.copy(items = items) }
+        }
+    }
+
+    override fun onBack(backstack: MutableList<Route>) {
+        if (itemsWereEdited) {
+            flags.setFlag(MustRefreshList)
+        }
+        super.onBack(backstack)
+    }
+
+    override fun onBackHard(backstack: MutableList<Route>) {
+        if (itemsWereEdited) {
+            flags.setFlag(MustRefreshList)
+        }
+        super.onBackHard(backstack)
     }
 
     private suspend fun updateState(updateAction: (ScreenState) -> ScreenState) {

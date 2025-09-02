@@ -1,4 +1,4 @@
-package com.shevelev.visualgrocerylist.com.shevelev.visualgrocerylist.features.list.dto
+package com.shevelev.visualgrocerylist.features.list.dto
 
 import androidx.compose.runtime.Immutable
 import java.io.File

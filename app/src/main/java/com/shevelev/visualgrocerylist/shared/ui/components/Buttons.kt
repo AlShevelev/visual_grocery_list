@@ -1,4 +1,4 @@
-package com.shevelev.visualgrocerylist.com.shevelev.visualgrocerylist.shared.ui.components
+package com.shevelev.visualgrocerylist.shared.ui.components
 
 import androidx.annotation.DrawableRes
 import androidx.compose.foundation.layout.Row

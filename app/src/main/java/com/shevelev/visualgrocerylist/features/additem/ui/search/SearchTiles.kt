@@ -1,4 +1,4 @@
-package com.shevelev.visualgrocerylist.com.shevelev.visualgrocerylist.features.additem.ui.search
+package com.shevelev.visualgrocerylist.features.additem.ui.search
 
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
@@ -31,12 +31,12 @@ import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.shevelev.visualgrocerylist.R
-import com.shevelev.visualgrocerylist.com.shevelev.visualgrocerylist.features.additem.dto.GridItem
-import com.shevelev.visualgrocerylist.com.shevelev.visualgrocerylist.shared.ui.components.AsyncBitmap
-import com.shevelev.visualgrocerylist.com.shevelev.visualgrocerylist.shared.ui.components.AsyncImageFile
-import com.shevelev.visualgrocerylist.com.shevelev.visualgrocerylist.shared.ui.components.AsyncImageUrl
-import com.shevelev.visualgrocerylist.com.shevelev.visualgrocerylist.shared.ui.components.GridTile
-import com.shevelev.visualgrocerylist.com.shevelev.visualgrocerylist.shared.ui.components.TileTitle
+import com.shevelev.visualgrocerylist.features.additem.dto.GridItem
+import com.shevelev.visualgrocerylist.shared.ui.components.AsyncBitmap
+import com.shevelev.visualgrocerylist.shared.ui.components.AsyncImageFile
+import com.shevelev.visualgrocerylist.shared.ui.components.AsyncImageUrl
+import com.shevelev.visualgrocerylist.shared.ui.components.GridTile
+import com.shevelev.visualgrocerylist.shared.ui.components.TileTitle
 import com.shevelev.visualgrocerylist.shared.ui.theme.LocalDimensions
 import timber.log.Timber
 

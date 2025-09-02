@@ -1,7 +1,7 @@
-package com.shevelev.visualgrocerylist.com.shevelev.visualgrocerylist.features.edititems.viewmodel
+package com.shevelev.visualgrocerylist.features.edititems.viewmodel
 
 import android.graphics.Bitmap
-import com.shevelev.visualgrocerylist.com.shevelev.visualgrocerylist.features.edititems.dto.GridItem
+import com.shevelev.visualgrocerylist.features.edititems.dto.GridItem
 
 internal interface UserActionsHandler {
     fun onDeleteItemClick(item: GridItem)

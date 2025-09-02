@@ -13,6 +13,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
@@ -20,27 +21,26 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.canhub.cropper.CropImageContractOptions
 import com.shevelev.visualgrocerylist.R
-import com.shevelev.visualgrocerylist.com.shevelev.visualgrocerylist.features.additem.ui.search.createImageCropLauncher
-import com.shevelev.visualgrocerylist.com.shevelev.visualgrocerylist.features.additem.ui.search.getCropImageOptions
-import com.shevelev.visualgrocerylist.com.shevelev.visualgrocerylist.features.edititems.dto.Popup
-import com.shevelev.visualgrocerylist.com.shevelev.visualgrocerylist.features.edititems.dto.ScreenEvent
-import com.shevelev.visualgrocerylist.com.shevelev.visualgrocerylist.features.edititems.ui.SearchContent
-import com.shevelev.visualgrocerylist.com.shevelev.visualgrocerylist.features.edititems.ui.SelectImageDialog
-import com.shevelev.visualgrocerylist.com.shevelev.visualgrocerylist.features.edititems.viewmodel.EditItemsViewModel
-import com.shevelev.visualgrocerylist.com.shevelev.visualgrocerylist.shared.ui.components.ConfirmationDialog
-import com.shevelev.visualgrocerylist.com.shevelev.visualgrocerylist.shared.ui.components.NameConfirmationDialog
+import com.shevelev.visualgrocerylist.com.shevelev.visualgrocerylist.shared.ui.navigation.Navigator
+import com.shevelev.visualgrocerylist.features.additem.ui.search.createImageCropLauncher
+import com.shevelev.visualgrocerylist.features.additem.ui.search.getCropImageOptions
+import com.shevelev.visualgrocerylist.features.edititems.dto.Popup
+import com.shevelev.visualgrocerylist.features.edititems.dto.ScreenEvent
+import com.shevelev.visualgrocerylist.features.edititems.viewmodel.EditItemsViewModel
+import com.shevelev.visualgrocerylist.shared.ui.components.ConfirmationDialog
+import com.shevelev.visualgrocerylist.shared.ui.components.NameConfirmationDialog
 import com.shevelev.visualgrocerylist.shared.ui.navigation.Route
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
 internal fun ScreenRoot(
-    backStack: MutableList<Route>,
+    navigator: Navigator,
 ) {
     Scaffold(
-        topBar = { AppBar(backStack) },
+        topBar = { AppBar(navigator) },
     ) { innerPadding ->
         Content(
-            backStack = backStack,
+            navigator = navigator,
             modifier = Modifier.padding(innerPadding),
         )
     }
@@ -49,7 +49,7 @@ internal fun ScreenRoot(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 internal fun AppBar(
-    backStack: MutableList<Route>,
+    navigator: Navigator,
 ) {
     val context = LocalContext.current
 
@@ -64,7 +64,7 @@ internal fun AppBar(
         title = { Text(context.getString(R.string.edit_items)) },
         navigationIcon = {
             IconButton(onClick = {
-                backStack.removeLastOrNull()
+                navigator.back()
             }) {
                 Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
             }
@@ -76,7 +76,7 @@ internal fun AppBar(
 internal fun Content(
     modifier: Modifier = Modifier,
     viewModel: EditItemsViewModel = koinViewModel(),
-    backStack: MutableList<Route>,
+    navigator: Navigator,
 ) {
     val screenState by viewModel.screenState.collectAsStateWithLifecycle()
 
@@ -127,7 +127,10 @@ internal fun Content(
                     )
                     imageCropLauncher.launch(cropOptions)
                 },
-                onSearch = { viewModel.onEditImageSearchSelected() }
+                onSearch = {
+                    viewModel.onEditImageDismissed()
+                    viewModel.onEditImageSearchSelected()
+                }
             )
         }
 
@@ -144,14 +147,31 @@ internal fun Content(
 
     val context = LocalContext.current
 
+    DisposableEffect(Unit) {
+        navigator.registerBehaviour(viewModel)
+
+        onDispose { navigator.unregisterBehaviour() }
+    }
+
+    LaunchedEffect(Unit) {
+        viewModel.tryToUpdateList()
+    }
+
     LaunchedEffect(Unit) {
         viewModel.screenEvent.collect {
             when (it) {
                 is ScreenEvent.Error -> Toast
-                    .makeText(context, R.string.error_network, Toast.LENGTH_SHORT)
+                    .makeText(
+                        context,
+                        R.string.error_network,
+                        Toast.LENGTH_SHORT
+                    )
                     .show()
 
-                is ScreenEvent.Close -> backStack.removeLastOrNull()
+                is ScreenEvent.Close -> navigator.back()
+
+                is ScreenEvent.NavigateToSearchImage ->
+                    navigator.navigateTo(Route.SearchImageRoute(it.keyword))
             }
         }
     }

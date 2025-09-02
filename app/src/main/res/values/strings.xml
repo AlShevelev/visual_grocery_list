@@ -23,6 +23,7 @@
     <string name="camera">Camera</string>
     <string name="gallery">Gallery</string>
     <string name="searching_internet">Searching the Internet</string>
+    <string name="the_search_result_is_empty">The search result is empty for this key word</string>
 
     <string name="clearListConfirmation">Are you sure you want to clear the list?</string>
     <string name="yes">Yes</string>

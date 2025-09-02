@@ -6,4 +6,8 @@ sealed interface Route {
     data object AddItemScreenRoute: Route
 
     data object EditItemsScreenRoute: Route
+
+    data class SearchImageRoute(
+        val keyword: String,
+    ): Route
 }

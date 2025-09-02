@@ -1,4 +1,4 @@
-package com.shevelev.visualgrocerylist.com.shevelev.visualgrocerylist.shared.ui.components
+package com.shevelev.visualgrocerylist.shared.ui.components
 
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable

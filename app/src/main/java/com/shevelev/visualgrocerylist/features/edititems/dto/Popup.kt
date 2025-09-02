@@ -1,4 +1,4 @@
-package com.shevelev.visualgrocerylist.com.shevelev.visualgrocerylist.features.edititems.dto
+package com.shevelev.visualgrocerylist.features.edititems.dto
 
 internal sealed interface Popup {
     data class NamePopup(

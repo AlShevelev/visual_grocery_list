@@ -19,24 +19,24 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.shevelev.visualgrocerylist.R
-import com.shevelev.visualgrocerylist.com.shevelev.visualgrocerylist.features.additem.dto.GridItem
-import com.shevelev.visualgrocerylist.com.shevelev.visualgrocerylist.features.additem.dto.ScreenEvent
-import com.shevelev.visualgrocerylist.com.shevelev.visualgrocerylist.features.additem.ui.search.SearchContent
-import com.shevelev.visualgrocerylist.com.shevelev.visualgrocerylist.shared.ui.components.NameConfirmationDialog
+import com.shevelev.visualgrocerylist.com.shevelev.visualgrocerylist.shared.ui.navigation.Navigator
+import com.shevelev.visualgrocerylist.features.additem.dto.GridItem
+import com.shevelev.visualgrocerylist.features.additem.dto.ScreenEvent
+import com.shevelev.visualgrocerylist.features.additem.ui.search.SearchContent
 import com.shevelev.visualgrocerylist.features.additem.viewmodel.AddItemScreenViewModel
-import com.shevelev.visualgrocerylist.shared.ui.navigation.Route
+import com.shevelev.visualgrocerylist.shared.ui.components.NameConfirmationDialog
 import org.koin.androidx.compose.koinViewModel
 
 
 @Composable
 internal fun ScreenRoot(
-    backStack: MutableList<Route>,
+    navigator: Navigator,
 ) {
     Scaffold(
-        topBar = { AppBar(backStack) },
+        topBar = { AppBar(navigator) },
     ) { innerPadding ->
         Content(
-            backStack = backStack,
+            navigator = navigator,
             modifier = Modifier.padding(innerPadding),
         )
     }
@@ -45,7 +45,7 @@ internal fun ScreenRoot(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 internal fun AppBar(
-    backStack: MutableList<Route>,
+    navigator: Navigator,
 ) {
     val context = LocalContext.current
 
@@ -60,7 +60,7 @@ internal fun AppBar(
         title = { Text(context.getString(R.string.app_item)) },
         navigationIcon = {
             IconButton(onClick = {
-                backStack.removeLastOrNull()
+                navigator.back()
             }) {
                 Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
             }
@@ -72,7 +72,7 @@ internal fun AppBar(
 internal fun Content(
     modifier: Modifier = Modifier,
     viewModel: AddItemScreenViewModel = koinViewModel(),
-    backStack: MutableList<Route>,
+    navigator: Navigator,
 ) {
     val searchResults by viewModel.screenState.collectAsStateWithLifecycle()
 
@@ -107,7 +107,7 @@ internal fun Content(
                     .makeText(context, R.string.error_network, Toast.LENGTH_SHORT)
                     .show()
 
-                is ScreenEvent.Close -> backStack.removeLastOrNull()
+                is ScreenEvent.Close -> navigator.back()
             }
         }
     }

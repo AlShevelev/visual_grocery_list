@@ -1,4 +1,4 @@
-package com.shevelev.visualgrocerylist.com.shevelev.visualgrocerylist.features.list.ui
+package com.shevelev.visualgrocerylist.features.list.ui
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -18,11 +18,11 @@ import androidx.compose.ui.draw.dropShadow
 import androidx.compose.ui.graphics.shadow.Shadow as IconShadow
 import androidx.compose.ui.unit.dp
 import com.shevelev.visualgrocerylist.R
-import com.shevelev.visualgrocerylist.com.shevelev.visualgrocerylist.features.list.dto.GridItem
-import com.shevelev.visualgrocerylist.com.shevelev.visualgrocerylist.shared.ui.components.AsyncImageFile
-import com.shevelev.visualgrocerylist.com.shevelev.visualgrocerylist.shared.ui.components.GridTile
-import com.shevelev.visualgrocerylist.com.shevelev.visualgrocerylist.shared.ui.components.TileButton
-import com.shevelev.visualgrocerylist.com.shevelev.visualgrocerylist.shared.ui.components.TileTitle
+import com.shevelev.visualgrocerylist.features.list.dto.GridItem
+import com.shevelev.visualgrocerylist.shared.ui.components.AsyncImageFile
+import com.shevelev.visualgrocerylist.shared.ui.components.GridTile
+import com.shevelev.visualgrocerylist.shared.ui.components.TileButton
+import com.shevelev.visualgrocerylist.shared.ui.components.TileTitle
 import com.shevelev.visualgrocerylist.shared.ui.theme.LocalDimensions
 import timber.log.Timber
 

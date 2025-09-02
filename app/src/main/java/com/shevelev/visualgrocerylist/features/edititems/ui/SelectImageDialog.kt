@@ -1,4 +1,4 @@
-package com.shevelev.visualgrocerylist.com.shevelev.visualgrocerylist.features.edititems.ui
+package com.shevelev.visualgrocerylist.features.edititems.ui
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -15,7 +15,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import com.shevelev.visualgrocerylist.R
-import com.shevelev.visualgrocerylist.com.shevelev.visualgrocerylist.shared.ui.components.GeneralTextButton
+import com.shevelev.visualgrocerylist.shared.ui.components.GeneralTextButton
 import com.shevelev.visualgrocerylist.shared.ui.theme.LocalDimensions
 
 @OptIn(ExperimentalMaterial3Api::class)

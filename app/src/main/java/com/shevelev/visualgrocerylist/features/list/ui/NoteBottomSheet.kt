@@ -1,4 +1,4 @@
-package com.shevelev.visualgrocerylist.com.shevelev.visualgrocerylist.features.list.ui
+package com.shevelev.visualgrocerylist.features.list.ui
 
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
@@ -25,9 +25,9 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.style.TextAlign
 import com.shevelev.visualgrocerylist.R
-import com.shevelev.visualgrocerylist.com.shevelev.visualgrocerylist.features.list.dto.NotePopup
-import com.shevelev.visualgrocerylist.com.shevelev.visualgrocerylist.features.list.viewmodel.UserActionsHandler
-import com.shevelev.visualgrocerylist.com.shevelev.visualgrocerylist.shared.ui.components.GeneralTextButton
+import com.shevelev.visualgrocerylist.features.list.dto.NotePopup
+import com.shevelev.visualgrocerylist.features.list.viewmodel.UserActionsHandler
+import com.shevelev.visualgrocerylist.shared.ui.components.GeneralTextButton
 import com.shevelev.visualgrocerylist.shared.ui.theme.LocalDimensions
 import kotlinx.coroutines.launch
 

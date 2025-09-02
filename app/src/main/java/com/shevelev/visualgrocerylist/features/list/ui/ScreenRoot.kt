@@ -53,17 +53,15 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.shevelev.visualgrocerylist.R
-import com.shevelev.visualgrocerylist.com.shevelev.visualgrocerylist.features.list.dto.ScreenEvent
-import com.shevelev.visualgrocerylist.com.shevelev.visualgrocerylist.features.list.dto.ScreenState
-import com.shevelev.visualgrocerylist.com.shevelev.visualgrocerylist.features.list.ui.GroceryListPlaceholder
-import com.shevelev.visualgrocerylist.com.shevelev.visualgrocerylist.features.list.ui.NoteBottomSheet
-import com.shevelev.visualgrocerylist.com.shevelev.visualgrocerylist.features.list.viewmodel.ListViewModel
-import com.shevelev.visualgrocerylist.com.shevelev.visualgrocerylist.features.list.viewmodel.UserActionsHandler
-import com.shevelev.visualgrocerylist.com.shevelev.visualgrocerylist.shared.ui.components.ConfirmationDialog
+import com.shevelev.visualgrocerylist.com.shevelev.visualgrocerylist.shared.ui.navigation.Navigator
+import com.shevelev.visualgrocerylist.features.list.dto.ScreenEvent
+import com.shevelev.visualgrocerylist.features.list.dto.ScreenState
+import com.shevelev.visualgrocerylist.features.list.viewmodel.ListViewModel
+import com.shevelev.visualgrocerylist.features.list.viewmodel.UserActionsHandler
+import com.shevelev.visualgrocerylist.shared.ui.components.ConfirmationDialog
 import com.shevelev.visualgrocerylist.shared.ui.navigation.Route
 import com.shevelev.visualgrocerylist.shared.ui.theme.LocalDimensions
 import com.shevelev.visualgrocerylist.shared.ui.theme.LocalUiConstants
-import kotlin.collections.MutableList
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -72,7 +70,7 @@ import org.koin.androidx.compose.koinViewModel
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 internal fun ScreenRoot(
-    backStack: MutableList<Route>,
+    navigator: Navigator,
     viewModel: ListViewModel = koinViewModel(),
 ) {
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
@@ -80,7 +78,7 @@ internal fun ScreenRoot(
     val snackbarHostState = remember { SnackbarHostState() }
 
     ModalNavigationDrawer(
-        drawerContent = { DrawerContent(backStack) },
+        drawerContent = { DrawerContent(navigator) },
         drawerState = drawerState,
     ) {
         Scaffold(
@@ -88,7 +86,7 @@ internal fun ScreenRoot(
                 drawerState,
                 userActionsHandler = viewModel,
             ) },
-            floatingActionButton = { MainButton(backStack) },
+            floatingActionButton = { MainButton(navigator) },
             snackbarHost = {
                 SnackbarHost(hostState = snackbarHostState)
             },
@@ -103,13 +101,13 @@ internal fun ScreenRoot(
 }
 
 @Composable
-fun MainButton(
-    backStack: MutableList<Route>,
+internal fun MainButton(
+    navigator: Navigator,
 ) {
     FloatingActionButton(
         content = { Icon(Icons.Filled.Add, contentDescription = "") },
         shape = CircleShape,
-        onClick = { backStack.add(Route.AddItemScreenRoute) }
+        onClick = { navigator.navigateTo(Route.AddItemScreenRoute) }
     )
 }
 
@@ -176,8 +174,8 @@ internal fun AppBar(
 
 @SuppressLint("ConfigurationScreenWidthHeight")
 @Composable
-fun DrawerContent(
-    backStack: MutableList<Route>,
+internal fun DrawerContent(
+    navigator: Navigator,
 ) {
     val dimensions = LocalDimensions.current
     val context = LocalContext.current
@@ -208,7 +206,7 @@ fun DrawerContent(
                 label = { Text(context.getString(R.string.edit_grocery_items)) },
                 selected = false,
                 icon = { Icon(Icons.Outlined.Edit, contentDescription = null) },
-                onClick = { backStack.add(Route.EditItemsScreenRoute) }
+                onClick = { navigator.navigateTo(Route.EditItemsScreenRoute) }
             )
             NavigationDrawerItem(
                 label = { Text(context.getString(R.string.settings)) },

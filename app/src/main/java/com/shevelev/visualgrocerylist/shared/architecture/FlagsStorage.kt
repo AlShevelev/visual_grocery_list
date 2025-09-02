@@ -1,23 +1,26 @@
-package com.shevelev.visualgrocerylist.com.shevelev.visualgrocerylist.shared.architecture
+package com.shevelev.visualgrocerylist.shared.architecture
 
-internal enum class Flags {
-    MUST_REFRESH_LIST,
+internal interface Flag {
+    object MustRefreshList: Flag
+
+    data class SearchedImage(
+        val fileName: String,
+    ): Flag
 }
 
-internal interface FlagsStorageRead {
-    fun hasFlag(flag: Flags): Boolean
-}
+internal class FlagsStorage {
+    private val flags = mutableMapOf<String, Any>()
 
-internal interface FlagsStorage: FlagsStorageRead {
-    fun setFlag(flag: Flags)
-}
-
-internal class FlagsStorageImpl: FlagsStorage {
-    private val flags = mutableSetOf<Flags>()
-
-    override fun setFlag(flag: Flags) {
-        flags.add(flag)
+    inline fun <reified T: Flag>setFlag(flag: T) {
+        flags[getKey<T>()] = flag
     }
 
-    override fun hasFlag(flag: Flags): Boolean = flags.remove(flag)
+    inline fun <reified T: Flag>hasFlag(): T? {
+        return flags.remove(getKey<T>()) as? T
+    }
+
+    private inline fun <reified T: Flag> getKey() =
+        requireNotNull(T::class.qualifiedName) {
+            "${T::class} must has a name"
+        }
 }

@@ -1,4 +1,4 @@
-package com.shevelev.visualgrocerylist.com.shevelev.visualgrocerylist.features.additem.dto
+package com.shevelev.visualgrocerylist.features.additem.dto
 
 import android.graphics.Bitmap
 import android.net.Uri

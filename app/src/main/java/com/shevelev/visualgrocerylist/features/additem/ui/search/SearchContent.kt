@@ -1,4 +1,4 @@
-package com.shevelev.visualgrocerylist.com.shevelev.visualgrocerylist.features.additem.ui.search
+package com.shevelev.visualgrocerylist.features.additem.ui.search
 
 import android.graphics.Bitmap
 import androidx.compose.foundation.layout.Column
@@ -12,10 +12,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import com.canhub.cropper.CropImageContractOptions
 import com.shevelev.visualgrocerylist.R
-import com.shevelev.visualgrocerylist.com.shevelev.visualgrocerylist.features.additem.dto.GridItem
-import com.shevelev.visualgrocerylist.com.shevelev.visualgrocerylist.features.additem.dto.ScreenState
-import com.shevelev.visualgrocerylist.com.shevelev.visualgrocerylist.shared.ui.components.EmptySearchResult
-import com.shevelev.visualgrocerylist.com.shevelev.visualgrocerylist.shared.ui.components.SearchTextField
+import com.shevelev.visualgrocerylist.features.additem.dto.GridItem
+import com.shevelev.visualgrocerylist.features.additem.dto.ScreenState
+import com.shevelev.visualgrocerylist.shared.ui.components.EmptySearchResult
+import com.shevelev.visualgrocerylist.shared.ui.components.SearchTextField
 import com.shevelev.visualgrocerylist.shared.ui.theme.LocalDimensions
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -46,6 +46,7 @@ internal fun SearchContent(
             searchQuery = searchQuery,
             onSearchQueryChange = onSearchQueryChange,
             enabled = !screenState.loading,
+            loading = screenState.loading,
         )
 
         if (screenState.items.isEmpty()) {

@@ -1,4 +1,4 @@
-package com.shevelev.visualgrocerylist.com.shevelev.visualgrocerylist.shared.ui.components
+package com.shevelev.visualgrocerylist.shared.ui.components
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.material3.LocalTextStyle
