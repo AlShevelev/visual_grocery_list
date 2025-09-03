@@ -9,10 +9,9 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.CircularProgressIndicator
@@ -29,6 +28,7 @@ import androidx.compose.ui.draw.scale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.shevelev.visualgrocerylist.R
 import com.shevelev.visualgrocerylist.features.additem.dto.GridItem
@@ -96,6 +96,7 @@ private fun PredefinedButtonTile(
             onClick()
         },
     ) {
+        val alpha = if (enabled) 1.0f else 0.25f
         Column(
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally,
@@ -104,12 +105,15 @@ private fun PredefinedButtonTile(
             Image(
                 painter = painterResource(id = iconResId),
                 contentDescription = null,
-                modifier = Modifier.scale(1f).size(40.dp)
+                modifier = Modifier.scale(1f).size(40.dp),
+                alpha = alpha,
             )
-            Spacer(modifier = Modifier.height(dimensions.paddingSingleAndHalf))
             Text(
                 text = context.getString(textResId),
-                style = MaterialTheme.typography.titleMedium,
+                style = MaterialTheme.typography.titleSmall,
+                color = MaterialTheme.colorScheme.onSurface.copy(alpha = alpha),
+                textAlign = TextAlign.Center,
+                modifier = Modifier.padding(dimensions.paddingSingle)
             )
         }
     }
@@ -227,5 +231,17 @@ internal fun CapturedItemTile(
             modifier = Modifier.fillMaxSize(),
             onError = { Timber.e(it) },
         )
+    }
+}
+
+@Composable
+internal fun EmptyTile(
+    modifier: Modifier = Modifier,
+) {
+    return GridTile(
+        modifier = modifier,
+        enabled = false,
+        showBorder = false,
+    ) {
     }
 }

@@ -19,6 +19,7 @@ import com.shevelev.visualgrocerylist.shared.ui.theme.LocalDimensions
 fun GridTile(
     modifier: Modifier = Modifier,
     enabled: Boolean = true,
+    showBorder: Boolean = true,
     onClick: () -> Unit = { },
     content: @Composable BoxScope.() -> Unit,
 ) {
@@ -28,9 +29,15 @@ fun GridTile(
         modifier = modifier
             .padding(all = dimensions.paddingHalf)
             .fillMaxWidth()
-            .border(
-                width = dimensions.paddingOneUnit,
-                color = MaterialTheme.colorScheme.onSurface,
+            .then(
+                if (showBorder) {
+                    Modifier.border(
+                        width = dimensions.paddingOneUnit,
+                        color = MaterialTheme.colorScheme.onSurface,
+                    )
+                } else {
+                    Modifier
+                }
             )
             .aspectRatio(1f)
             .clickable(

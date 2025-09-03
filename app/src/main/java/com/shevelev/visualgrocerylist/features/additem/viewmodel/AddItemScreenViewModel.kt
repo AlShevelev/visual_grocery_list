@@ -6,6 +6,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.shevelev.visualgrocerylist.com.shevelev.visualgrocerylist.features.additem.dto.GridRow
 import com.shevelev.visualgrocerylist.features.additem.dto.GridItem
 import com.shevelev.visualgrocerylist.features.additem.dto.NamePopup
 import com.shevelev.visualgrocerylist.features.additem.dto.ScreenEvent
@@ -68,14 +69,14 @@ internal class AddItemScreenViewModel(
                         )
                     }
 
-                dbItems + listOf(
-                    GridItem.SearchInternetAction,
+                listOf(
+                    GridItem.SearchInternetAction(enabled = true),
                     GridItem.GalleryAction,
                     GridItem.MakePhotoAction
-                )
+                ) + dbItems
             }
 
-            _screenState.emit(ScreenState(items = result))
+            _screenState.emit(ScreenState(items = result.toRows()))
         }
     }
 
@@ -86,8 +87,11 @@ internal class AddItemScreenViewModel(
 
             val searchResult = searchRepository.search(searchQuery)
 
-            val items = _screenState.value.items.toMutableList()
-            items.removeAll { it is GridItem.SearchInternetAction }
+            val items = mutableListOf<GridItem>(
+                GridItem.SearchInternetAction(enabled = false),
+                GridItem.GalleryAction,
+                GridItem.MakePhotoAction
+            )
 
             searchResult.onSuccess { result ->
                 val itemsToAdd = result.images.map {
@@ -97,9 +101,9 @@ internal class AddItemScreenViewModel(
                     )
                 }
 
-                items.addAll(getIndexToInsertNewItems(), itemsToAdd)
+                items.addAll(itemsToAdd)
 
-                _screenState.emit(ScreenState(items = items, loading = false))
+                _screenState.emit(ScreenState(items = items.toRows(), loading = false))
             }.onFailure {
                 _screenEvent.emit(ScreenEvent.Error)
                 setLoading(false)
@@ -169,22 +173,21 @@ internal class AddItemScreenViewModel(
     @OptIn(ExperimentalUuidApi::class)
     fun onBitmapCaptured(bitmap: Bitmap) {
         viewModelScope.launch {
-            val indexToInsert = getIndexToInsertNewItems()
-
             val itemToInsert = GridItem.Captured(
                 id = Uuid.random().toString(),
                 bitmap = bitmap,
             )
 
-            val items = _screenState.value.items.toMutableList()
+            val items = mutableListOf<GridItem>(
+                GridItem.SearchInternetAction(enabled = true),
+                GridItem.GalleryAction,
+                GridItem.MakePhotoAction,
+                itemToInsert
+            )
 
-            items.add(indexToInsert, itemToInsert)
-
-            _screenState.emit(_screenState.value.copy(items = items))
+            _screenState.emit(_screenState.value.copy(items = items.toRows()))
         }
     }
-
-    private fun getIndexToInsertNewItems(): Int = 0
 
     private suspend fun setLoading(loading: Boolean) {
         _screenState.emit(
@@ -195,5 +198,33 @@ internal class AddItemScreenViewModel(
     private suspend fun closeScreen() {
         flags.setFlag(Flag.MustRefreshList)
         _screenEvent.emit(ScreenEvent.Close)
+    }
+
+    private fun List<GridItem>.toRows(): List<GridRow> {
+        if (isEmpty()) {
+            return emptyList()
+        }
+
+        val items = this
+
+        return buildList {
+            add(GridRow(items = listOf(items[0], items[1], items[2])))
+
+            for (i in 3..items.lastIndex step 2) {
+                add(
+                    GridRow(
+                        items = buildList {
+                            add(items[i])
+
+                            if (i + 1 > items.lastIndex) {
+                                add(GridItem.Empty)
+                            } else {
+                                add(items[i + 1])
+                            }
+                        }
+                    )
+                )
+            }
+        }
     }
 }

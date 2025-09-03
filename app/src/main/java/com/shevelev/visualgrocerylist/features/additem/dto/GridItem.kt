@@ -22,9 +22,13 @@ internal sealed class GridItem(val id: String) {
         val bitmap: Bitmap,
     ): GridItem(id)
 
-    data object SearchInternetAction: GridItem(Long.MIN_VALUE.toString())
+    data class SearchInternetAction(
+        val enabled: Boolean,
+    ): GridItem(Long.MIN_VALUE.toString())
 
     data object GalleryAction: GridItem((Long.MIN_VALUE + 1).toString())
 
     data object MakePhotoAction: GridItem((Long.MIN_VALUE + 2).toString())
+
+    data object Empty: GridItem((Long.MIN_VALUE + 3).toString())
 }

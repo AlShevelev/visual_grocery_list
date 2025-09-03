@@ -3,9 +3,10 @@ package com.shevelev.visualgrocerylist.features.additem.ui.search
 import android.graphics.Bitmap
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.lazy.grid.GridCells
-import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -55,58 +56,72 @@ internal fun SearchContent(
                 text = LocalContext.current.getString(R.string.try_adjusting_your_search)
             )
         } else {
-            LazyVerticalGrid(
+            LazyColumn(
                 contentPadding = PaddingValues(dimensions.paddingHalf),
-
-                columns = GridCells.Fixed(2),
                 modifier = Modifier.fillMaxSize(),
             ) {
                 items(
                     count = screenState.items.size,
                     key = { index -> screenState.items[index].id },
                     itemContent = { index ->
-                        when (val item = screenState.items[index]) {
-                            is GridItem.Db -> DbItemTile(
-                                item = item,
-                                enabled = !screenState.loading,
-                                onClick = onDbItemClick,
-                            )
-                            is GridItem.Captured -> CapturedItemTile(
-                                item = item,
-                                enabled = !screenState.loading,
-                                onClick = onCapturedItemClick,
-                            )
-                            is GridItem.Internet -> InternetItemTile(
-                                item = item,
-                                enabled = !screenState.loading,
-                                onClick = onInternetItemClick,
-                            )
-                            is GridItem.SearchInternetAction -> SearchTheInternetTile(
-                                onClick = onSearchTheInternetClick,
-                                enabled = !screenState.loading,
-                            )
-                            GridItem.GalleryAction -> GalleryTile(
-                                onClick = {
-                                    val cropOptions = CropImageContractOptions(
-                                        uri = null,
-                                        cropImageOptions = cropImageOptions
-                                            .copy(imageSourceIncludeCamera = false)
+                        val row = screenState.items[index]
+                        Row(
+                            modifier = Modifier.fillMaxWidth()
+                        ) {
+                            for (item in row.items) {
+                                when (item) {
+                                    is GridItem.Db -> DbItemTile(
+                                        item = item,
+                                        enabled = !screenState.loading,
+                                        onClick = onDbItemClick,
+                                        modifier = Modifier.weight(0.5f),
                                     )
-                                    imageCropLauncher.launch(cropOptions)
-                                },
-                                enabled = !screenState.loading,
-                            )
-                            GridItem.MakePhotoAction -> CameraTile(
-                                onClick = {
-                                    val cropOptions = CropImageContractOptions(
-                                        uri = null,
-                                        cropImageOptions = cropImageOptions
-                                            .copy(imageSourceIncludeGallery = false)
+                                    is GridItem.Captured -> CapturedItemTile(
+                                        item = item,
+                                        enabled = !screenState.loading,
+                                        onClick = onCapturedItemClick,
+                                        modifier = Modifier.weight(0.5f),
                                     )
-                                    imageCropLauncher.launch(cropOptions)
-                                },
-                                enabled = !screenState.loading,
-                            )
+                                    is GridItem.Internet -> InternetItemTile(
+                                        item = item,
+                                        enabled = !screenState.loading,
+                                        onClick = onInternetItemClick,
+                                        modifier = Modifier.weight(0.5f),
+                                    )
+                                    is GridItem.SearchInternetAction -> SearchTheInternetTile(
+                                        onClick = onSearchTheInternetClick,
+                                        enabled = !screenState.loading && item.enabled,
+                                        modifier = Modifier.weight(0.5f),
+                                    )
+                                    GridItem.GalleryAction -> GalleryTile(
+                                        onClick = {
+                                            val cropOptions = CropImageContractOptions(
+                                                uri = null,
+                                                cropImageOptions = cropImageOptions
+                                                    .copy(imageSourceIncludeCamera = false)
+                                            )
+                                            imageCropLauncher.launch(cropOptions)
+                                        },
+                                        enabled = !screenState.loading,
+                                        modifier = Modifier.weight(0.5f),
+                                    )
+                                    GridItem.MakePhotoAction -> CameraTile(
+                                        onClick = {
+                                            val cropOptions = CropImageContractOptions(
+                                                uri = null,
+                                                cropImageOptions = cropImageOptions
+                                                    .copy(imageSourceIncludeGallery = false)
+                                            )
+                                            imageCropLauncher.launch(cropOptions)
+                                        },
+                                        enabled = !screenState.loading,
+                                        modifier = Modifier.weight(0.5f),
+                                    )
+                                    GridItem.Empty -> EmptyTile(
+                                        modifier = Modifier.weight(0.5f),
+                                    )
+                                }
+                            }
                         }
                     }
                 )
