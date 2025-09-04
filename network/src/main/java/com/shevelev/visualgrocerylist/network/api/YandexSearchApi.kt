@@ -67,6 +67,6 @@ internal class YandexSearchApi : SearchApi {
         private const val AUTHORIZATION_HEADER_KEY = "Authorization"
         private const val AUTHORIZATION_HEADER_VALUE = "Api-Key"
 
-        private const val DOCS_ON_PAGE = 20L
+        private const val DOCS_ON_PAGE = 40L
     }
 }
