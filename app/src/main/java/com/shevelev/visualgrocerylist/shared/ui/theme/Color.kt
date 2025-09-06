@@ -286,6 +286,7 @@ object ColorBlue {
 
         override val outline = Color(0xFF74777f)
         override val outlineVariant = Color(0xFFc4c6d0)
+        
 
         override val scrim = Color(0xFF000000)
         override val shadow = Color(0xFF000000)
@@ -310,7 +311,7 @@ object ColorBlue {
         override val containerTertiary = Color(0xFF534619)
         override val containerError = Color(0xFF93000a)
 
-        override val onContainerPrimary = Color(0xFF284777)
+        override val onContainerPrimary = Color(0xFFD6E3FF)
         override val onContainerSecondary = Color(0xFF3e4759)
         override val onContainerTertiary = Color(0xFF573e5c)
         override val onContainerError = Color(0xFF93000a)

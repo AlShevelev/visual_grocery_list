@@ -71,6 +71,8 @@ internal fun NoteBottomSheet(
                 maxLines = 5,
                 modifier = Modifier
                     .fillMaxWidth(),
+                textStyle = MaterialTheme.typography.bodyMedium
+                    .copy(color = MaterialTheme.colorScheme.onSurface),
                 decorationBox = { innerTextField ->
                     Row(
                         verticalAlignment = Alignment.CenterVertically,

@@ -62,3 +62,10 @@ internal fun getCropImageOptions() = CropImageOptions(
     backgroundColor = MaterialTheme.colorScheme.surface
         .copy(alpha = 0.5f).toArgb(),
 )
+
+/*
+containerColor = MaterialTheme.colorScheme.primary,
+titleContentColor = MaterialTheme.colorScheme.onPrimary,
+navigationIconContentColor = MaterialTheme.colorScheme.onPrimary,
+actionIconContentColor = MaterialTheme.colorScheme.onPrimary,
+*/

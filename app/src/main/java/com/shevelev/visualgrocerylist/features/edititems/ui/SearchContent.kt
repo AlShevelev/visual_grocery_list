@@ -1,5 +1,6 @@
 package com.shevelev.visualgrocerylist.features.edititems.ui
 
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -91,7 +92,11 @@ internal fun ItemTile(
     userActionsHandler: UserActionsHandler,
     modifier: Modifier = Modifier,
 ) {
-    val foregroundColor = MaterialTheme.colorScheme.onPrimary
+    val foregroundColor = if (isSystemInDarkTheme()) {
+        MaterialTheme.colorScheme.onSurface
+    } else {
+        MaterialTheme.colorScheme.onPrimary
+    }
 
     GridTile(
         modifier = modifier,

@@ -81,6 +81,8 @@ internal fun <T>NameConfirmationDialog(
                         name = it
                     }
                 },
+                textStyle = MaterialTheme.typography.bodyMedium
+                    .copy(color = MaterialTheme.colorScheme.onSurface),
                 singleLine = true,
                 modifier = Modifier.fillMaxWidth(),
                 decorationBox = { innerTextField ->

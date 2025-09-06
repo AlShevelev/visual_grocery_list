@@ -1,6 +1,7 @@
 package com.shevelev.visualgrocerylist.features.list.ui
 
 import android.annotation.SuppressLint
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -105,7 +106,13 @@ internal fun MainButton(
     navigator: Navigator,
 ) {
     FloatingActionButton(
-        content = { Icon(Icons.Filled.Add, contentDescription = "") },
+        content = {
+            Icon(
+                imageVector = Icons.Filled.Add,
+                contentDescription = "",
+                tint = MaterialTheme.colorScheme.onPrimaryContainer,
+            )
+        },
         shape = CircleShape,
         onClick = { navigator.navigateTo(Route.AddItemScreenRoute) }
     )

@@ -23,6 +23,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import com.shevelev.visualgrocerylist.R
 import com.shevelev.visualgrocerylist.shared.ui.theme.LocalDimensions
@@ -42,6 +43,7 @@ internal fun SearchTextField(
         onValueChange = onSearchQueryChange,
         singleLine = true,
         enabled = enabled,
+        textStyle = TextStyle.Default.copy(color = MaterialTheme.colorScheme.onSurface),
         modifier = modifier
             .padding(horizontal = dimensions.paddingSingle)
             .padding(top = dimensions.paddingSingle)

@@ -1,5 +1,6 @@
 package com.shevelev.visualgrocerylist.features.list.ui
 
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -35,7 +36,11 @@ internal fun GroceryListItemTile(
     onDeleteClick: (Long) -> Unit,
     onNoteClick: (Long) -> Unit,
 ) {
-    val foregroundColor = MaterialTheme.colorScheme.onPrimary
+    val foregroundColor = if (isSystemInDarkTheme()) {
+        MaterialTheme.colorScheme.onSurface
+    } else {
+        MaterialTheme.colorScheme.onPrimary
+    }
 
     val dimensions = LocalDimensions.current
 
