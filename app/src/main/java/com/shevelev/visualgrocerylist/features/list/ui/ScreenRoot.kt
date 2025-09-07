@@ -215,12 +215,12 @@ internal fun DrawerContent(
                 icon = { Icon(Icons.Outlined.Edit, contentDescription = null) },
                 onClick = { navigator.navigateTo(Route.EditItemsScreenRoute) }
             )
-            NavigationDrawerItem(
-                label = { Text(context.getString(R.string.settings)) },
-                selected = false,
-                icon = { Icon(Icons.Outlined.Settings, contentDescription = null) },
-                onClick = { /* Handle click */ },
-            )
+            //NavigationDrawerItem(
+            //    label = { Text(context.getString(R.string.settings)) },
+            //    selected = false,
+            //    icon = { Icon(Icons.Outlined.Settings, contentDescription = null) },
+            //    onClick = { /* Handle click */ },
+            //)
             Spacer(Modifier.height(dimensions.paddingSingleAndHalf))
         }
     }
