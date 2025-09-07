@@ -71,22 +71,22 @@ internal class EditItemsViewModel(
 
         _searchJob?.cancel()
         _searchJob = viewModelScope.launch {
-            val result = if (newQuery.isEmpty()) {
-                emptyList<GridItem>()
-            } else {
-                delay(Constants.SEARCH_DEBOUNCE_PAUSE_MILLIS.milliseconds)
+            delay(Constants.SEARCH_DEBOUNCE_PAUSE_MILLIS.milliseconds)
 
-                databaseRepository
-                    .getGroceryItemByKeyWord(searchQuery)
-                    .map {
-                        GridItem(
-                            id = it.id.toString(),
-                            imageFile = fileRepository.getFileByName(it.imageFile),
-                            dbId = it.id,
-                            title = it.title,
-                            keyword = it.keyWord,
-                        )
-                    }
+            val dbItems = if (newQuery.isEmpty()) {
+                databaseRepository.getAllGroceryItems()
+            } else {
+                databaseRepository.getGroceryItemByKeyWord(searchQuery)
+            }
+
+            val result = dbItems.map {
+                GridItem(
+                    id = it.id.toString(),
+                    imageFile = fileRepository.getFileByName(it.imageFile),
+                    dbId = it.id,
+                    title = it.title,
+                    keyword = it.keyWord,
+                )
             }
 
             _screenState.emit(ScreenState(items = result))
