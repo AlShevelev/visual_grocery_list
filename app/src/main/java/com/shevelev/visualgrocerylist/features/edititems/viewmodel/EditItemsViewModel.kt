@@ -56,7 +56,8 @@ internal class EditItemsViewModel(
                 GridItem(
                     id = it.id.toString(),
                     dbId = it.id,
-                    title = it.keyWord,
+                    title = it.title,
+                    keyword = it.keyWord,
                     imageFile = fileRepository.getFileByName(it.imageFile),
                 )
             }
@@ -82,7 +83,8 @@ internal class EditItemsViewModel(
                             id = it.id.toString(),
                             imageFile = fileRepository.getFileByName(it.imageFile),
                             dbId = it.id,
-                            title = it.keyWord,
+                            title = it.title,
+                            keyword = it.keyWord,
                         )
                     }
             }
@@ -142,7 +144,7 @@ internal class EditItemsViewModel(
             val item = selectedItem ?: return@launch
 
             val dbItem = databaseRepository.getGroceryItemById(item.dbId) ?: return@launch
-            databaseRepository.updateGroceryItem(dbItem.copy(keyWord = newName))
+            val newDbItem = databaseRepository.updateGroceryItem(dbItem.copy(keyWord = newName))
 
             val items = _screenState.value.items.toMutableList()
 
@@ -150,7 +152,7 @@ internal class EditItemsViewModel(
                 .indexOfFirst { it.id == item.id }
                 .takeIf { it != -1 }
                 ?.also { index ->
-                    items[index] = item.copy(title = newName)
+                    items[index] = item.copy(title = newDbItem.title, keyword = newDbItem.keyWord)
                 }
 
             itemsWereEdited = true

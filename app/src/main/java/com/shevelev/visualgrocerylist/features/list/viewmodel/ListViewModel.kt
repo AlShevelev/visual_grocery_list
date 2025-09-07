@@ -12,7 +12,6 @@ import com.shevelev.visualgrocerylist.shared.architecture.FlagsStorage
 import com.shevelev.visualgrocerylist.storage.database.entities.GroceryListItemCombined
 import com.shevelev.visualgrocerylist.storage.file.FileRepository
 import com.shevelev.visualgrocerylist.storage.database.repository.DatabaseRepository
-import java.util.Locale
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -101,7 +100,7 @@ internal class ListViewModel(
                 state.copy(notePopup = NotePopup(
                     dbId = gridListItem.id,
                     note = gridListItem.note,
-                    title = gridGroceryItem.keyWord,
+                    title = gridGroceryItem.title,
                 ))
             )
         }
@@ -217,7 +216,7 @@ internal class ListViewModel(
         id = listItem.id.toString(),
         dbId = listItem.id,
         imageFile = fileRepository.getFileByName(groceryItem.imageFile),
-        title = groceryItem.keyWord.capitalize(Locale.getDefault()),
+        title = groceryItem.title,
         checked = listItem.checked,
         hasNote = listItem.note?.isNotEmpty() == true
     )

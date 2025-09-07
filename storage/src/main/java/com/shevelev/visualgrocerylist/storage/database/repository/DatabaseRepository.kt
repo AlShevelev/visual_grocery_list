@@ -13,7 +13,7 @@ interface DatabaseRepository {
 
     suspend fun removeGroceryItem(item: GroceryItem)
 
-    suspend fun updateGroceryItem(item: GroceryItem)
+    suspend fun updateGroceryItem(item: GroceryItem): GroceryItem
 
     suspend fun removeGroceryListItemByGroceryItemId(dbId: Long)
 

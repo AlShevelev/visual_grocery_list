@@ -3,6 +3,7 @@ package com.shevelev.visualgrocerylist.storage.database.entities
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import java.util.Locale
 
 @Entity(tableName = "grocery_item")
 data class GroceryItem(
@@ -15,4 +16,8 @@ data class GroceryItem(
 
     @ColumnInfo(name = "key_word")
     val keyWord: String
-)
+) {
+    @Suppress("DEPRECATION")
+    val title
+        get() = keyWord.capitalize(Locale.getDefault())
+}

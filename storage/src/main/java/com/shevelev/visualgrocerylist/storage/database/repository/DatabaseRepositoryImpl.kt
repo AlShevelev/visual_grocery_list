@@ -27,7 +27,11 @@ internal class DatabaseRepositoryImpl(
 
     override suspend fun removeGroceryItem(item: GroceryItem) = db.groceryItem.delete(item)
 
-    override suspend fun updateGroceryItem(item: GroceryItem) = db.groceryItem.update(item)
+    override suspend fun updateGroceryItem(item: GroceryItem): GroceryItem {
+        val itemToSave = item.copy(keyWord = item.keyWord.lowercase())
+        db.groceryItem.update(itemToSave)
+        return itemToSave
+    }
 
     override suspend fun removeGroceryListItemByGroceryItemId(dbId: Long) =
         db.groceryListItem.deleteByGroceryItemId(dbId)
@@ -36,7 +40,7 @@ internal class DatabaseRepositoryImpl(
         val itemToCreate = GroceryItem(
             id = 0L,
             imageFile = fileName,
-            keyWord = keyWord,
+            keyWord = keyWord.lowercase(),
         )
 
         return db.groceryItem.create(itemToCreate)

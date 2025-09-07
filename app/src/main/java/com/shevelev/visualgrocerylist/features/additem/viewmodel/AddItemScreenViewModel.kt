@@ -17,6 +17,7 @@ import com.shevelev.visualgrocerylist.storage.file.FileRepository
 import com.shevelev.visualgrocerylist.storage.database.repository.DatabaseRepository
 import com.shevelev.visualgrocerylist.network.repository.SearchRepository
 import com.shevelev.visualgrocerylist.shared.architecture.Flag
+import java.util.Locale
 import kotlin.String
 import kotlin.time.Duration.Companion.milliseconds
 import kotlin.uuid.ExperimentalUuidApi
@@ -65,7 +66,7 @@ internal class AddItemScreenViewModel(
                             id = it.id.toString(),
                             imageFile = fileRepository.getFileByName(it.imageFile),
                             dbId = it.id,
-                            title = it.keyWord,
+                            title = it.title,
                         )
                     }
 
@@ -111,18 +112,28 @@ internal class AddItemScreenViewModel(
         }
     }
 
+    @Suppress("DEPRECATION")
     fun onInternetItemClick(item: GridItem.Internet) {
         viewModelScope.launch {
             _screenState.emit(
-                _screenState.value.copy(namePopup = NamePopup(name = searchQuery, item = item))
+                _screenState.value.copy(namePopup = NamePopup(
+                        name = searchQuery.capitalize(Locale.getDefault()),
+                        item = item,
+                    )
+                )
             )
         }
     }
 
+    @Suppress("DEPRECATION")
     fun onCapturedItemClick(item: GridItem.Captured) {
         viewModelScope.launch {
             _screenState.emit(
-                _screenState.value.copy(namePopup = NamePopup(name = searchQuery, item = item))
+                _screenState.value.copy(namePopup = NamePopup(
+                        name = searchQuery.capitalize(Locale.getDefault()),
+                        item = item,
+                    )
+                )
             )
         }
     }
