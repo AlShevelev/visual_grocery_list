@@ -1,0 +1,35 @@
+<resources>
+    <string name="app_name">Наглядный список покупок</string>
+    <string name="edit_grocery_items">Редактировать продукты</string>
+    <string name="settings">Настройки</string>
+    <string name="clear_list">Очистить список</string>
+    <string name="app_item">Добавление продуктов</string>
+    <string name="edit_items">Редактирование продуктов</string>
+    <string name="search_here">Введите запрос здесь</string>
+    <string name="nothing_found">Ничего не найдено</string>
+    <string name="try_adjusting_your_search">Попробуйте изменить запрос</string>
+    <string name="try_to_add">Попробуйте сначала добавить новые продукты</string>
+    <string name="search_the_internet">Искать в Интернет</string>
+    <string name="get_from_gallery">Взять из галереи</string>
+    <string name="make_photo">Сделать фото</string>
+    <string name="empty_list">Список пуст — добавьте в него что-нибудь</string>
+    <string name="item_has_been_removed">\'%s\' был удален</string>
+    <string name="item_will_be_removed">Продукт \'%s\' будет удалет. Продолжить?</string>
+    <string name="restore">Восстановить</string>
+    <string name="save">Сохранить</string>
+    <string name="note_sheet_caption">Заметки для \'%s\'</string>
+    <string name="enter_note">Введите заметку</string>
+    <string name="edit_image_using">Заменить изображение через…</string>
+    <string name="camera">Камеру</string>
+    <string name="gallery">Галерею</string>
+    <string name="searching_internet">Поиск в Интернет</string>
+    <string name="the_search_result_is_empty">Ничего не найдено для этого запроса</string>
+
+    <string name="clearListConfirmation">Вы уверены, что хотите очистить список?</string>
+    <string name="yes">Да</string>
+    <string name="no">Нет</string>
+
+    <string name="the_name_is">Название…</string>
+
+    <string name="error_network">Произошла ошибка при получении данных из Интернет</string>
+</resources>
