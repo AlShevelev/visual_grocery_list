@@ -7,7 +7,6 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -17,6 +16,7 @@ import com.shevelev.visualgrocerylist.R
 import com.shevelev.visualgrocerylist.features.list.dto.GridItem
 import com.shevelev.visualgrocerylist.features.list.dto.ScreenState
 import com.shevelev.visualgrocerylist.features.list.viewmodel.UserActionsHandler
+import com.shevelev.visualgrocerylist.shared.ui.components.EmptySearchResult
 import com.shevelev.visualgrocerylist.shared.ui.theme.LocalDimensions
 import org.burnoutcrew.reorderable.ReorderableItem
 import org.burnoutcrew.reorderable.detectReorderAfterLongPress
@@ -33,7 +33,10 @@ internal fun GroceryListPlaceholder(
         is ScreenState.Loading -> LoadingStub(modifier = modifier)
         is ScreenState.Data -> {
             if (state.items.isEmpty()) {
-                EmptyListStub(modifier = modifier)
+                EmptySearchResult(
+                    modifier = modifier,
+                    title = LocalContext.current.getString(R.string.empty_list),
+                )
             } else {
                 GroceryList(
                     items = state.items,
@@ -55,22 +58,6 @@ private fun CenterStub(
         modifier = modifier
     ) {
         content()
-    }
-}
-
-@Composable
-private fun EmptyListStub(
-    modifier: Modifier = Modifier
-) {
-    val context = LocalContext.current
-
-    CenterStub(
-        modifier = modifier,
-    ) {
-        Text(
-            text = context.getString(R.string.empty_list),
-            style = MaterialTheme.typography.titleSmall
-        )
     }
 }
 

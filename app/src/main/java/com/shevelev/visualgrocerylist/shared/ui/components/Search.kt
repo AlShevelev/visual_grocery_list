@@ -102,8 +102,9 @@ internal fun SearchTextField(
 
 @Composable
 internal fun EmptySearchResult(
-    text: String,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    title: String? = null,
+    text: String? = null,
 ) {
     val context = LocalContext.current
 
@@ -113,13 +114,15 @@ internal fun EmptySearchResult(
         modifier = modifier
     ) {
         Text(
-            text = context.getString(R.string.nothing_found),
-            style = MaterialTheme.typography.titleSmall
+            text =  title ?: context.getString(R.string.nothing_found),
+            style = MaterialTheme.typography.titleMedium
         )
-        Text(
-            text = text,
-            style = MaterialTheme.typography.bodyLarge
-        )
+        if (text != null) {
+            Text(
+                text = text,
+                style = MaterialTheme.typography.bodyLarge
+            )
+        }
     }
 }
 

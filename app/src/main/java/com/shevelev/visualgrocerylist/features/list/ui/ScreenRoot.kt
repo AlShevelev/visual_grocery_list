@@ -1,7 +1,6 @@
 package com.shevelev.visualgrocerylist.features.list.ui
 
 import android.annotation.SuppressLint
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -18,7 +17,6 @@ import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.outlined.Edit
-import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.material3.DrawerState
 import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.DropdownMenu
@@ -78,6 +76,8 @@ internal fun ScreenRoot(
 
     val snackbarHostState = remember { SnackbarHostState() }
 
+    val screenState by viewModel.screenState.collectAsStateWithLifecycle()
+
     ModalNavigationDrawer(
         drawerContent = { DrawerContent(navigator) },
         drawerState = drawerState,
@@ -86,6 +86,7 @@ internal fun ScreenRoot(
             topBar = { AppBar(
                 drawerState,
                 userActionsHandler = viewModel,
+                screenState = screenState,
             ) },
             floatingActionButton = { MainButton(navigator) },
             snackbarHost = {
@@ -96,6 +97,7 @@ internal fun ScreenRoot(
                 modifier = Modifier.padding(innerPadding),
                 snackbarHostState = snackbarHostState,
                 viewModel = viewModel,
+                screenState = screenState,
             )
         }
     }
@@ -123,6 +125,7 @@ internal fun MainButton(
 internal fun AppBar(
     drawerState: DrawerState,
     userActionsHandler: UserActionsHandler,
+    screenState: ScreenState,
 ) {
     val context = LocalContext.current
 
@@ -166,6 +169,7 @@ internal fun AppBar(
                 DropdownMenuItem(
                     text = { Text(text = context.getString(R.string.clear_list)) },
                     leadingIcon = { Icon(Icons.Default.Clear, null) },
+                    enabled = (screenState as? ScreenState.Data)?.items?.isNotEmpty() == true,
                     onClick = {
                         scope.launch {
                             delay(uiConstants.animationStandardDuration)
@@ -231,11 +235,10 @@ internal fun DrawerContent(
 internal fun Content(
     modifier: Modifier = Modifier,
     viewModel: ListViewModel,
+    screenState: ScreenState,
     snackbarHostState: SnackbarHostState,
 ) {
     val context = LocalContext.current
-
-    val screenState by viewModel.screenState.collectAsStateWithLifecycle()
 
     var snackbarJob = remember<Job?> { null }
 
